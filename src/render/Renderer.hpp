@@ -56,7 +56,6 @@ namespace render {
 		const Pixel*** buffer = nullptr; // pixel matrix
 
 		void free_buff();
-
 		bool is_in_bounds(const render::RPoint& pos) const;
 
 	public:

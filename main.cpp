@@ -14,7 +14,7 @@ int main() {
 	render::Renderer r(50, 10);
 
 	render::Pixel pixel = {
-		'a',
+		render::default_characters::blocks::FULL,
 		{ 255, 150, 0 },
 	};
 

@@ -115,33 +115,31 @@ namespace render {
 	}
 
 	void Renderer::push_buffer() {
-		const Pixel start_pixel(' ');
-		const Pixel* prev_pixel = &start_pixel;
+		const Pixel* prev_pixel = nullptr;
 
 		std::wstringstream buff;
 
 		// we always start with a black bg
-		buff << start_pixel.get_sequence();
+		buff << default_colors::WHITE.get_sequence();
+		buff << default_colors::BLACK.get_sequence(true);
 
 		for (uint16_t y = 0; y < this->buffer_height; y++) {
 			for (uint16_t x = 0; x < this->buffer_width; x++) {
 				const Pixel* current_pixel = this->buffer[y][x];
+
 				if (!current_pixel) {
 					buff << ' ';
 					continue;
 				}
 
 				// if the previous char colors are the same, we don't need to add the sequence again, just the char
-				if (!prev_pixel || current_pixel->color_fg != prev_pixel->color_fg) {
+				if (!prev_pixel || current_pixel->color_fg != prev_pixel->color_fg)
 					buff << current_pixel->color_fg.get_sequence();
-				}
 
-				if (!prev_pixel || current_pixel->color_bg != prev_pixel->color_bg) {
+				if (!prev_pixel || current_pixel->color_bg != prev_pixel->color_bg)
 					buff << current_pixel->color_bg.get_sequence(true);
-				}
 
 				buff << current_pixel->character;
-
 				prev_pixel = current_pixel;
 			}
 			buff << '\n';

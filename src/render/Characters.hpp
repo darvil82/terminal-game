@@ -1,7 +1,7 @@
 #pragma once
 
 namespace render {
-	namespace characters {
+	namespace default_characters {
 		enum {
 			ESCAPE = '\x1b'
 		};
