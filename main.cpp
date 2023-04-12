@@ -11,20 +11,18 @@ int main() {
 		std::setlocale(LC_ALL, prev_loc.c_str());
 	});
 
-	render::Renderer r(50, 20);
+	render::Renderer r(50, 10);
 
 	render::Pixel pixel = {
-		{ 20, 5 },
+		'a',
 		{ 255, 150, 0 },
-		render::characters::blocks::FULL
 	};
 
 	render::Pixel pixel2 = pixel;
-	pixel2.pos = { 25, 6 };
-	pixel2.color.b = 200;
+	pixel2.color_fg.b = 200;
 
-	r.set_pixel(pixel);
-	r.set_pixel(pixel2);
+	r.set_pixel(pixel, { 20, 5 });
+	r.set_pixel(pixel2, { 25, 6 });
 	r.push_buffer();
 }
 

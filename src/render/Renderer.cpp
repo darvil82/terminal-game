@@ -6,14 +6,18 @@
 
 
 namespace render {
-	std::wstring Color::get_sequence() const {
+	std::wstring Color::get_sequence(bool background) const {
 		std::wstringstream buff;
 		buff << ESCAPE_SEQUENCE_START
-			<< (this->background ? "48" : "38") << ";2;"
-			<< this->r << ';'
-			<< this->g << ';'
-			<< this->b << 'm';
+			 << (background ? "48" : "38") << ";2;"
+			 << this->r << ';'
+			 << this->g << ';'
+			 << this->b << 'm';
 		return buff.str();
+	}
+
+	std::wstring Color::get_sequence() const {
+		return this->get_sequence(false);
 	}
 
 	bool Color::operator==(const render::Color& other) const {
@@ -31,8 +35,8 @@ namespace render {
 
 	std::wstring Pixel::get_sequence() const {
 		std::wstringstream buff;
-		buff << this->pos.get_sequence()
-			<< this->color.get_sequence()
+		buff << this->color_fg.get_sequence()
+			<< this->color_bg.get_sequence(true)
 			<< this->character;
 		return buff.str();
 	}
@@ -88,9 +92,9 @@ namespace render {
 		this->buffer_height = new_height;
 	}
 
-	void Renderer::set_pixel(const Pixel& pixel) {
-		if (!this->is_in_bounds(pixel.pos)) return;
-		this->buffer[pixel.pos.y][pixel.pos.x] = new const Pixel(pixel);
+	void Renderer::set_pixel(const Pixel& pixel, const RPoint& position) {
+		if (!this->is_in_bounds(position)) return;
+		this->buffer[position.y][position.x] = new const Pixel(pixel);
 	}
 
 	const Pixel& Renderer::get_pixel(const RPoint pos) const {
@@ -114,20 +118,29 @@ namespace render {
 		const Pixel* prev_pixel = nullptr;
 		std::wstringstream buff;
 
+		// we always start with a black bg
+		buff << render::default_colors::BLACK.get_sequence(true);
+
 		for (uint16_t y = 0; y < this->buffer_height; y++) {
 			for (uint16_t x = 0; x < this->buffer_width; x++) {
-				auto* current_pixel = this->buffer[y][x];
+				const Pixel* current_pixel = this->buffer[y][x];
 				if (!current_pixel) {
 					buff << ' ';
 					continue;
 				}
 
-				// if the previous char color is the same, we don't need to add the color sequence again
-				if (!prev_pixel || current_pixel->color != prev_pixel->color) {
-					buff << current_pixel->color.get_sequence();
+				// if the previous char colors are the same, we don't need to add the sequence again, just the char
+				if (
+					!prev_pixel
+					|| (
+						current_pixel->color_fg != prev_pixel->color_fg
+						&& current_pixel->color_bg != prev_pixel->color_bg
+					)
+				) {
+					buff << current_pixel->get_sequence();
+				} else {
+					buff << current_pixel->character;
 				}
-
-				buff << current_pixel->character;
 
 				prev_pixel = current_pixel;
 			}
