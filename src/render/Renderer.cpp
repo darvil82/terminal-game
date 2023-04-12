@@ -132,9 +132,9 @@ namespace render {
 				// if the previous char colors are the same, we don't need to add the sequence again, just the char
 				if (
 					!prev_pixel
-					|| (
-						current_pixel->color_fg != prev_pixel->color_fg
-						&& current_pixel->color_bg != prev_pixel->color_bg
+					|| !(
+						current_pixel->color_fg == prev_pixel->color_fg
+						&& current_pixel->color_bg == prev_pixel->color_bg
 					)
 				) {
 					buff << current_pixel->get_sequence();
