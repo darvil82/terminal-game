@@ -27,8 +27,8 @@ namespace render {
 	};
 
 	namespace default_colors {
-		constexpr Color BLACK = { 0, 0 ,0 };
-		constexpr Color WHITE = { 255, 255, 255 };
+		constexpr Color BLACK { 0, 0 ,0 };
+		constexpr Color WHITE { 255, 255, 255 };
 	}
 
 	struct RPoint : public utils::Point<uint16_t>, IRenderSequence {
