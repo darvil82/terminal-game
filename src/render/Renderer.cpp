@@ -81,11 +81,7 @@ namespace render {
 		// create new one
 		this->buffer = new const Pixel** [new_height];
 		for (uint16_t y = 0; y < new_height; y++) {
-			this->buffer[y] = new const Pixel* [new_width];
-
-			for (uint16_t x = 0; x < new_width; x++) {
-				this->buffer[y][x] = nullptr;
-			}
+			this->buffer[y] = new const Pixel* [new_width] {};
 		}
 
 		this->buffer_width = new_width;

@@ -12,7 +12,7 @@ namespace entities {
 	class BaseEntity : public ITickable {
 		friend Scene;
 
-		Scene* scene;
+		Scene* scene = nullptr;
 
 	protected:
 		utils::Point<> position;
@@ -23,7 +23,7 @@ namespace entities {
 		}
 
 	public:
-		BaseEntity() = delete;
+		BaseEntity() = default;
 		~BaseEntity();
 
 		Scene* get_scene();

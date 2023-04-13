@@ -9,8 +9,8 @@ namespace entities {
 #define SCENE_MAX_ENTITIES 500
 
 class Scene {
-	uint16_t num_entities = 0;
-	entities::BaseEntity* entities[SCENE_MAX_ENTITIES];
+	size_t num_entities = 0;
+	entities::BaseEntity* entities[SCENE_MAX_ENTITIES] {};
 
 public:
 	void attach_entity(entities::BaseEntity& entity);

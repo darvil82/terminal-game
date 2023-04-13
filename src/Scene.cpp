@@ -18,10 +18,13 @@ void Scene::attach_entity(entities::BaseEntity& entity) {
 }
 
 void Scene::detach_entity(entities::BaseEntity& entity) {
-	for (uint16_t i = 0; i < this->num_entities; i++) {
+	for (size_t i = 0; i < this->num_entities; i++) {
 		if (this->entities[i] == &entity) {
-			this->entities[i] = this->entities[--this->num_entities]; // swap with last
-			entity.scene = nullptr;
+			auto* last_entity = &this->entities[--this->num_entities];
+
+			this->entities[i] = *last_entity; // swap with last
+			*last_entity = nullptr; // clear last
+			entity.scene = nullptr; // clear entity's scene
 			return;
 		}
 	}

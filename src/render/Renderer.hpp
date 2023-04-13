@@ -51,6 +51,8 @@ namespace render {
 		std::wstring get_sequence() const override;
 	};
 
+
+
 	class Renderer {
 		uint16_t buffer_width = 50, buffer_height = 50;
 		const Pixel*** buffer = nullptr; // pixel matrix
@@ -60,7 +62,6 @@ namespace render {
 
 	public:
 		Renderer(uint16_t width, uint16_t height);
-
 		~Renderer();
 
 		void resize(uint16_t new_width, uint16_t new_height);

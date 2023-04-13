@@ -5,9 +5,9 @@
 namespace utils {
 	template<typename T = float>
 	struct Point {
-		T x = 0, y = 0;
+		T x, y;
 
-		Point(T x, T y) : x{x}, y{y} {}
+		Point(T x = 0, T y = 0) : x{x}, y{y} {}
 
 		template<typename F> operator Point<F>() const {
 			return { (F)this->x, (F)this->y };
