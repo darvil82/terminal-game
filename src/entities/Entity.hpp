@@ -2,8 +2,9 @@
 
 #include "../utils/Point.hpp"
 #include "../render/Renderable.hpp"
-#include "Tickable.hpp"
+#include "../Tickable.hpp"
 #include "../Scene.hpp"
+#include "../Tickable.hpp"
 
 class Scene;
 

@@ -65,7 +65,7 @@ namespace render {
 
 		void resize(uint16_t new_width, uint16_t new_height);
 		void set_pixel(const Pixel& pixel, const RPoint& position);
-		const Pixel& get_pixel(const RPoint pos) const;
+		const Pixel& get_pixel(const RPoint& pos) const;
 		void clear_all();
 		void push_buffer();
 	};

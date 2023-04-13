@@ -5,7 +5,7 @@
 namespace render {
 
 	class IRenderable {
-		virtual void draw(Renderer& renderer) = 0;
+		virtual void render(render::Renderer& renderer) = 0;
 	};
 
 }

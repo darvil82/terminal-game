@@ -97,7 +97,7 @@ namespace render {
 		this->buffer[position.y][position.x] = new const Pixel(pixel);
 	}
 
-	const Pixel& Renderer::get_pixel(const RPoint pos) const {
+	const Pixel& Renderer::get_pixel(const RPoint& pos) const {
 		if (!this->is_in_bounds(pos))
 			throw std::out_of_range("Pixel out of bounds");
 		return *this->buffer[pos.y][pos.x];
@@ -119,7 +119,7 @@ namespace render {
 
 		std::wstringstream buff;
 
-		// we always start with a black bg
+		// we always start with a black bg and white fg
 		buff << default_colors::WHITE.get_sequence();
 		buff << default_colors::BLACK.get_sequence(true);
 
