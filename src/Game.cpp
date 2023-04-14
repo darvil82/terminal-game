@@ -24,6 +24,6 @@ void Game::main_loop() {
 }
 
 
-void Game::tick(float delta) {}
+void Game::tick(float delta) { }
 
-void Game::render() {}
+void Game::render() { }

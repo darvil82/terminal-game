@@ -15,7 +15,7 @@ class Game {
 	void main_loop();
 
 public:
-	Game(render::Renderer& renderer) : renderer{renderer} {}
+	Game(render::Renderer& renderer) : renderer{renderer} { }
 
 	void start();
 };
