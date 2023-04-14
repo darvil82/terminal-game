@@ -3,7 +3,8 @@
 #include "src/render/Renderer.hpp"
 #include "src/utils/Cleanup.hpp"
 #include "src/Scene.hpp"
-#include "src/entities/Entity.hpp"
+#include "src/entities/BaseEntity.hpp"
+#include "src/Game.hpp"
 
 int main() {
 	std::string prev_loc = std::setlocale(LC_ALL, nullptr);
@@ -27,15 +28,8 @@ int main() {
 	r.set_pixel(pixel2, { 25, 6 });
 	r.push_buffer();
 
-	Scene scene;
-	entities::BaseEntity ent1;
-	entities::BaseEntity ent2;
-	entities::BaseEntity ent3;
-
-	scene.attach_entity(ent1);
-	scene.attach_entity(ent2);
-	scene.attach_entity(ent3);
-
-	scene.detach_entity(ent2);
+//	Game g(r);
+//
+//	g.start();
 }
 

@@ -1,4 +1,4 @@
-#include "Entity.hpp"
+#include "BaseEntity.hpp"
 
 
 namespace entities {
@@ -10,4 +10,8 @@ namespace entities {
 	Scene* BaseEntity::get_scene() {
 		return this->scene;
 	}
+
+	void BaseEntity::tick(float delta) { }
+
+	void BaseEntity::render(render::Renderer& renderer) const { }
 }

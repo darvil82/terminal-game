@@ -10,15 +10,18 @@
 namespace render {
 	constexpr const char* ESCAPE_SEQUENCE_START = "\x1b[";
 
+
 	class IRenderSequence {
 		virtual std::wstring get_sequence() const = 0;
 	};
+
 
 	struct Color : public IRenderSequence {
 		uint8_t r = 0, g = 0, b = 0;
 
 		constexpr Color(uint8_t r, uint8_t g, uint8_t b) :
-			r{r}, g{g}, b{b} {}
+			r{r}, g{g}, b{b} {
+		}
 
 		bool operator==(const Color& other) const;
 
@@ -27,8 +30,8 @@ namespace render {
 	};
 
 	namespace default_colors {
-		constexpr Color BLACK { 0, 0 ,0 };
-		constexpr Color WHITE { 255, 255, 255 };
+		constexpr Color BLACK{0, 0, 0};
+		constexpr Color WHITE{255, 255, 255};
 	}
 
 	struct RPoint : public utils::Point<uint16_t>, IRenderSequence {
@@ -36,6 +39,7 @@ namespace render {
 
 		std::wstring get_sequence() const override;
 	};
+
 
 	struct Pixel : public IRenderSequence {
 		Color color_fg;
@@ -46,25 +50,27 @@ namespace render {
 			const wchar_t character,
 			const Color& fg_color = default_colors::WHITE,
 			const Color& bg_color = default_colors::BLACK
-		) : color_fg{fg_color}, color_bg{bg_color}, character{character} {}
+		) : color_fg{fg_color}, color_bg{bg_color}, character{character} {
+		}
 
 		std::wstring get_sequence() const override;
 	};
 
 
-
 	class Renderer {
-		uint16_t buffer_width = 50, buffer_height = 50;
+		using buff_size_t = uint16_t;
+
+		buff_size_t buffer_width = 50, buffer_height = 50;
 		const Pixel*** buffer = nullptr; // pixel matrix
 
 		void free_buff();
 		bool is_in_bounds(const render::RPoint& pos) const;
 
 	public:
-		Renderer(uint16_t width, uint16_t height);
+		Renderer(buff_size_t width, buff_size_t height);
 		~Renderer();
 
-		void resize(uint16_t new_width, uint16_t new_height);
+		void resize(buff_size_t new_width, buff_size_t new_height);
 		void set_pixel(const Pixel& pixel, const RPoint& position);
 		const Pixel& get_pixel(const RPoint& pos) const;
 		void clear_all();

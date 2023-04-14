@@ -6,10 +6,11 @@
 #include "../Scene.hpp"
 #include "../Tickable.hpp"
 
+
 class Scene;
 
 namespace entities {
-	class BaseEntity : public ITickable {
+	class BaseEntity : public ITickable, public render::IRenderable {
 		friend Scene;
 
 		Scene* scene = nullptr;
@@ -18,9 +19,8 @@ namespace entities {
 		utils::Point<> position;
 		utils::Point<> velocity;
 
-		void tick(float delta) override {
-			this->position += this->velocity * delta;
-		}
+		void tick(float delta) override;
+		void render(render::Renderer& renderer) const override;
 
 	public:
 		BaseEntity() = default;

@@ -8,7 +8,7 @@ namespace utils {
 		std::function<void()> func;
 
 	public:
-		Cleanup(std::function<void()> f): func{f} {}
+		Cleanup(std::function<void()> f) : func{f} { }
 
 		~Cleanup() {
 			this->func();

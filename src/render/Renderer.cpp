@@ -28,21 +28,21 @@ namespace render {
 	std::wstring RPoint::get_sequence() const {
 		std::wstringstream buff;
 		buff << ESCAPE_SEQUENCE_START
-			<< this->y << ';'
-			<< this->x << 'f';
+			 << this->y << ';'
+			 << this->x << 'f';
 		return buff.str();
 	}
 
 	std::wstring Pixel::get_sequence() const {
 		std::wstringstream buff;
 		buff << this->color_fg.get_sequence()
-			<< this->color_bg.get_sequence(true)
-			<< this->character;
+			 << this->color_bg.get_sequence(true)
+			 << this->character;
 		return buff.str();
 	}
 
 
-	Renderer::Renderer(uint16_t width, uint16_t height) {
+	Renderer::Renderer(buff_size_t width, buff_size_t height) {
 		this->resize(width, height);
 	}
 
@@ -57,8 +57,8 @@ namespace render {
 	void Renderer::free_buff() {
 		if (!this->buffer) return;
 
-		for (uint16_t y = 0; y < this->buffer_height; y++) {
-			for (uint16_t x = 0; x < this->buffer_width; x++) {
+		for (buff_size_t y = 0; y < this->buffer_height; y++) {
+			for (buff_size_t x = 0; x < this->buffer_width; x++) {
 				// free each pixel
 				delete this->buffer[y][x];
 			}
@@ -71,7 +71,7 @@ namespace render {
 		this->buffer = nullptr;
 	}
 
-	void Renderer::resize(uint16_t new_width, uint16_t new_height) {
+	void Renderer::resize(buff_size_t new_width, buff_size_t new_height) {
 		// unchanged... nothing to do
 		if (this->buffer && new_height == this->buffer_height && new_width == this->buffer_width) return;
 
@@ -80,8 +80,8 @@ namespace render {
 
 		// create new one
 		this->buffer = new const Pixel** [new_height];
-		for (uint16_t y = 0; y < new_height; y++) {
-			this->buffer[y] = new const Pixel* [new_width] {};
+		for (buff_size_t y = 0; y < new_height; y++) {
+			this->buffer[y] = new const Pixel* [new_width]{ };
 		}
 
 		this->buffer_width = new_width;
@@ -100,8 +100,8 @@ namespace render {
 	}
 
 	void Renderer::clear_all() {
-		for (uint16_t y = 0; y < this->buffer_height; y++) {
-			for (uint16_t x = 0; x < this->buffer_width; x++) {
+		for (buff_size_t y = 0; y < this->buffer_height; y++) {
+			for (buff_size_t x = 0; x < this->buffer_width; x++) {
 				if (!this->buffer[y][x]) continue;
 
 				delete this->buffer[y][x];
@@ -119,8 +119,8 @@ namespace render {
 		buff << default_colors::WHITE.get_sequence();
 		buff << default_colors::BLACK.get_sequence(true);
 
-		for (uint16_t y = 0; y < this->buffer_height; y++) {
-			for (uint16_t x = 0; x < this->buffer_width; x++) {
+		for (buff_size_t y = 0; y < this->buffer_height; y++) {
+			for (buff_size_t x = 0; x < this->buffer_width; x++) {
 				const Pixel* current_pixel = this->buffer[y][x];
 
 				if (!current_pixel) {
