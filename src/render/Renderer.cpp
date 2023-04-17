@@ -138,4 +138,8 @@ namespace render {
 	void Renderer::start() {
 
 	}
+
+	void Renderer::end() {
+
+	}
 } // render

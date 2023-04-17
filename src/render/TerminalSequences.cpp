@@ -1,6 +1,7 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <sstream>
+#include <iostream>
 #include "TerminalSequences.hpp"
 
 namespace render {

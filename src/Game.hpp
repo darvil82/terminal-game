@@ -10,6 +10,7 @@
 class Game {
 	std::unique_ptr<render::Renderer> renderer;
 	Scene* current_scene = nullptr;
+	bool running = false;
 
 	void tick(float delta);
 	void render();
@@ -21,4 +22,5 @@ public:
 	}
 
 	void start();
+	void stop();
 };
