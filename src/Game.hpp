@@ -1,13 +1,14 @@
 #pragma once
 
 #include <chrono>
+#include <memory>
 #include "render/Renderable.hpp"
 #include "Tickable.hpp"
 #include "Scene.hpp"
 
 
 class Game {
-	render::Renderer& renderer;
+	std::unique_ptr<render::Renderer> renderer;
 	Scene* current_scene = nullptr;
 
 	void tick(float delta);
@@ -15,7 +16,9 @@ class Game {
 	void main_loop();
 
 public:
-	Game(render::Renderer& renderer) : renderer{renderer} { }
+	Game() {
+		this->renderer = std::make_unique<render::Renderer>(40, 20);
+	}
 
 	void start();
 };

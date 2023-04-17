@@ -3,17 +3,12 @@
 #include <iostream>
 
 #include "Renderer.hpp"
+#include "TerminalSequences.hpp"
 
 
 namespace render {
 	std::wstring Color::get_sequence(bool background) const {
-		std::wstringstream buff;
-		buff << ESCAPE_SEQUENCE_START
-			 << (background ? "48" : "38") << ";2;"
-			 << this->r << ';'
-			 << this->g << ';'
-			 << this->b << 'm';
-		return buff.str();
+		return TerminalSequences::set_color(*this, background);
 	}
 
 	std::wstring Color::get_sequence() const {
@@ -26,11 +21,7 @@ namespace render {
 
 
 	std::wstring RPoint::get_sequence() const {
-		std::wstringstream buff;
-		buff << ESCAPE_SEQUENCE_START
-			 << this->y << ';'
-			 << this->x << 'f';
-		return buff.str();
+		return TerminalSequences::cursor_set_pos(*this);
 	}
 
 	std::wstring Pixel::get_sequence() const {
@@ -142,5 +133,9 @@ namespace render {
 		}
 
 		std::wcout << buff.str() << std::flush;
+	}
+
+	void Renderer::start() {
+
 	}
 } // render

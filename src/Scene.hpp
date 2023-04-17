@@ -12,7 +12,7 @@ namespace entities {
 
 class Scene : public ITickable, public render::IRenderable {
 	size_t num_entities = 0;
-	entities::BaseEntity* entities[SCENE_MAX_ENTITIES]{ };
+	entities::BaseEntity* entities[SCENE_MAX_ENTITIES] { };
 
 	void for_each_entity(std::function<void(entities::BaseEntity&)> consumer);
 	void for_each_entity(std::function<void(entities::BaseEntity&)> consumer) const;

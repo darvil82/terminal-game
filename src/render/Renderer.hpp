@@ -8,9 +8,6 @@
 #include "Characters.hpp"
 
 namespace render {
-	constexpr const char* ESCAPE_SEQUENCE_START = "\x1b[";
-
-
 	class IRenderSequence {
 		virtual std::wstring get_sequence() const = 0;
 	};
@@ -75,6 +72,8 @@ namespace render {
 		const Pixel& get_pixel(const RPoint& pos) const;
 		void clear_all();
 		void push_buffer();
+		void start();
+		void end();
 	};
 
 } // render

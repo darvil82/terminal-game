@@ -16,11 +16,11 @@ void Scene::for_each_entity(std::function<void(entities::BaseEntity&)> consumer)
 
 void Scene::attach_entity(entities::BaseEntity& entity) {
 	if (this->num_entities >= SCENE_MAX_ENTITIES) {
-		throw std::runtime_error("Scene::attach_entity: Scene is full");
+		throw std::runtime_error("Scene is full");
 	}
 
 	if (entity.get_scene()) {
-		throw std::runtime_error("Scene::attach_entity: Entity already attached to a scene");
+		throw std::runtime_error("Entity already attached to a scene");
 	}
 
 	this->entities[this->num_entities++] = &entity;
@@ -30,15 +30,12 @@ void Scene::attach_entity(entities::BaseEntity& entity) {
 void Scene::detach_entity(entities::BaseEntity& entity) {
 	for (size_t i = 0; i < this->num_entities; i++) {
 		if (this->entities[i] == &entity) {
-			auto* last_entity = &this->entities[--this->num_entities];
-
-			this->entities[i] = *last_entity; // swap with last
-			*last_entity = nullptr; // clear last
+			this->entities[i] = this->entities[--this->num_entities]; // swap with last
 			entity.scene = nullptr; // clear entity's scene
 			return;
 		}
 	}
-	throw std::runtime_error("Scene::detach_entity: Entity not found in scene");
+	throw std::runtime_error("Entity not found in scene");
 }
 
 void Scene::tick(float delta) {

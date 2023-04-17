@@ -26,4 +26,7 @@ void Game::main_loop() {
 
 void Game::tick(float delta) { }
 
-void Game::render() { }
+void Game::render() {
+	if (this->current_scene)
+		this->current_scene->render(*this->renderer);
+}

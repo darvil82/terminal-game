@@ -2,10 +2,6 @@
 
 namespace render {
 	namespace default_characters {
-		enum {
-			ESCAPE = '\x1b'
-		};
-
 		namespace lines {
 			namespace light {
 				enum : wchar_t {
