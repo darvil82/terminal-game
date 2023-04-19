@@ -15,12 +15,12 @@ class Game {
 	void tick(float delta);
 	void render();
 	void main_loop();
+	void init();
+	void end();
 
 public:
-	Game() {
-		this->renderer = std::make_unique<render::Renderer>(40, 20);
-	}
+	Game(): renderer{std::make_unique<render::Renderer>(90, 25)} {}
 
-	void start();
-	void stop();
+	void start_loop();
+	void stop_loop();
 };

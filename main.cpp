@@ -7,11 +7,16 @@
 #include "src/entities/BaseEntity.hpp"
 #include "src/entities/PlayerEntity.hpp"
 #include "src/Game.hpp"
+#include <csignal>
+
+
+Game game;
 
 int main() {
-	Game game;
-	game.start();
+	std::signal(SIGINT, [](int) {
+		game.stop_loop();
+	});
 
-
+	game.start_loop();
 }
 

@@ -11,7 +11,9 @@ void Scene::for_each_entity(std::function<void(entities::BaseEntity&)> consumer)
 }
 
 void Scene::for_each_entity(std::function<void(entities::BaseEntity&)> consumer) const {
-	this->for_each_entity(consumer);
+	for (size_t i = 0; i < this->num_entities; i++) {
+		consumer(*this->entities[i]);
+	}
 }
 
 void Scene::attach_entity(entities::BaseEntity& entity) {

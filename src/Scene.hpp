@@ -7,7 +7,7 @@ namespace entities {
 	class BaseEntity;
 }
 
-#define SCENE_MAX_ENTITIES 500
+#define SCENE_MAX_ENTITIES 750
 
 
 class Scene : public ITickable, public render::IRenderable {

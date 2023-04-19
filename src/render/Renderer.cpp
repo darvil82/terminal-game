@@ -19,11 +19,6 @@ namespace render {
 		return this->r == other.r && this->g == other.g && this->b == other.b;
 	}
 
-
-	std::wstring RPoint::get_sequence() const {
-		return TerminalSequences::cursor_set_pos(*this);
-	}
-
 	std::wstring Pixel::get_sequence() const {
 		std::wstringstream buff;
 		buff << this->color_fg.get_sequence()
@@ -77,11 +72,13 @@ namespace render {
 
 		this->buffer_width = new_width;
 		this->buffer_height = new_height;
+		this->buffer_changed = false;
 	}
 
 	void Renderer::set_pixel(const Pixel& pixel, const RPoint& position) {
 		if (!this->is_in_bounds(position)) return;
 		this->buffer[position.y][position.x] = new const Pixel(pixel);
+		this->buffer_changed = true;
 	}
 
 	const Pixel& Renderer::get_pixel(const RPoint& pos) const {
@@ -90,7 +87,7 @@ namespace render {
 		return *this->buffer[pos.y][pos.x];
 	}
 
-	void Renderer::clear_all() {
+	void Renderer::clear_buffer() {
 		for (buff_size_t y = 0; y < this->buffer_height; y++) {
 			for (buff_size_t x = 0; x < this->buffer_width; x++) {
 				if (!this->buffer[y][x]) continue;
@@ -99,47 +96,58 @@ namespace render {
 				this->buffer[y][x] = nullptr;
 			}
 		}
+		this->buffer_changed = false;
 	}
 
 	void Renderer::push_buffer() {
+		if (!this->buffer_changed) return; // don't need to push if nothing changed
 		const Pixel* prev_pixel = nullptr;
 
-		std::wstringstream buff;
-
-		// we always start with a black bg and white fg
-		buff << default_colors::WHITE.get_sequence();
-		buff << default_colors::BLACK.get_sequence(true);
+		output_stream << TerminalSequences::CURSOR_HOME;
 
 		for (buff_size_t y = 0; y < this->buffer_height; y++) {
 			for (buff_size_t x = 0; x < this->buffer_width; x++) {
 				const Pixel* current_pixel = this->buffer[y][x];
 
 				if (!current_pixel) {
-					buff << ' ';
+					output_stream << ' ';
 					continue;
 				}
 
 				// if the previous char colors are the same, we don't need to add the sequence again, just the char
 				if (!prev_pixel || current_pixel->color_fg != prev_pixel->color_fg)
-					buff << current_pixel->color_fg.get_sequence();
+					output_stream << current_pixel->color_fg.get_sequence();
 
 				if (!prev_pixel || current_pixel->color_bg != prev_pixel->color_bg)
-					buff << current_pixel->color_bg.get_sequence(true);
+					output_stream << current_pixel->color_bg.get_sequence(true);
 
-				buff << current_pixel->character;
+				output_stream << current_pixel->character;
 				prev_pixel = current_pixel;
 			}
-			buff << '\n';
+			output_stream << '\n';
 		}
 
-		std::wcout << buff.str() << std::flush;
+		this->push_stream();
 	}
 
-	void Renderer::start() {
+	void Renderer::push_stream() {
+		std::wcout << output_stream.str() << std::flush;
+		output_stream.str(L"");
+	}
 
+	void Renderer::init() {
+		output_stream << TerminalSequences::CURSOR_HIDE
+			<< TerminalSequences::BUFFER_NEW
+			// we always start_loop with a black bg and white fg
+			<< default_colors::WHITE.get_sequence()
+			<< default_colors::BLACK.get_sequence(true);
+
+		this->push_stream();
 	}
 
 	void Renderer::end() {
-
+		output_stream << TerminalSequences::CURSOR_SHOW
+			<< TerminalSequences::BUFFER_OLD;
+		this->push_stream();
 	}
 } // render

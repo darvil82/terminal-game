@@ -1,15 +1,25 @@
 #include "Game.hpp"
 #include "utils/Cleanup.hpp"
+#include "entities/PlayerEntity.hpp"
 #include <cwchar>
-#include <thread>
 
 namespace chrono = std::chrono;
 using timestamp = decltype(chrono::steady_clock::now());
 
-void Game::start() {
+void Game::start_loop() {
 	if (this->running) return;
 	this->running = true;
 
+	this->init();
+	this->main_loop();
+}
+
+void Game::stop_loop() {
+	if (!this->running) return;
+	this->running = false;
+}
+
+void Game::init() {
 	std::string prev_loc = std::setlocale(LC_ALL, nullptr);
 	std::setlocale(LC_ALL, "en_US.utf8");
 
@@ -17,13 +27,15 @@ void Game::start() {
 		std::setlocale(LC_ALL, prev_loc.c_str());
 	});
 
-	this->renderer->start();
+	this->renderer->init();
 
-	this->main_loop();
+	Scene* s = new Scene();
+	s->attach_entity(*new entities::PlayerEntity()); // yes, leaking. just for testing
+	this->current_scene = s;
 }
 
-void Game::stop() {
-	this->running = false;
+void Game::end() {
+	this->renderer->end();
 }
 
 void Game::main_loop() {
@@ -38,6 +50,8 @@ void Game::main_loop() {
 		this->tick(delta);
 		this->render();
 	}
+
+	this->end();
 }
 
 
@@ -47,6 +61,8 @@ void Game::tick(float delta) {
 }
 
 void Game::render() {
+	this->renderer->clear_buffer();
+
 	if (this->current_scene)
 		this->current_scene->render(*this->renderer);
 

@@ -2,16 +2,20 @@
 
 #include <inttypes.h>
 #include <string>
+#include <sstream>
 #include <optional>
 
-#include "../utils/Point.hpp"
 #include "Characters.hpp"
+#include "IRenderSequence.hpp"
+#include "../utils/Point.hpp"
+
+namespace utils {
+	template<class T>
+	struct Point;
+}
 
 namespace render {
-	class IRenderSequence {
-		virtual std::wstring get_sequence() const = 0;
-	};
-
+	using RPoint = utils::Point<uint16_t>;
 
 	struct Color : public IRenderSequence {
 		uint8_t r = 0, g = 0, b = 0;
@@ -29,14 +33,12 @@ namespace render {
 	namespace default_colors {
 		constexpr Color BLACK{0, 0, 0};
 		constexpr Color WHITE{255, 255, 255};
+		constexpr Color RED{255, 0, 0};
+		constexpr Color GREEN{0, 255, 0};
+		constexpr Color BLUE{0, 0, 255};
+		constexpr Color YELLOW{255, 255, 0};
+		constexpr Color MAGENTA{255, 0, 255};
 	}
-
-	struct RPoint : public utils::Point<uint16_t>, IRenderSequence {
-		using Point::Point;
-
-		std::wstring get_sequence() const override;
-	};
-
 
 	struct Pixel : public IRenderSequence {
 		Color color_fg;
@@ -57,11 +59,14 @@ namespace render {
 	class Renderer {
 		using buff_size_t = uint16_t;
 
+		std::wstringstream output_stream;
 		buff_size_t buffer_width = 50, buffer_height = 50;
 		const Pixel*** buffer = nullptr; // pixel matrix
+		bool buffer_changed = false;
 
 		void free_buff();
 		bool is_in_bounds(const render::RPoint& pos) const;
+		void push_stream();
 
 	public:
 		Renderer(buff_size_t width, buff_size_t height);
@@ -70,9 +75,9 @@ namespace render {
 		void resize(buff_size_t new_width, buff_size_t new_height);
 		void set_pixel(const Pixel& pixel, const RPoint& position);
 		const Pixel& get_pixel(const RPoint& pos) const;
-		void clear_all();
+		void clear_buffer();
 		void push_buffer();
-		void start();
+		void init();
 		void end();
 	};
 

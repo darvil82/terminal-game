@@ -7,10 +7,10 @@ namespace utils {
 	struct Point {
 		T x, y;
 
-		Point(T x = 0, T y = 0) : x{x}, y{y} { }
+		Point(T x = 0, T y = 0) : x {x}, y {y} { }
 
 		template<typename F> operator Point<F>() const {
-			return {(F) this->x, (F) this->y};
+			return {static_cast<F>(this->x), static_cast<F>(this->y)};
 		}
 
 		Point<T> operator+(const Point<T>& other) const {
@@ -29,5 +29,9 @@ namespace utils {
 		bool operator==(const Point<T>& other) const {
 			return this->x == other.x && this->y == other.y;
 		}
+
+//		std::wstring get_sequence() const override {
+//			return render::TerminalSequences::cursor_set_pos(*this);
+//		}
 	};
 }
