@@ -9,12 +9,13 @@
 
 class Scene;
 
+
 #define DEFINE_ENTITY(entName) \
-	public:                       \
-	constexpr const char* get_class_name() override { \
+    public:                       \
+    constexpr const char* get_class_name() override { \
         return #entName;       \
     }                          \
-	private:\
+    private:\
 
 namespace entities {
 	class BaseEntity : public ITickable, public render::IRenderable {

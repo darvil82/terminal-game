@@ -19,7 +19,7 @@ class Game {
 	void end();
 
 public:
-	Game(): renderer{std::make_unique<render::Renderer>(90, 25)} {}
+	Game() : renderer {std::make_unique<render::Renderer>(90, 25)} { }
 
 	void start_loop();
 	void stop_loop();

@@ -17,11 +17,12 @@ namespace utils {
 namespace render {
 	using RPoint = utils::Point<uint16_t>;
 
+
 	struct Color : public IRenderSequence {
 		uint8_t r = 0, g = 0, b = 0;
 
 		constexpr Color(uint8_t r, uint8_t g, uint8_t b) :
-			r{r}, g{g}, b{b} {
+			r {r}, g {g}, b {b} {
 		}
 
 		bool operator==(const Color& other) const;
@@ -31,13 +32,13 @@ namespace render {
 	};
 
 	namespace default_colors {
-		constexpr Color BLACK{0, 0, 0};
-		constexpr Color WHITE{255, 255, 255};
-		constexpr Color RED{255, 0, 0};
-		constexpr Color GREEN{0, 255, 0};
-		constexpr Color BLUE{0, 0, 255};
-		constexpr Color YELLOW{255, 255, 0};
-		constexpr Color MAGENTA{255, 0, 255};
+		constexpr Color BLACK {0, 0, 0};
+		constexpr Color WHITE {255, 255, 255};
+		constexpr Color RED {255, 0, 0};
+		constexpr Color GREEN {0, 255, 0};
+		constexpr Color BLUE {0, 0, 255};
+		constexpr Color YELLOW {255, 255, 0};
+		constexpr Color MAGENTA {255, 0, 255};
 	}
 
 	struct Pixel : public IRenderSequence {
@@ -49,7 +50,7 @@ namespace render {
 			const wchar_t character,
 			const Color& fg_color = default_colors::WHITE,
 			const Color& bg_color = default_colors::BLACK
-		) : color_fg{fg_color}, color_bg{bg_color}, character{character} {
+		) : color_fg {fg_color}, color_bg {bg_color}, character {character} {
 		}
 
 		std::wstring get_sequence() const override;

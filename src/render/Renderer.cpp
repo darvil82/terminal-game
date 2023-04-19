@@ -67,7 +67,7 @@ namespace render {
 		// create new one
 		this->buffer = new const Pixel** [new_height];
 		for (buff_size_t y = 0; y < new_height; y++) {
-			this->buffer[y] = new const Pixel* [new_width]{ };
+			this->buffer[y] = new const Pixel* [new_width] { };
 		}
 
 		this->buffer_width = new_width;
@@ -137,17 +137,17 @@ namespace render {
 
 	void Renderer::init() {
 		output_stream << TerminalSequences::CURSOR_HIDE
-			<< TerminalSequences::BUFFER_NEW
-			// we always start_loop with a black bg and white fg
-			<< default_colors::WHITE.get_sequence()
-			<< default_colors::BLACK.get_sequence(true);
+					  << TerminalSequences::BUFFER_NEW
+					  // we always start_loop with a black bg and white fg
+					  << default_colors::WHITE.get_sequence()
+					  << default_colors::BLACK.get_sequence(true);
 
 		this->push_stream();
 	}
 
 	void Renderer::end() {
 		output_stream << TerminalSequences::CURSOR_SHOW
-			<< TerminalSequences::BUFFER_OLD;
+					  << TerminalSequences::BUFFER_OLD;
 		this->push_stream();
 	}
 } // render

@@ -10,7 +10,7 @@ namespace render {
 		winsize w;
 		ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 
-		return { w.ws_col, w.ws_row };
+		return {w.ws_col, w.ws_row};
 	}
 
 	std::wstring TerminalSequences::cursor_set_pos(RPoint pos) {
