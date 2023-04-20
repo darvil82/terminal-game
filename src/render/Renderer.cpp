@@ -22,8 +22,8 @@ namespace render {
 	std::wstring Pixel::get_sequence() const {
 		std::wstringstream buff;
 		buff << this->color_fg.get_sequence()
-			 << this->color_bg.get_sequence(true)
-			 << this->character;
+			<< this->color_bg.get_sequence(true)
+			<< this->character;
 		return buff.str();
 	}
 
@@ -127,6 +127,8 @@ namespace render {
 			output_stream << '\n';
 		}
 
+		output_stream << default_colors::WHITE.get_sequence();
+
 		this->push_stream();
 	}
 
@@ -137,17 +139,17 @@ namespace render {
 
 	void Renderer::init() {
 		output_stream << TerminalSequences::CURSOR_HIDE
-					  << TerminalSequences::BUFFER_NEW
-					  // we always start_loop with a black bg and white fg
-					  << default_colors::WHITE.get_sequence()
-					  << default_colors::BLACK.get_sequence(true);
+			<< TerminalSequences::BUFFER_NEW
+				// we always start_loop with a black bg and white fg
+			<< default_colors::WHITE.get_sequence()
+			<< default_colors::BLACK.get_sequence(true);
 
 		this->push_stream();
 	}
 
 	void Renderer::end() {
 		output_stream << TerminalSequences::CURSOR_SHOW
-					  << TerminalSequences::BUFFER_OLD;
+			<< TerminalSequences::BUFFER_OLD;
 		this->push_stream();
 	}
 } // render

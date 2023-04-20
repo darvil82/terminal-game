@@ -50,8 +50,7 @@ namespace render {
 			const wchar_t character,
 			const Color& fg_color = default_colors::WHITE,
 			const Color& bg_color = default_colors::BLACK
-		) : color_fg {fg_color}, color_bg {bg_color}, character {character} {
-		}
+		) : color_fg {fg_color}, color_bg {bg_color}, character {character} { }
 
 		std::wstring get_sequence() const override;
 	};

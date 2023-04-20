@@ -2,6 +2,9 @@
 
 #include <stdint.h>
 
+
+
+
 namespace utils {
 	template<typename T = float>
 	struct Point {
@@ -17,21 +20,84 @@ namespace utils {
 			return {this->x + other.x, this->y + other.y};
 		}
 
-		void operator+=(const Point<T>& other) {
-			this->x += other.x;
-			this->y += other.y;
+		Point<T> operator+(const T& other) const {
+			return {this->x + other, this->y + other};
 		}
 
-		template<typename F> Point<F> operator*(const F& other) const {
+		Point<T>& operator+=(const Point<T>& other) {
+			this->x += other.x;
+			this->y += other.y;
+			return *this;
+		}
+
+		Point<T>& operator+=(const T& other) {
+			this->x += other;
+			this->y += other;
+			return *this;
+		}
+
+		Point<T> operator-(const Point<T>& other) const {
+			return {this->x - other.x, this->y - other.y};
+		}
+
+		Point<T> operator-(const T& other) const {
+			return {this->x - other, this->y - other};
+		}
+
+		Point<T>& operator-=(const Point<T>& other) {
+			this->x -= other.x;
+			this->y -= other.y;
+			return *this;
+		}
+
+		Point<T>& operator-=(const T& other) {
+			this->x -= other;
+			this->y -= other;
+			return *this;
+		}
+
+		Point<T> operator*(const Point<T>& other) const {
+			return {this->x * other.x, this->y * other.y};
+		}
+
+		Point<T> operator*(const T& other) const {
 			return {this->x * other, this->y * other};
+		}
+
+		Point<T>& operator*=(const Point<T>& other) {
+			this->x *= other.x;
+			this->y *= other.y;
+			return *this;
+		}
+
+		Point<T>& operator*=(const T& other) {
+			this->x *= other;
+			this->y *= other;
+			return *this;
+		}
+
+		Point<T> operator/(const Point<T>& other) const {
+			return {this->x / other.x, this->y / other.y};
+		}
+
+		Point<T> operator/(const T& other) const {
+			return {this->x / other, this->y / other};
+		}
+
+		Point<T>& operator/=(const Point<T>& other) {
+			this->x /= other.x;
+			this->y /= other.y;
+			return *this;
+		}
+
+		Point<T>& operator/=(const T& other) {
+			this->x /= other;
+			this->y /= other;
+			return *this;
 		}
 
 		bool operator==(const Point<T>& other) const {
 			return this->x == other.x && this->y == other.y;
 		}
-
-//		std::wstring get_sequence() const override {
-//			return render::TerminalSequences::cursor_set_pos(*this);
-//		}
 	};
 }
