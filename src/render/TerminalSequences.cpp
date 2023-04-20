@@ -16,8 +16,8 @@ namespace render {
 	std::wstring TerminalSequences::cursor_set_pos(RPoint pos) {
 		std::wstringstream buff;
 		buff << TerminalSequences::ESCAPE_SEQUENCE_START
-			 << pos.y << ';'
-			 << pos.x << 'f';
+			<< pos.y << ';'
+			<< pos.x << 'f';
 		return buff.str();
 	}
 
@@ -26,8 +26,8 @@ namespace render {
 
 		std::wstringstream buff;
 		buff << TerminalSequences::ESCAPE_SEQUENCE_START
-			 << abs(x)
-			 << (x < 0 ? 'D' : 'C');
+			<< abs(x)
+			<< (x < 0 ? 'D' : 'C');
 		return buff.str();
 	}
 
@@ -36,8 +36,8 @@ namespace render {
 
 		std::wstringstream buff;
 		buff << TerminalSequences::ESCAPE_SEQUENCE_START
-			 << abs(y)
-			 << (y < 0 ? 'A' : 'B');
+			<< abs(y)
+			<< (y < 0 ? 'A' : 'B');
 		return buff.str();
 	}
 
@@ -49,10 +49,10 @@ namespace render {
 	std::wstring TerminalSequences::set_color(Color color, bool background) {
 		std::wstringstream buff;
 		buff << TerminalSequences::ESCAPE_SEQUENCE_START
-			 << (background ? "48" : "38") << ";2;"
-			 << color.r << ';'
-			 << color.g << ';'
-			 << color.b << 'm';
+			<< (background ? "48" : "38") << ";2;"
+			<< color.r << ';'
+			<< color.g << ';'
+			<< color.b << 'm';
 		return buff.str();
 	}
 }

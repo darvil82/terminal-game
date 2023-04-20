@@ -3,8 +3,6 @@
 #include <stdint.h>
 
 
-
-
 namespace utils {
 	template<typename T = float>
 	struct Point {
