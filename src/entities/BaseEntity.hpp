@@ -7,11 +7,22 @@
 #include "../Tickable.hpp"
 #include "EntityFactory.hpp"
 
+
 class Scene;
 
 
-#define DEFINE_ENTITY(type, classname) \
-	inline EntityFactory<type> classname(#classname);
+#define DEFINE_ENTITY_FACTORY(type) \
+    inline EntityFactory<type> classname(type::classname);
+
+#define DEFINE_ENTITY_CLASS(clsname) \
+    public:                               \
+		static constexpr const char* classname = #clsname; \
+                                       \
+        virtual constexpr const char* get_classname() override { \
+            return classname;    \
+        }                              \
+                                       \
+	private:
 
 namespace entities {
 	class BaseEntity : public ITickable, public render::IRenderable {
@@ -29,6 +40,8 @@ namespace entities {
 	public:
 		BaseEntity() = default;
 		~BaseEntity();
+
+		virtual constexpr const char* get_classname() = 0;
 
 		Scene* get_scene();
 	};

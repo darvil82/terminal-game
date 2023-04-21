@@ -8,6 +8,7 @@
 namespace entities {
 
 	class PlayerEntity : public BaseEntity {
+	DEFINE_ENTITY_CLASS(player)
 
 		std::string player_name;
 		render::Color player_color = render::default_colors::WHITE;
@@ -28,8 +29,10 @@ namespace entities {
 		void tick(float delta) override {
 			this->position += this->velocity * delta;
 
-			bool hit_x = (this->position.x >= 90 && this->velocity.x > 0) || (this->position.x <= 0 && this->velocity.x < 0);
-			bool hit_y = (this->position.y >= 25 && this->velocity.y > 0) || (this->position.y <= 0 && this->velocity.y < 0);
+			bool hit_x =
+				(this->position.x >= 90 && this->velocity.x > 0) || (this->position.x <= 0 && this->velocity.x < 0);
+			bool hit_y =
+				(this->position.y >= 25 && this->velocity.y > 0) || (this->position.y <= 0 && this->velocity.y < 0);
 
 			if (hit_x)
 				this->velocity.x *= -1;
@@ -46,6 +49,5 @@ namespace entities {
 		}
 	};
 
-
-	DEFINE_ENTITY(PlayerEntity, player)
+	DEFINE_ENTITY_FACTORY(PlayerEntity)
 }

@@ -6,6 +6,10 @@ namespace entities {
 		return db;
 	}
 
+	bool EntityDB::entity_exists(const std::string& classname) {
+		return this->db.contains(classname);
+	}
+
 	void EntityDB::define_factory(const entities::IEntityFactory& factory, const std::string& classname) {
 		this->db[classname] = &factory;
 	}

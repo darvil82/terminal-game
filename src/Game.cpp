@@ -31,7 +31,7 @@ void Game::init() {
 	this->renderer->init();
 
 	Scene* s = new Scene();
-	auto& x = CREATE_ENTITY(entities::PlayerEntity, player);
+	auto& x = ENTITY_CREATE(entities::PlayerEntity, player);
 	s->attach_entity(x);
 	this->current_scene = s;
 }
