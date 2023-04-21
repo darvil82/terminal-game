@@ -27,7 +27,7 @@ namespace entities {
 		}
 
 		void tick(float delta) override {
-			this->position += this->velocity * delta;
+			BaseEntity::tick(delta);
 
 			bool hit_x =
 				(this->position.x >= 90 && this->velocity.x > 0) || (this->position.x <= 0 && this->velocity.x < 0);

@@ -11,7 +11,9 @@ namespace entities {
 		return this->scene;
 	}
 
-	void BaseEntity::tick(float delta) { }
+	void BaseEntity::tick(float delta) {
+		this->position += this->velocity * delta;
+	}
 
 	void BaseEntity::render(render::Renderer& renderer) const { }
 }
