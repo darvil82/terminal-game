@@ -1,5 +1,6 @@
 #include "Game.hpp"
 #include "utils/Cleanup.hpp"
+#include "entities/EntityDB.hpp"
 #include "entities/PlayerEntity.hpp"
 #include <cwchar>
 
@@ -30,7 +31,8 @@ void Game::init() {
 	this->renderer->init();
 
 	Scene* s = new Scene();
-	s->attach_entity(*new entities::PlayerEntity()); // yes, leaking. just for testing
+	entities::PlayerEntity& x = CREATE_ENTITY(player);
+	s->attach_entity(x);
 	this->current_scene = s;
 }
 

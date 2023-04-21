@@ -5,17 +5,13 @@
 #include "../Tickable.hpp"
 #include "../Scene.hpp"
 #include "../Tickable.hpp"
-
+#include "EntityFactory.hpp"
 
 class Scene;
 
 
-#define DEFINE_ENTITY(entName) \
-    public:                       \
-    constexpr const char* get_class_name() override { \
-        return #entName;       \
-    }                          \
-    private:\
+#define DEFINE_ENTITY(type, classname) \
+	inline EntityFactory<type> classname(#classname);
 
 namespace entities {
 	class BaseEntity : public ITickable, public render::IRenderable {
@@ -35,6 +31,5 @@ namespace entities {
 		~BaseEntity();
 
 		Scene* get_scene();
-		virtual constexpr const char* get_class_name() = 0;
 	};
 }
