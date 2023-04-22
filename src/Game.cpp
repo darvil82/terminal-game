@@ -2,6 +2,7 @@
 #include "utils/Cleanup.hpp"
 #include "entities/EntityDB.hpp"
 #include "entities/PlayerEntity.hpp"
+#include "entities/BaseEntity.hpp"
 #include <cwchar>
 
 namespace chrono = std::chrono;

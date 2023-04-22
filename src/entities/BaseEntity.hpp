@@ -6,7 +6,8 @@
 #include "../Scene.hpp"
 #include "../Tickable.hpp"
 #include "EntityFactory.hpp"
-
+#include "../utils/Concepts.hpp"
+#include "../utils/Typedefs.hpp"
 
 class Scene;
 
@@ -39,10 +40,17 @@ namespace entities {
 
 	public:
 		BaseEntity() = default;
-		~BaseEntity();
+		virtual ~BaseEntity();
 
 		virtual constexpr const char* get_classname() = 0;
 
 		Scene* get_scene();
 	};
+
+	template<Extends<BaseEntity> T>
+	bool ent_is_subclass_of(BaseEntity& ent) {
+		return dynamic_cast<T*>(&ent) != nullptr;
+	}
+
+	Predicate<BaseEntity&> ent_is_classname(const std::string& classname);
 }

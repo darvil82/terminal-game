@@ -2,6 +2,7 @@
 
 #include <functional>
 #include "entities/BaseEntity.hpp"
+#include "utils/Typedefs.hpp"
 
 namespace entities {
 	class BaseEntity;
@@ -9,15 +10,31 @@ namespace entities {
 
 #define SCENE_MAX_ENTITIES 750
 
+class Scene;
+
+
 
 class Scene : public ITickable, public render::IRenderable {
 	size_t num_entities = 0;
 	entities::BaseEntity* entities[SCENE_MAX_ENTITIES] { };
 
-	void for_each_entity(std::function<void(entities::BaseEntity&)> consumer);
-	void for_each_entity(std::function<void(entities::BaseEntity&)> consumer) const;
+	class EntitiesIterator {
+		const Scene& scene;
+		size_t index = 0;
+
+	public:
+		EntitiesIterator(const Scene& scene, size_t index = 0): scene{scene}, index{index} { };
+		entities::BaseEntity& operator*() const;
+		EntitiesIterator& operator++();
+		bool operator!=(const EntitiesIterator& other) const;
+	};
 
 public:
+	std::vector<entities::BaseEntity*> get_entities_filtered(Predicate<entities::BaseEntity&> filter);
+	std::vector<entities::BaseEntity*> get_entities();
+	EntitiesIterator begin() const;
+	EntitiesIterator end() const;
+
 	void attach_entity(entities::BaseEntity& entity);
 	void detach_entity(entities::BaseEntity& entity);
 	void tick(float delta) override;

@@ -1,5 +1,5 @@
+#include <functional>
 #include "BaseEntity.hpp"
-
 
 namespace entities {
 	BaseEntity::~BaseEntity() {
@@ -16,4 +16,11 @@ namespace entities {
 	}
 
 	void BaseEntity::render(render::Renderer& renderer) const { }
+
+	Predicate<BaseEntity&> ent_is_classname(const std::string& classname) {
+		return [classname](BaseEntity& ent) -> bool {
+			return ent.get_classname() == classname;
+		};
+	}
+
 }

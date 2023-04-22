@@ -4,16 +4,47 @@
 #include "Scene.hpp"
 
 
-void Scene::for_each_entity(std::function<void(entities::BaseEntity&)> consumer) {
-	for (size_t i = 0; i < this->num_entities; i++) {
-		consumer(*this->entities[i]);
-	}
+Scene::EntitiesIterator Scene::begin() const {
+	return EntitiesIterator(*this);
 }
 
-void Scene::for_each_entity(std::function<void(entities::BaseEntity&)> consumer) const {
-	for (size_t i = 0; i < this->num_entities; i++) {
-		consumer(*this->entities[i]);
+Scene::EntitiesIterator Scene::end() const {
+	return EntitiesIterator(*this, this->num_entities);
+}
+
+entities::BaseEntity& Scene::EntitiesIterator::operator*() const {
+	return *this->scene.entities[this->index];
+}
+
+Scene::EntitiesIterator& Scene::EntitiesIterator::operator++() {
+	this->index++;
+	return *this;
+}
+
+bool Scene::EntitiesIterator::operator!=(const Scene::EntitiesIterator& other) const {
+	return this->index != other.index;
+}
+
+std::vector<entities::BaseEntity*> Scene::get_entities_filtered(Predicate<entities::BaseEntity&> filter) {
+	std::vector<entities::BaseEntity*> vec;
+
+	for (auto& ent : *this) {
+		if (filter(ent)) {
+			vec.push_back(&ent);
+		}
 	}
+
+	return vec;
+}
+
+std::vector<entities::BaseEntity*> Scene::get_entities() {
+	std::vector<entities::BaseEntity*> vec(this->num_entities);
+
+	for (auto& ent : *this) {
+		vec.push_back(&ent);
+	}
+
+	return vec;
 }
 
 void Scene::attach_entity(entities::BaseEntity& entity) {
@@ -41,13 +72,13 @@ void Scene::detach_entity(entities::BaseEntity& entity) {
 }
 
 void Scene::tick(float delta) {
-	this->for_each_entity([=](auto& ent) {
+	for (auto& ent : *this) {
 		ent.tick(delta);
-	});
+	}
 }
 
 void Scene::render(render::Renderer& renderer) const {
-	this->for_each_entity([&](auto& ent) {
+	for (auto& ent : *this) {
 		ent.render(renderer);
-	});
+	}
 }
