@@ -30,8 +30,8 @@ class Scene : public ITickable, public render::IRenderable {
 	};
 
 public:
-	std::vector<entities::BaseEntity*> get_entities_filtered(Predicate<entities::BaseEntity&> filter);
-	std::vector<entities::BaseEntity*> get_entities();
+	const std::vector<entities::BaseEntity*> get_entities_filtered(Predicate<entities::BaseEntity&> filter) const;
+	const std::vector<entities::BaseEntity*> get_entities() const;
 	EntitiesIterator begin() const;
 	EntitiesIterator end() const;
 
