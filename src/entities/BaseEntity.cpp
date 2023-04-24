@@ -15,7 +15,7 @@ namespace entities {
 		this->position += this->velocity * delta;
 	}
 
-	void BaseEntity::render(render::Renderer& renderer) const { }
+	void BaseEntity::render(render::RenderHelper& renderer) const { }
 
 	Predicate<BaseEntity&> ent_is_classname(const std::string& classname) {
 		return [classname](BaseEntity& ent) -> bool {

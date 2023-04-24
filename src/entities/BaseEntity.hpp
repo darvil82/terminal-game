@@ -9,6 +9,7 @@
 #include "../utils/Concepts.hpp"
 #include "../utils/Typedefs.hpp"
 
+
 class Scene;
 
 
@@ -17,13 +18,13 @@ class Scene;
 
 #define DEFINE_ENTITY_CLASS(clsname) \
     public:                               \
-		static constexpr const char* classname = #clsname; \
+        static constexpr const char* classname = #clsname; \
                                        \
         virtual constexpr const char* get_classname() override { \
             return classname;    \
         }                              \
                                        \
-	private:
+    private:
 
 namespace entities {
 	class BaseEntity : public ITickable, public render::IRenderable {
@@ -32,11 +33,11 @@ namespace entities {
 		Scene* scene = nullptr;
 
 	protected:
-		utils::Point<> position;
-		utils::Point<> velocity;
+		utils::Point<> position {0, 0};
+		utils::Point<> velocity {0, 0};
 
 		void tick(float delta) override;
-		void render(render::Renderer& renderer) const override;
+		void render(render::RenderHelper& renderer) const override;
 
 	public:
 		BaseEntity() = default;
@@ -46,6 +47,7 @@ namespace entities {
 
 		Scene* get_scene();
 	};
+
 
 	template<Extends<BaseEntity> T>
 	bool ent_is_subclass_of(BaseEntity& ent) {

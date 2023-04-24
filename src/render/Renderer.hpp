@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include <optional>
+#include <functional>
 
 #include "Characters.hpp"
 #include "IRenderSequence.hpp"
@@ -19,9 +20,9 @@ namespace render {
 
 
 	struct Color : public IRenderSequence {
-		uint8_t r = 0, g = 0, b = 0;
+		uint8_t r, g, b;
 
-		constexpr Color(uint8_t r, uint8_t g, uint8_t b) :
+		constexpr Color(uint8_t r = 0, uint8_t g = 0, uint8_t b = 0) :
 			r {r}, g {g}, b {b} {
 		}
 
@@ -48,8 +49,8 @@ namespace render {
 
 		Pixel(
 			const wchar_t character,
-			const Color& fg_color = default_colors::WHITE,
-			const Color& bg_color = default_colors::BLACK
+			const Color& fg_color,
+			const Color& bg_color
 		) : color_fg {fg_color}, color_bg {bg_color}, character {character} { }
 
 		std::wstring get_sequence() const override;
@@ -79,6 +80,38 @@ namespace render {
 		void push_buffer();
 		void init();
 		void end();
+	};
+
+
+	class RenderHelper {
+		Renderer& renderer;
+
+		class DrawHelper {
+			friend RenderHelper;
+			Renderer& renderer;
+
+			RPoint current_pos;
+			Color current_color;
+			Color current_color_bg;
+			wchar_t current_char;
+
+			void push_changes();
+
+			DrawHelper(Renderer& r, const RPoint& start_pos): renderer{r}, current_pos{start_pos} {}
+		public:
+			void set_color(const Color& color);
+			void set_color_bg(const Color& color);
+			void set_char(const wchar_t chr);
+			void set_position(const RPoint& pos);
+			void set_position_relative(const utils::Point<int16_t>& offset);
+			void move_x(int16_t offset);
+			void move_y(int16_t offset);
+		};
+	public:
+		RenderHelper(Renderer& r): renderer{r} {}
+
+		void draw(const RPoint& start_pos, std::function<void(DrawHelper&&)> draw_func);
+		void text(const RPoint& position, const std::wstring& text);
 	};
 
 } // render

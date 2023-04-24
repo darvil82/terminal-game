@@ -4,6 +4,7 @@
 #include "entities/PlayerEntity.hpp"
 #include "entities/BaseEntity.hpp"
 #include <cwchar>
+#include <thread>
 
 namespace chrono = std::chrono;
 using timestamp = decltype(chrono::steady_clock::now());
@@ -43,6 +44,7 @@ void Game::end() {
 
 void Game::main_loop() {
 	timestamp last_frame = chrono::steady_clock::now();
+	const uint8_t max_fps = 60;
 
 	while (this->running) {
 		const timestamp current_frame = chrono::steady_clock::now();
@@ -52,6 +54,10 @@ void Game::main_loop() {
 
 		this->tick(delta);
 		this->render();
+
+		if (delta < 1.0f / max_fps) {
+			std::this_thread::sleep_for(chrono::duration<float>(1.0f / max_fps - delta));
+		}
 	}
 
 	this->end();
@@ -66,8 +72,10 @@ void Game::tick(float delta) {
 void Game::render() {
 	this->renderer->clear_buffer();
 
-	if (this->current_scene)
-		this->current_scene->render(*this->renderer);
+	if (this->current_scene) {
+		render::RenderHelper helper(*this->renderer.get());
+		this->current_scene->render(helper);
+	}
 
 	this->renderer->push_buffer();
 }
