@@ -30,8 +30,8 @@ namespace entities {
 
 			renderer.text(this->position, [this] (auto&& r) {
 				r.set_color(render::default_colors::BLACK);
-				r.set_color_bg(render::default_colors::MAGENTA);
-				r.put(L"hello!");
+				r.set_color_bg(render::default_colors::CYAN);
+				r.put(L"hello this is a test");
 			});
 		}
 

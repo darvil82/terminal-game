@@ -115,8 +115,7 @@ namespace render {
 			output_stream << '\n';
 		}
 
-		output_stream << default_colors::WHITE.get_sequence();
-
+		this->add_reset_colors();
 		this->push_stream();
 	}
 
@@ -125,13 +124,17 @@ namespace render {
 		output_stream.str(L"");
 	}
 
+	void Renderer::add_reset_colors() {
+		output_stream << default_colors::WHITE.get_sequence()
+			<< default_colors::BLACK.get_sequence(true);
+	}
+
 	void Renderer::init() {
 		output_stream << TerminalSequences::CURSOR_HIDE
-			<< TerminalSequences::BUFFER_NEW
-				// we always start_loop with a black bg and white fg
-			<< default_colors::WHITE.get_sequence()
-			<< default_colors::BLACK.get_sequence(true);
+			<< TerminalSequences::BUFFER_NEW;
 
+		// we always start_loop with a black bg and white fg
+		this->add_reset_colors();
 		this->push_stream();
 	}
 

@@ -35,6 +35,7 @@ namespace render {
 		void free_buff();
 		bool is_in_bounds(const render::RPoint& pos) const;
 		void push_stream();
+		void add_reset_colors();
 
 	public:
 		Renderer(buff_size_t width, buff_size_t height);

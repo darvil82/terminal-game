@@ -34,6 +34,7 @@ namespace render {
 		constexpr Color BLUE {0, 0, 255};
 		constexpr Color YELLOW {255, 255, 0};
 		constexpr Color MAGENTA {255, 0, 255};
+		constexpr Color CYAN {0, 255, 255};
 	}
 
 	struct Pixel : public IRenderSequence {
