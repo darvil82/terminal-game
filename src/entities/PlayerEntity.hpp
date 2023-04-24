@@ -1,13 +1,13 @@
 #pragma once
 
 #include <iostream>
-#include "BaseEntity.hpp"
+#include "bases/BaseEntity.hpp"
 #include "../utils/Point.hpp"
-#include "HealthEntity.hpp"
+#include "bases/BaseHealthEntity.hpp"
 
 namespace entities {
 
-	class PlayerEntity : public HealthEntity {
+	class PlayerEntity : public BaseHealthEntity {
 	DEFINE_ENTITY_CLASS(player)
 
 		std::string player_name;

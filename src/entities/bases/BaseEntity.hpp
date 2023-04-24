@@ -1,13 +1,13 @@
 #pragma once
 
-#include "../utils/Point.hpp"
-#include "../render/Renderable.hpp"
-#include "../Tickable.hpp"
-#include "../Scene.hpp"
-#include "../Tickable.hpp"
-#include "EntityFactory.hpp"
-#include "../utils/Concepts.hpp"
-#include "../utils/Typedefs.hpp"
+#include "../../utils/Point.hpp"
+#include "../../render/Renderable.hpp"
+#include "../../Tickable.hpp"
+#include "../../Scene.hpp"
+#include "../../Tickable.hpp"
+#include "../EntityFactory.hpp"
+#include "../../utils/Concepts.hpp"
+#include "../../utils/Typedefs.hpp"
 
 
 class Scene;

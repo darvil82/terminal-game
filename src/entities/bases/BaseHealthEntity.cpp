@@ -1,8 +1,8 @@
-#include "HealthEntity.hpp"
+#include "BaseHealthEntity.hpp"
 
 namespace entities {
 
-	void HealthEntity::damage(uint16_t amount) {
+	void BaseHealthEntity::damage(uint16_t amount) {
 		auto new_health = this->health - amount;
 
 		if (new_health <= 0)
@@ -11,11 +11,11 @@ namespace entities {
 			this->health = new_health;
 	}
 
-	void HealthEntity::heal(uint16_t amount) {
+	void BaseHealthEntity::heal(uint16_t amount) {
 		this->health += amount;
 	}
 
-	uint16_t HealthEntity::get_health() const {
+	uint16_t BaseHealthEntity::get_health() const {
 		return this->health;
 	}
 

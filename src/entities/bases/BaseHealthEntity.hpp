@@ -4,11 +4,11 @@
 
 namespace entities {
 
-	class HealthEntity : public BaseEntity {
+	class BaseHealthEntity : public BaseEntity {
 		uint16_t health = 100;
 
 	protected:
-		HealthEntity() = default;
+		BaseHealthEntity() = default;
 
 	public:
 		void damage(uint16_t amount);

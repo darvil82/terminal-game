@@ -2,7 +2,7 @@
 #include <csignal>
 
 #include "src/Game.hpp"
-#include "src/entities/HealthEntity.hpp"
+#include "src/entities/bases/BaseHealthEntity.hpp"
 
 
 Game game;

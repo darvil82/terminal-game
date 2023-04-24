@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BaseEntity.hpp"
+#include "bases/BaseEntity.hpp"
 #include "../utils/Concepts.hpp"
 
 namespace entities {
