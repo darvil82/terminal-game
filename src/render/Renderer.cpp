@@ -4,28 +4,10 @@
 
 #include "Renderer.hpp"
 #include "TerminalSequences.hpp"
+#include "Pixel.hpp"
 
 
 namespace render {
-	std::wstring Color::get_sequence(bool background) const {
-		return TerminalSequences::set_color(*this, background);
-	}
-
-	std::wstring Color::get_sequence() const {
-		return this->get_sequence(false);
-	}
-
-	bool Color::operator==(const render::Color& other) const {
-		return this->r == other.r && this->g == other.g && this->b == other.b;
-	}
-
-	std::wstring Pixel::get_sequence() const {
-		std::wstringstream buff;
-		buff << this->color_fg.get_sequence()
-			<< this->color_bg.get_sequence(true)
-			<< this->character;
-		return buff.str();
-	}
 
 
 	Renderer::Renderer(buff_size_t width, buff_size_t height) {
@@ -153,85 +135,93 @@ namespace render {
 		this->push_stream();
 	}
 
-
-	void RenderHelper::draw(const RPoint& start_pos, std::function<void(DrawHelper&&)> draw_func) {
-		draw_func(DrawHelper(this->renderer, start_pos));
+	render_helpers::RenderUtils Renderer::get_render_utils() {
+		return render_helpers::RenderUtils(*this);
 	}
 
-	void RenderHelper::text(const render::RPoint& position, const std::wstring& text) {
-		for (u_int16_t i = 0; i < text.size(); i++) {
+	namespace render_helpers {
+
+		void RenderUtils::draw(const render::RPoint& start_pos, OpFunc<DrawOperation> draw_func) const {
+			draw_func({this->renderer, start_pos});
+		}
+
+		void RenderUtils::text(const render::RPoint& start_pos, OpFunc<TextOperation> draw_func) const {
+			draw_func({this->renderer, start_pos});
+		}
+
+		void RenderOperationBase::push_changes() {
 			this->renderer.set_pixel({
-				text.at(i),
-				default_colors::WHITE,
-				default_colors::BLACK,
-			}, { static_cast<unsigned short>(position.x + i), position.y });
+				this->current_char,
+				this->current_color,
+				this->current_color_bg
+			}, this->current_pos);
 		}
-	}
 
-	void RenderHelper::DrawHelper::push_changes() {
-		this->renderer.set_pixel({
-			this->current_char,
-			this->current_color,
-			this->current_color_bg
-		}, this->current_pos);
-	}
+		void RenderOperationBase::set_color(const Color& color) {
+			this->current_color = color;
+			this->push_changes();
+		}
 
-	void RenderHelper::DrawHelper::set_color(const render::Color& color) {
-		this->current_color = color;
-		this->push_changes();
-	}
+		void RenderOperationBase::set_color_bg(const Color& color) {
+			this->current_color_bg = color;
+			this->push_changes();
+		}
 
-	void RenderHelper::DrawHelper::set_color_bg(const render::Color& color) {
-		this->current_color_bg = color;
-		this->push_changes();
-	}
+		void RenderOperationBase::set_position_relative(const utils::Point<int16_t>& offset) {
+			this->current_pos += offset;
+			this->push_changes();
+		}
 
-	void RenderHelper::DrawHelper::set_char(wchar_t character) {
-		this->current_char = character;
-		this->push_changes();
-	}
+		void RenderOperationBase::set_position(const RPoint& pos) {
+			this->current_pos = pos;
+			this->push_changes();
+		}
 
-	void RenderHelper::DrawHelper::set_position_relative(const utils::Point<int16_t>& offset) {
-		this->current_pos += offset;
-		this->push_changes();
-	}
+		void DrawOperation::move_x(int16_t offset) {
+			if (offset == 0) return;
 
-	void RenderHelper::DrawHelper::set_position(const RPoint& pos) {
-		this->current_pos = pos;
-		this->push_changes();
-	}
+			if (offset > 0) {
+				for (int16_t i = 0; i < offset; i++) {
+					this->current_pos.x++;
+					this->push_changes();
+				}
+				return;
+			}
 
-	void RenderHelper::DrawHelper::move_x(int16_t offset) {
-		if (offset == 0) return;
+			for (int16_t i = 0; i > offset; i--) {
+				this->current_pos.x--;
+				this->push_changes();
+			}
+		}
 
-		if (offset > 0) {
-			for (int16_t i = 0; i < offset; i++) {
+		void DrawOperation::move_y(int16_t offset) {
+			if (offset == 0) return;
+
+			if (offset > 0) {
+				for (int16_t i = 0; i < offset; i++) {
+					this->current_pos.y++;
+					this->push_changes();
+				}
+				return;
+			}
+
+			for (int16_t i = 0; i > offset; i--) {
+				this->current_pos.y--;
+				this->push_changes();
+			}
+		}
+
+		void DrawOperation::set_char(wchar_t character) {
+			this->current_char = character;
+			this->push_changes();
+		}
+
+		void TextOperation::put(const std::wstring& content) {
+			for (size_t i = 0; i < content.length(); i++) {
+				this->current_char = content[i];
+				this->push_changes();
 				this->current_pos.x++;
-				this->push_changes();
 			}
-			return;
-		}
-
-		for (int16_t i = 0; i > offset; i--) {
-			this->current_pos.x--;
-			this->push_changes();
-		}
-	}
-
-	void RenderHelper::DrawHelper::move_y(int16_t offset) {
-		if (offset == 0) return;
-
-		if (offset > 0) {
-			for (int16_t i = 0; i < offset; i++) {
-				this->current_pos.y++;
-				this->push_changes();
-			}
-			return;
-		}
-
-		for (int16_t i = 0; i > offset; i--) {
-			this->current_pos.y--;
-			this->push_changes();
 		}
 	}
 } // render

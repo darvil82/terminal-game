@@ -19,15 +19,20 @@ namespace entities {
 			this->velocity = {20, 8};
 		}
 
-		void render(render::RenderHelper& renderer) const override {
+		void render(render::render_helpers::RenderUtils&& renderer) const override {
 			renderer.draw(this->position, [this](auto&& r) {
 				r.set_color(this->player_color);
 				r.set_char(render::default_characters::blocks::FULL);
 				r.move_x(4);
 				r.move_y(3);
 				r.move_x(-12);
+				r.move_y(-3);
 			});
-			renderer.text(this->position, L"hello!");
+			renderer.text(this->position, [this] (auto&& r) {
+				r.set_color(this->player_color);
+
+				r.put(L"hello!");
+			});
 		}
 
 		void tick(float delta) override {
@@ -52,6 +57,7 @@ namespace entities {
 			}
 		}
 	};
+
 
 	DEFINE_ENTITY_FACTORY(PlayerEntity)
 }

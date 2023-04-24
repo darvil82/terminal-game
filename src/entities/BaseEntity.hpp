@@ -37,7 +37,7 @@ namespace entities {
 		utils::Point<> velocity {0, 0};
 
 		void tick(float delta) override;
-		void render(render::RenderHelper& renderer) const override;
+		void render(render::render_helpers::RenderUtils&& renderer) const override;
 
 	public:
 		BaseEntity() = default;

@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <string>
 #include "Renderer.hpp"
+#include "Pixel.hpp"
 
 #define __DEFINE_SEQ(name, value) static constexpr const char* name = "\x1b" value
 

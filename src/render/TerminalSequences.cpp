@@ -3,6 +3,7 @@
 #include <sstream>
 #include <iostream>
 #include "TerminalSequences.hpp"
+#include "Pixel.hpp"
 
 namespace render {
 

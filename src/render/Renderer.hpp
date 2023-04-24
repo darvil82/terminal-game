@@ -9,6 +9,8 @@
 #include "Characters.hpp"
 #include "IRenderSequence.hpp"
 #include "../utils/Point.hpp"
+#include "Pixel.hpp"
+#include "../utils/Concepts.hpp"
 
 namespace utils {
 	template<class T>
@@ -18,44 +20,9 @@ namespace utils {
 namespace render {
 	using RPoint = utils::Point<uint16_t>;
 
-
-	struct Color : public IRenderSequence {
-		uint8_t r, g, b;
-
-		constexpr Color(uint8_t r = 0, uint8_t g = 0, uint8_t b = 0) :
-			r {r}, g {g}, b {b} {
-		}
-
-		bool operator==(const Color& other) const;
-
-		std::wstring get_sequence(bool background) const;
-		std::wstring get_sequence() const override;
-	};
-
-	namespace default_colors {
-		constexpr Color BLACK {0, 0, 0};
-		constexpr Color WHITE {255, 255, 255};
-		constexpr Color RED {255, 0, 0};
-		constexpr Color GREEN {0, 255, 0};
-		constexpr Color BLUE {0, 0, 255};
-		constexpr Color YELLOW {255, 255, 0};
-		constexpr Color MAGENTA {255, 0, 255};
+	namespace render_helpers {
+		class RenderUtils;
 	}
-
-	struct Pixel : public IRenderSequence {
-		Color color_fg;
-		Color color_bg;
-		wchar_t character;
-
-		Pixel(
-			const wchar_t character,
-			const Color& fg_color,
-			const Color& bg_color
-		) : color_fg {fg_color}, color_bg {bg_color}, character {character} { }
-
-		std::wstring get_sequence() const override;
-	};
-
 
 	class Renderer {
 		using buff_size_t = uint16_t;
@@ -80,38 +47,68 @@ namespace render {
 		void push_buffer();
 		void init();
 		void end();
+
+		render_helpers::RenderUtils get_render_utils();
 	};
 
+	namespace render_helpers {
 
-	class RenderHelper {
-		Renderer& renderer;
+		class RenderUtils;
 
-		class DrawHelper {
-			friend RenderHelper;
+
+		class RenderOperationBase {
+			friend RenderUtils;
+
 			Renderer& renderer;
-
+		protected:
 			RPoint current_pos;
-			Color current_color;
-			Color current_color_bg;
+			Color current_color = default_colors::WHITE;
+			Color current_color_bg = default_colors::BLACK;
 			wchar_t current_char;
 
 			void push_changes();
-
-			DrawHelper(Renderer& r, const RPoint& start_pos): renderer{r}, current_pos{start_pos} {}
+			
 		public:
+			RenderOperationBase(Renderer& r, const RPoint& start_pos) : renderer {r}, current_pos {start_pos} { }
+
 			void set_color(const Color& color);
 			void set_color_bg(const Color& color);
-			void set_char(const wchar_t chr);
 			void set_position(const RPoint& pos);
 			void set_position_relative(const utils::Point<int16_t>& offset);
+		};
+
+
+		class DrawOperation : public RenderOperationBase {
+			using RenderOperationBase::RenderOperationBase;
+		public:
 			void move_x(int16_t offset);
 			void move_y(int16_t offset);
+			void set_char(const wchar_t chr);
 		};
-	public:
-		RenderHelper(Renderer& r): renderer{r} {}
 
-		void draw(const RPoint& start_pos, std::function<void(DrawHelper&&)> draw_func);
-		void text(const RPoint& position, const std::wstring& text);
-	};
+
+		class TextOperation : public RenderOperationBase {
+			using RenderOperationBase::RenderOperationBase;
+		public:
+			void put(const std::wstring& content);
+		};
+
+
+		class RenderUtils {
+			friend Renderer;
+			Renderer& renderer;
+
+			RenderUtils(Renderer& r) : renderer {r} { }
+
+			template<Extends<RenderOperationBase> T>
+			using OpFunc = std::function<void(T&&)>;
+
+		public:
+
+			void draw(const RPoint& start_pos, OpFunc<DrawOperation> draw_func) const;
+			void text(const RPoint& start_pos, OpFunc<TextOperation> text_func) const;
+		};
+	}
+
 
 } // render

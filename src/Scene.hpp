@@ -38,6 +38,6 @@ public:
 	void attach_entity(entities::BaseEntity& entity);
 	void detach_entity(entities::BaseEntity& entity);
 	void tick(float delta) override;
-	void render(render::RenderHelper& renderer) const override;
+	void render(render::render_helpers::RenderUtils&& renderer) const override;
 };
 

@@ -73,8 +73,7 @@ void Game::render() {
 	this->renderer->clear_buffer();
 
 	if (this->current_scene) {
-		render::RenderHelper helper(*this->renderer.get());
-		this->current_scene->render(helper);
+		this->current_scene->render(this->renderer->get_render_utils());
 	}
 
 	this->renderer->push_buffer();
