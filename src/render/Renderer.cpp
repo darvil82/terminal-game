@@ -92,6 +92,12 @@ namespace render {
 				const Pixel* current_pixel = this->buffer[y][x];
 
 				if (!current_pixel) {
+					// make sure we reset the background to prevent a mess.
+					// we don't need to if the bg color is already black!
+					if (prev_pixel && prev_pixel->color_bg != default_colors::BLACK) {
+						output_stream << default_colors::BLACK.get_sequence(true);
+						prev_pixel = nullptr;
+					}
 					output_stream << ' ';
 					continue;
 				}

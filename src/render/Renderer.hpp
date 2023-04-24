@@ -64,10 +64,10 @@ namespace render {
 			RPoint current_pos;
 			Color current_color = default_colors::WHITE;
 			Color current_color_bg = default_colors::BLACK;
-			wchar_t current_char;
+			wchar_t current_char = default_characters::blocks::FULL;
 
 			void push_changes();
-			
+
 		public:
 			RenderOperationBase(Renderer& r, const RPoint& start_pos) : renderer {r}, current_pos {start_pos} { }
 
