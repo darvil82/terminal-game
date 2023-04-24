@@ -17,6 +17,10 @@ namespace entities {
 
 	void BaseEntity::render(render::render_helpers::RenderUtils&& renderer) const { }
 
+	void BaseEntity::kill() {
+		delete this;
+	}
+
 	Predicate<BaseEntity&> ent_is_classname(const std::string& classname) {
 		return [classname](BaseEntity& ent) -> bool {
 			return ent.get_classname() == classname;

@@ -45,6 +45,7 @@ namespace entities {
 
 		virtual constexpr const char* get_classname() = 0;
 
+		virtual void kill();
 		Scene* get_scene();
 	};
 
