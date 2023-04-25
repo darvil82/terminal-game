@@ -25,17 +25,7 @@ bool Scene::EntitiesIterator::operator!=(const Scene::EntitiesIterator& other) c
 	return this->index != other.index;
 }
 
-const std::vector<entities::BaseEntity*> Scene::get_entities_filtered(Predicate<entities::BaseEntity&> filter) const {
-	std::vector<entities::BaseEntity*> vec;
 
-	for (auto& ent : *this) {
-		if (filter(ent)) {
-			vec.push_back(&ent);
-		}
-	}
-
-	return vec;
-}
 
 const std::vector<entities::BaseEntity*> Scene::get_entities() const {
 	std::vector<entities::BaseEntity*> vec(this->num_entities);

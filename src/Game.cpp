@@ -1,10 +1,10 @@
+#include <cwchar>
+#include <thread>
 #include "Game.hpp"
 #include "utils/Cleanup.hpp"
 #include "entities/EntityDB.hpp"
 #include "entities/PlayerEntity.hpp"
 #include "entities/bases/BaseEntity.hpp"
-#include <cwchar>
-#include <thread>
 
 namespace chrono = std::chrono;
 using timestamp = decltype(chrono::steady_clock::now());

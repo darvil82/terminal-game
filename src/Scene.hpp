@@ -10,7 +10,6 @@ namespace entities {
 
 #define SCENE_MAX_ENTITIES 750
 
-class Scene;
 
 
 
@@ -30,7 +29,19 @@ class Scene : public ITickable, public render::IRenderable {
 	};
 
 public:
-	const std::vector<entities::BaseEntity*> get_entities_filtered(Predicate<entities::BaseEntity&> filter) const;
+	template<class... T>
+	const std::vector<entities::BaseEntity*> get_entities_filtered(T... filters) const {
+		std::vector<entities::BaseEntity*> vec;
+
+		for (auto& ent : *this) {
+			if ((filters(ent) && ...)) {
+				vec.push_back(&ent);
+			}
+		}
+
+		return vec;
+	}
+
 	const std::vector<entities::BaseEntity*> get_entities() const;
 	EntitiesIterator begin() const;
 	EntitiesIterator end() const;
