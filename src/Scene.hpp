@@ -29,8 +29,9 @@ class Scene : public ITickable, public render::IRenderable {
 
 
 public:
-	template<class... T>
-	const std::vector<entities::BaseEntity*> get_entities_filtered(T... filters) const {
+	const std::vector<entities::BaseEntity*> get_entities_filtered(
+		std::invocable<entities::BaseEntity&> auto... filters
+	) const {
 		std::vector<entities::BaseEntity*> vec;
 
 		for (auto& ent: *this) {
