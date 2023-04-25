@@ -6,7 +6,10 @@
 namespace entities {
 
 	class EntityDB;
+
+
 	class BaseEntity;
+
 
 	struct IEntityFactory {
 		virtual BaseEntity* create() const = 0;

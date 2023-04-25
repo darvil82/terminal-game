@@ -26,11 +26,10 @@ bool Scene::EntitiesIterator::operator!=(const Scene::EntitiesIterator& other) c
 }
 
 
-
 const std::vector<entities::BaseEntity*> Scene::get_entities() const {
 	std::vector<entities::BaseEntity*> vec(this->num_entities);
 
-	for (auto& ent : *this) {
+	for (auto& ent: *this) {
 		vec.push_back(&ent);
 	}
 
@@ -62,13 +61,13 @@ void Scene::detach_entity(entities::BaseEntity& entity) {
 }
 
 void Scene::tick(float delta) {
-	for (auto& ent : *this) {
+	for (auto& ent: *this) {
 		ent.tick(delta);
 	}
 }
 
 void Scene::render(render::render_helpers::RenderUtils&& renderer) const {
-	for (auto& ent : *this) {
+	for (auto& ent: *this) {
 		ent.render(std::move(renderer));
 	}
 }

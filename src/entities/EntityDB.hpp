@@ -5,13 +5,14 @@
 #include "EntityDB.hpp"
 
 #define ENTITY_CREATE(type, classname) \
-	entities::EntityDB::instance().create_entity<type>(#classname)
+    entities::EntityDB::instance().create_entity<type>(#classname)
 #define ENTITY_EXISTS(classname) \
-	entities::EntityDB::instance().entity_exists(#classname)
+    entities::EntityDB::instance().entity_exists(#classname)
 
 namespace entities {
 
 	struct IEntityFactory;
+
 
 	class EntityDB {
 		std::unordered_map<std::string, const IEntityFactory*> db;

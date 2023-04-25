@@ -4,7 +4,7 @@
 namespace entities {
 
 	void PlayerEntity::render(render::render_helpers::RenderUtils&& renderer) const {
-		renderer.draw(this->position, [this] (auto&& r) {
+		renderer.draw(this->position, [this](auto&& r) {
 			r.set_color(this->player_color);
 			r.move_x(4);
 			r.move_y(3);
@@ -12,7 +12,7 @@ namespace entities {
 			r.move_y(-3);
 		});
 
-		renderer.text(this->position, [] (auto&& r) {
+		renderer.text(this->position, [](auto&& r) {
 			r.set_color(render::default_colors::BLACK);
 			r.set_color_bg(render::default_colors::CYAN);
 			r.put(L"hello this is a test");
