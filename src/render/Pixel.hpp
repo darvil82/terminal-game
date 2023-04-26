@@ -7,7 +7,7 @@
 #include <functional>
 #include "Characters.hpp"
 #include "IRenderSequence.hpp"
-#include "../utils/Point.hpp"
+#include "../utils/Point.cpp"
 
 namespace render {
 

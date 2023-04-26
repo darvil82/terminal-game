@@ -8,9 +8,9 @@
 
 #include "Characters.hpp"
 #include "IRenderSequence.hpp"
-#include "../utils/Point.hpp"
+#include "../utils/Point.cpp"
 #include "Pixel.hpp"
-#include "../utils/Concepts.hpp"
+#include "../utils/Concepts.cpp"
 
 namespace utils {
 	template<class T>

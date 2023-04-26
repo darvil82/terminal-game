@@ -1,10 +1,7 @@
-#pragma once
-
-#include <stdint.h>
-
+export module utils.point;
 
 namespace utils {
-	template<typename T = float>
+	export template<typename T = float>
 	struct Point {
 		T x, y;
 

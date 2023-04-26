@@ -1,12 +1,10 @@
 #pragma once
 
 #include <functional>
-#include "entities/bases/BaseEntity.hpp"
-#include "utils/Typedefs.hpp"
+#include "entities/bases/BaseEntity.cpp"
+#include "utils/Typedefs.cpp"
 
-namespace entities {
-	class BaseEntity;
-}
+
 
 #define SCENE_MAX_ENTITIES 750
 
