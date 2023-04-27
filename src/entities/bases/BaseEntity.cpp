@@ -24,7 +24,7 @@ import utils.typedefs;
 import entities.factory;
 import entities.scene;
 import render.renderable;
-import entities.tickable;
+import base;
 
 
 

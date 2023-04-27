@@ -1,8 +1,7 @@
-#include <iostream>
-#include <csignal>
+import <iostream>;
+import <csignal>;
 
-#include "src/Game.hpp"
-#include "src/entities/bases/BaseHealthEntity.cpp"
+import game;
 
 Game game;
 

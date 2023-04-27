@@ -1,10 +1,10 @@
-#pragma once
+export module render.characters;
 
 namespace render {
 	namespace default_characters {
 		namespace lines {
 			namespace light {
-				enum : wchar_t {
+				export enum : wchar_t {
 					HORIZONTAL = L'─',
 					VERTICAL = L'│',
 					TOP_RIGHT = L'┐',
@@ -20,7 +20,7 @@ namespace render {
 			}
 
 			namespace bold {
-				enum : wchar_t {
+				export enum : wchar_t {
 					HORIZONTAL = L'━',
 					VERTICAL = L'┃',
 					TOP_RIGHT = L'┓',
@@ -37,7 +37,7 @@ namespace render {
 		};
 
 		namespace blocks {
-			enum : wchar_t {
+			export enum : wchar_t {
 				FULL = L'█',
 				THREE_QUARTERS = L'▓',
 				HALF = L'▒',

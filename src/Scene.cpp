@@ -1,73 +1,101 @@
-#include <cstdio>
-#include <stdexcept>
+export module game;
 
-#include "Scene.hpp"
+import <vector>;
+import <concepts>;
+import <cstdint>;
+import <stdexcept>;
+import render.renderer;
+import render;
 
-
-Scene::EntitiesIterator Scene::begin() const {
-	return EntitiesIterator(*this);
-}
-
-Scene::EntitiesIterator Scene::end() const {
-	return EntitiesIterator(*this, this->num_entities);
-}
-
-entities::BaseEntity& Scene::EntitiesIterator::operator*() const {
-	return *this->scene.entities[this->index];
-}
-
-Scene::EntitiesIterator& Scene::EntitiesIterator::operator++() {
-	this->index++;
-	return *this;
-}
-
-bool Scene::EntitiesIterator::operator!=(const Scene::EntitiesIterator& other) const {
-	return this->index != other.index;
-}
+constexpr const size_t SCENE_MAX_ENTITIES = 750;
 
 
-const std::vector<entities::BaseEntity*> Scene::get_entities() const {
-	std::vector<entities::BaseEntity*> vec(this->num_entities);
+export class Scene : public ITickable, public render::IRenderable {
+	size_t num_entities = 0;
+	entities::BaseEntity* entities[SCENE_MAX_ENTITIES] { };
 
-	for (auto& ent: *this) {
-		vec.push_back(&ent);
+
+	class EntitiesIterator {
+		const Scene& scene;
+		size_t index = 0;
+
+	public:
+		EntitiesIterator(const Scene& scene, size_t index = 0) : scene {scene}, index {index} { };
+		entities::BaseEntity& operator*() const {
+			return *this->scene.entities[this->index];
+		}
+		EntitiesIterator& operator++() {
+			this->index++;
+			return *this;
+		}
+		bool operator!=(const EntitiesIterator& other) const {
+			return this->index != other.index;
+		}
+	};
+
+
+public:
+	const std::vector<entities::BaseEntity*> get_entities_filtered(
+		std::invocable<entities::BaseEntity&> auto... filters
+	) const {
+		std::vector<entities::BaseEntity*> vec;
+
+		for (auto& ent: *this) {
+			if ((filters(ent) && ...)) {
+				vec.push_back(&ent);
+			}
+		}
+
+		return vec;
 	}
 
-	return vec;
-}
+	const std::vector<entities::BaseEntity*> get_entities() const {
+		std::vector<entities::BaseEntity*> vec(this->num_entities);
 
-void Scene::attach_entity(entities::BaseEntity& entity) {
-	if (this->num_entities >= SCENE_MAX_ENTITIES) {
-		throw std::runtime_error("Scene is full");
+		for (auto& ent: *this) {
+			vec.push_back(&ent);
+		}
+
+		return vec;
+	}
+	EntitiesIterator begin() const {
+		return EntitiesIterator(*this);
+	}
+	EntitiesIterator end() const {
+		return EntitiesIterator(*this, this->num_entities);
 	}
 
-	if (entity.get_scene()) {
-		throw std::runtime_error("Entity already attached to a scene");
+	void attach_entity(entities::BaseEntity& entity) {
+		if (this->num_entities >= SCENE_MAX_ENTITIES) {
+			throw std::runtime_error("Scene is full");
+		}
+
+		if (entity.get_scene()) {
+			throw std::runtime_error("Entity already attached to a scene");
+		}
+
+		this->entities[this->num_entities++] = &entity;
+		entity.scene = this;
 	}
-
-	this->entities[this->num_entities++] = &entity;
-	entity.scene = this;
-}
-
-void Scene::detach_entity(entities::BaseEntity& entity) {
-	for (size_t i = 0; i < this->num_entities; i++) {
-		if (this->entities[i] == &entity) {
-			this->entities[i] = this->entities[--this->num_entities]; // swap with last
-			entity.scene = nullptr; // clear entity's scene
-			return;
+	void detach_entity(entities::BaseEntity& entity) {
+		for (size_t i = 0; i < this->num_entities; i++) {
+			if (this->entities[i] == &entity) {
+				this->entities[i] = this->entities[--this->num_entities]; // swap with last
+				entity.scene = nullptr; // clear entity's scene
+				return;
+			}
+		}
+		throw std::runtime_error("Entity not found in scene");
+	}
+	void tick(float delta) override {
+		for (auto& ent: *this) {
+			ent.tick(delta);
 		}
 	}
-	throw std::runtime_error("Entity not found in scene");
-}
-
-void Scene::tick(float delta) {
-	for (auto& ent: *this) {
-		ent.tick(delta);
+	void render(render::render_helpers::RenderUtils&& renderer) const override {
+		for (auto& ent: *this) {
+			ent.render(std::move(renderer));
+		}
 	}
-}
+};
 
-void Scene::render(render::render_helpers::RenderUtils&& renderer) const {
-	for (auto& ent: *this) {
-		ent.render(std::move(renderer));
-	}
-}
