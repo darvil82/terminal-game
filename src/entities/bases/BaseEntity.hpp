@@ -14,7 +14,7 @@ class Scene;
 
 
 #define DEFINE_ENTITY_FACTORY(type) \
-    inline EntityFactory<type> classname(type::classname);
+    inline definition::EntityFactory<type> classname(type::classname);
 
 #define DEFINE_ENTITY_CLASS(clsname) \
     public:                               \

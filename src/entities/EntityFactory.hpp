@@ -5,27 +5,28 @@
 
 namespace entities {
 
-	class EntityDB;
-
-
 	class BaseEntity;
 
-
-	struct IEntityFactory {
-		virtual BaseEntity* create() const = 0;
-	};
+	namespace definition {
+		class EntityDB;
 
 
-	template<Extends<BaseEntity> T>
-	struct EntityFactory : public IEntityFactory {
-		EntityFactory(const char* classname) {
-			extern void register_entity_factory(const IEntityFactory& factory, const char* classname);
-			register_entity_factory(*this, classname);
-		}
+		struct IEntityFactory {
+			virtual BaseEntity* create() const = 0;
+		};
 
-		BaseEntity* create() const override {
-			return new T();
-		}
-	};
+
+		template<Extends<BaseEntity> T>
+		struct EntityFactory : public IEntityFactory {
+			EntityFactory(const char* classname) {
+				extern void register_entity_factory(const IEntityFactory& factory, const char* classname);
+				register_entity_factory(*this, classname);
+			}
+
+			BaseEntity* create() const override {
+				return new T();
+			}
+		};
+	}
 
 } // entities

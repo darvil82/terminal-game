@@ -1,17 +1,19 @@
 #include "EntityDB.hpp"
 
 namespace entities {
-	EntityDB& EntityDB::instance() {
-		static EntityDB db;
-		return db;
-	}
+	namespace definition {
+		EntityDB& EntityDB::instance() {
+			static EntityDB db;
+			return db;
+		}
 
-	bool EntityDB::entity_exists(const std::string& classname) {
-		return this->db.contains(classname);
-	}
+		bool EntityDB::entity_exists(const std::string& classname) {
+			return this->db.contains(classname);
+		}
 
-	void EntityDB::define_factory(const entities::IEntityFactory& factory, const std::string& classname) {
-		this->db[classname] = &factory;
+		void EntityDB::define_factory(const IEntityFactory& factory, const std::string& classname) {
+			this->db[classname] = &factory;
+		}
 	}
 
 } // entities
