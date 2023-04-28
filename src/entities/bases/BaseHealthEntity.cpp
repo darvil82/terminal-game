@@ -13,7 +13,11 @@ namespace entities {
 
 	void BaseHealthEntity::damage(uint16_t amount) {
 		// make sure we prevent health overflow when subtracting
-		this->set_health(this->health - (amount > this->health ? this->health : amount));
+		if (amount > this->health) {
+			this->set_health(0);
+			return;
+		}
+		this->set_health(this->health - amount);
 	}
 
 	void BaseHealthEntity::heal(uint16_t amount) {
