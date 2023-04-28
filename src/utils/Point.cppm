@@ -1,7 +1,7 @@
-export module utils.point;
+module utils:point;
 
 namespace utils {
-	export template<typename T = float>
+	template<typename T = float>
 	struct Point {
 		T x, y;
 

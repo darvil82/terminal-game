@@ -1,5 +1,7 @@
 export module render.renderer;
 
+import :renderable;
+
 import <string>;
 import <sstream>;
 import <iostream>;
@@ -156,9 +158,6 @@ namespace render {
 	};
 
 	namespace render_helpers {
-
-		export class RenderUtils;
-
 
 		class RenderOperationBase {
 			friend RenderUtils;

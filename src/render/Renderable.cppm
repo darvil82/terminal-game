@@ -1,4 +1,4 @@
-export module render;
+module render.renderer:renderable;
 
 namespace render {
 

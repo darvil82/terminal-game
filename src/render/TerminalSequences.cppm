@@ -17,6 +17,10 @@ import render.pixel;
 
 namespace render {
 
+	export class IRenderSequence {
+		virtual std::wstring get_sequence() const = 0;
+	};
+
 	export struct TerminalSequences final {
 		TerminalSequences() = delete;
 

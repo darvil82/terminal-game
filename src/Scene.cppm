@@ -1,4 +1,4 @@
-export module game;
+export module game.scene;
 
 import <vector>;
 import <concepts>;
@@ -6,6 +6,9 @@ import <cstdint>;
 import <stdexcept>;
 import render.renderer;
 import render;
+import entities.bases.base;
+
+import game.tickable;
 
 constexpr const size_t SCENE_MAX_ENTITIES = 750;
 

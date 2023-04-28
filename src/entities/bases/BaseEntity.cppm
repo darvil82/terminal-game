@@ -22,8 +22,8 @@ import utils.concepts;
 import utils.typedefs;
 
 import entities.factory;
-import entities.scene;
-import render.renderable;
+import game.scene;
+import render;
 import base;
 
 

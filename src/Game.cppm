@@ -6,6 +6,8 @@ import <thread>;
 import <chrono>;
 import <locale>;
 
+import game.scene;
+
 namespace chrono = std::chrono;
 using timestamp = decltype(chrono::steady_clock::now());
 
