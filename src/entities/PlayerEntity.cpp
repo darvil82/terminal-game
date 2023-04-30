@@ -28,9 +28,9 @@ namespace entities {
 			(this->position.y >= 25 && this->velocity.y > 0) || (this->position.y <= 0 && this->velocity.y < 0);
 
 		if (hit_x)
-			this->velocity.x *= -1.15;
+			this->velocity.x *= -1;
 		if (hit_y)
-			this->velocity.y *= -1.15;
+			this->velocity.y *= -1;
 
 		if (hit_x || hit_y) {
 			this->player_color = render::Color {

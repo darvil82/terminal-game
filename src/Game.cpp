@@ -2,12 +2,17 @@
 #include <thread>
 #include "Game.hpp"
 #include "utils/Cleanup.hpp"
-#include "entities/EntityDB.hpp"
+#include "entities/definition/EntityDB.hpp"
 #include "entities/PlayerEntity.hpp"
 #include "entities/bases/BaseEntity.hpp"
+#include "InputSystem.hpp"
 
 namespace chrono = std::chrono;
 using timestamp = decltype(chrono::steady_clock::now());
+
+Game::Game() {
+	this->renderer = std::make_unique<render::Renderer>(90, 25);
+}
 
 void Game::start_loop() {
 	if (this->running) return;
@@ -23,13 +28,6 @@ void Game::stop_loop() {
 }
 
 void Game::init() {
-	std::string prev_loc = std::setlocale(LC_ALL, nullptr);
-	std::setlocale(LC_ALL, "en_US.utf8");
-
-	const auto cleanup = utils::Cleanup([&prev_loc] {
-		std::setlocale(LC_ALL, prev_loc.c_str());
-	});
-
 	this->renderer->init();
 
 	Scene* s = new Scene();
@@ -44,7 +42,7 @@ void Game::end() {
 
 void Game::main_loop() {
 	timestamp last_frame = chrono::steady_clock::now();
-	const uint8_t max_fps = 60;
+	const uint8_t max_fps = 3;
 
 	while (this->running) {
 		const timestamp current_frame = chrono::steady_clock::now();

@@ -1,6 +1,8 @@
+#pragma once
+
 #include <functional>
 
-#pragma once
+#define ON_CLEANUP(fn_body) utils::Cleanup __cleanup([&] fn_body)
 
 namespace utils {
 

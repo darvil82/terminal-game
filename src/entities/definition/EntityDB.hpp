@@ -28,15 +28,11 @@ namespace entities {
 
 			template<Extends<BaseEntity> T>
 			T& create_entity(const std::string& classname) {
-				const auto* factory = this->db[classname];
+				const auto* factory = this->db[classname]
+					?: throw std::runtime_error("entity not found");
 
-				if (!factory)
-					throw std::runtime_error("entity not found");
-
-				T* ent = dynamic_cast<T*>(factory->create());
-
-				if (!ent)
-					throw std::runtime_error("entity is not of the requested type");
+				T* ent = dynamic_cast<T*>(factory->create())
+					?: throw std::runtime_error("entity is not of the requested type");
 
 				return *ent;
 			}

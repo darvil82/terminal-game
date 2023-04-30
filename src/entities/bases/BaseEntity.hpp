@@ -5,7 +5,7 @@
 #include "../../Tickable.hpp"
 #include "../../Scene.hpp"
 #include "../../Tickable.hpp"
-#include "../EntityFactory.hpp"
+#include "../definition/EntityFactory.hpp"
 #include "../../utils/Concepts.hpp"
 #include "../../utils/Typedefs.hpp"
 

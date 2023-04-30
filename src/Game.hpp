@@ -5,7 +5,9 @@
 #include "render/Renderable.hpp"
 #include "Tickable.hpp"
 #include "Scene.hpp"
+#include "InputSystem.hpp"
 
+class InputSystem;
 
 class Game {
 	std::unique_ptr<render::Renderer> renderer;
@@ -19,7 +21,7 @@ class Game {
 	void end();
 
 public:
-	Game() : renderer {std::make_unique<render::Renderer>(90, 25)} { }
+	Game();
 
 	void start_loop();
 	void stop_loop();
