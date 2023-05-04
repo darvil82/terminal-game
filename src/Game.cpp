@@ -5,13 +5,14 @@
 #include "entities/definition/EntityDB.hpp"
 #include "entities/PlayerEntity.hpp"
 #include "entities/bases/BaseEntity.hpp"
-#include "InputSystem.hpp"
+#include "input/InputSystem.hpp"
 
 namespace chrono = std::chrono;
 using timestamp = decltype(chrono::steady_clock::now());
 
 Game::Game() {
 	this->renderer = std::make_unique<render::Renderer>(90, 25);
+	this->input_system = &input::InputSystem::instance();
 }
 
 void Game::start_loop() {
@@ -42,7 +43,7 @@ void Game::end() {
 
 void Game::main_loop() {
 	timestamp last_frame = chrono::steady_clock::now();
-	const uint8_t max_fps = 3;
+	const uint8_t max_fps = 60;
 
 	while (this->running) {
 		const timestamp current_frame = chrono::steady_clock::now();
@@ -52,6 +53,7 @@ void Game::main_loop() {
 
 		this->tick(delta);
 		this->render();
+		this->input_system->reset_key_buff();
 
 		if (delta < 1.0f / max_fps) {
 			std::this_thread::sleep_for(chrono::duration<float>(1.0f / max_fps - delta));

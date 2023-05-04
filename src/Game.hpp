@@ -5,14 +5,17 @@
 #include "render/Renderable.hpp"
 #include "Tickable.hpp"
 #include "Scene.hpp"
-#include "InputSystem.hpp"
+#include "input/InputSystem.hpp"
 
-class InputSystem;
+namespace input {
+	class InputSystem;
+}
 
 class Game {
 	std::unique_ptr<render::Renderer> renderer;
 	Scene* current_scene = nullptr;
 	bool running = false;
+	input::InputSystem* input_system;
 
 	void tick(float delta);
 	void render();

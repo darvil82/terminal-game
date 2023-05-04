@@ -16,7 +16,6 @@ namespace entities {
 	public:
 		PlayerEntity() {
 			this->position = {5, 5};
-			this->velocity = {20, 8};
 		}
 
 		void render(render::render_helpers::RenderUtils&& renderer) const override;
