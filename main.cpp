@@ -10,16 +10,6 @@
 Game game;
 
 int main() {
-	const char* prev_loc = std::setlocale(LC_ALL, nullptr);
-	std::setlocale(LC_ALL, "en_US.utf8");
-
-	// reset locale back on exit
-	ON_CLEANUP({
-		std::setlocale(LC_ALL, prev_loc);
-	});
-
-
-
 	std::signal(SIGINT, [](int) {
 		game.stop_loop();
 	});

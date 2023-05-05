@@ -29,15 +29,12 @@ void Game::stop_loop() {
 }
 
 void Game::init() {
-	this->renderer->init();
-
 	Scene* s = new Scene();
 	s->attach_entity(ENTITY_CREATE(entities::PlayerEntity, player));
 	this->current_scene = s;
 }
 
 void Game::end() {
-	this->renderer->end();
 }
 
 void Game::main_loop() {

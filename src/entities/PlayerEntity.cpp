@@ -1,4 +1,4 @@
-#include <cmath>
+#include <math.h>
 #include "PlayerEntity.hpp"
 #include "../input/InputSystem.hpp"
 #include "../utils/Math.hpp"
@@ -33,10 +33,10 @@ namespace entities {
 		if (hit_x) this->velocity.x *= -1;
 
 		// slowly decrease velocity
-		this->velocity *= std::pow(0.9, delta);
+		this->velocity *= pow(0.9, delta);
 
 		// apply gravity
-		this->velocity.y += 15 * delta;
+		this->velocity.y += 30 * delta;
 
 		bool is_on_ground = this->position.y >= 24;
 
@@ -45,14 +45,14 @@ namespace entities {
 			if (INPUT_IS_PRESSED('d')) this->velocity.x = 50;
 
 			this->position.y = 24;
-			this->velocity.x *= std::pow(0.005, delta);
-			this->velocity.y = 0;
+			this->velocity.x *= pow(0.005, delta);
+//			this->velocity.y = 0;
 			this->jumped = 0;
 		}
 
 		// allow jumping on air
 		if (INPUT_IS_PRESSED(' ') && this->jumped < 2) {
-			this->velocity.y = -15; // jump
+			this->velocity.y = -20; // jump
 			this->jumped++;
 
 			this->player_color = render::Color {

@@ -11,10 +11,25 @@ namespace render {
 
 
 	Renderer::Renderer(buff_size_t width, buff_size_t height) {
+		this->prev_locale = std::setlocale(LC_ALL, nullptr);
+		std::setlocale(LC_ALL, "en_US.utf8");
+
 		this->resize(width, height);
+
+		output_stream << TerminalSequences::CURSOR_HIDE
+			<< TerminalSequences::BUFFER_NEW;
+
+		// we always start_loop with a black bg and white fg
+		this->add_reset_colors();
+		this->push_stream();
 	}
 
 	Renderer::~Renderer() {
+		output_stream << TerminalSequences::CURSOR_SHOW
+			<< TerminalSequences::BUFFER_OLD;
+		this->push_stream();
+		std::setlocale(LC_ALL, prev_locale.c_str());
+
 		this->free_buff();
 	}
 
@@ -127,21 +142,6 @@ namespace render {
 	void Renderer::add_reset_colors() {
 		output_stream << default_colors::WHITE.get_sequence()
 			<< default_colors::BLACK.get_sequence(true);
-	}
-
-	void Renderer::init() {
-		output_stream << TerminalSequences::CURSOR_HIDE
-			<< TerminalSequences::BUFFER_NEW;
-
-		// we always start_loop with a black bg and white fg
-		this->add_reset_colors();
-		this->push_stream();
-	}
-
-	void Renderer::end() {
-		output_stream << TerminalSequences::CURSOR_SHOW
-			<< TerminalSequences::BUFFER_OLD;
-		this->push_stream();
 	}
 
 	const render_helpers::RenderUtils Renderer::get_render_utils() {

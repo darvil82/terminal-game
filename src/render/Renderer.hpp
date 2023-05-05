@@ -27,6 +27,7 @@ namespace render {
 	class Renderer {
 		using buff_size_t = uint16_t;
 
+		std::string prev_locale;
 		std::wstringstream output_stream;
 		buff_size_t buffer_width = 50, buffer_height = 50;
 		const Pixel*** buffer = nullptr; // pixel matrix
@@ -46,8 +47,6 @@ namespace render {
 		const Pixel& get_pixel(const RPoint& pos) const;
 		void clear_buffer();
 		void push_buffer();
-		void init();
-		void end();
 
 		const render_helpers::RenderUtils get_render_utils();
 	};
