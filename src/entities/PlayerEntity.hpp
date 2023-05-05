@@ -12,7 +12,7 @@ namespace entities {
 
 		std::string player_name;
 		render::Color player_color = render::default_colors::WHITE;
-		uint8_t jumped = 0;
+		uint8_t jumped = 2; // start with 2 jumps
 
 	public:
 		PlayerEntity() {
