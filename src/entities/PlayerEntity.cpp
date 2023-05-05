@@ -4,7 +4,7 @@
 
 namespace entities {
 
-	void PlayerEntity::render(render::render_helpers::RenderUtils&& renderer) const {
+	void PlayerEntity::render(const render::render_helpers::RenderUtils& renderer) const {
 		renderer.draw(this->position, [this](auto&& r) {
 			r.set_color(this->player_color);
 			r.move_x(4);

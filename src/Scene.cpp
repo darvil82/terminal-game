@@ -66,8 +66,8 @@ void Scene::tick(float delta) {
 	}
 }
 
-void Scene::render(render::render_helpers::RenderUtils&& renderer) const {
+void Scene::render(const render::render_helpers::RenderUtils& renderer) const {
 	for (auto& ent: *this) {
-		ent.render(std::move(renderer));
+		ent.render(renderer);
 	}
 }

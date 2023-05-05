@@ -49,7 +49,7 @@ namespace render {
 		void init();
 		void end();
 
-		render_helpers::RenderUtils get_render_utils();
+		const render_helpers::RenderUtils get_render_utils();
 	};
 
 	namespace render_helpers {

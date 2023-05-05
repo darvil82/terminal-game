@@ -144,7 +144,7 @@ namespace render {
 		this->push_stream();
 	}
 
-	render_helpers::RenderUtils Renderer::get_render_utils() {
+	const render_helpers::RenderUtils Renderer::get_render_utils() {
 		return render_helpers::RenderUtils(*this);
 	}
 

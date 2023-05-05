@@ -32,10 +32,12 @@ namespace input {
 	}
 
 	void InputSystem::read_input() {
-		if (read(0, &this->pressed_key_buff, this->pressed_key_buff.size()) != -1)
+		if (read(0, &this->pressed_key_buff, this->pressed_key_buff.size()) > 0)
 			return;
 
-		this->pressed_key_buff.fill(0);
+		// no input was read, reset key buffer
+		if (this->pressed_key_buff[0] != '\0')
+			this->pressed_key_buff.fill('\0');
 	}
 
 	bool InputSystem::is_key_pressed(char key) {

@@ -37,7 +37,7 @@ namespace entities {
 		utils::Point<> velocity {0, 0};
 
 		void tick(float delta) override;
-		void render(render::render_helpers::RenderUtils&& renderer) const override;
+		void render(const render::render_helpers::RenderUtils& renderer) const override;
 
 	public:
 		BaseEntity() = default;
@@ -47,6 +47,8 @@ namespace entities {
 
 		virtual void kill();
 		Scene* get_scene();
+		void set_position(const utils::Point<>& new_pos);
+		void set_velocity(const utils::Point<>& new_vel);
 	};
 
 
