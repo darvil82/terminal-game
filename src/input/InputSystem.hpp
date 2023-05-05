@@ -12,14 +12,12 @@ class Game;
 namespace input {
 	class InputSystem {
 		friend Game;
-		static constexpr size_t key_buff_size = 8;
+		using key_buff = std::array<char, 8>;
 
-		std::thread input_reader;
 		termios old_terminal_config;
-		termios new_terminal_config;
-		std::array<char, key_buff_size> pressed_key_buff;
-		std::array<char, key_buff_size> last_key_buff;
-		bool is_reading = true;
+		uint32_t old_stdin_flags;
+
+		key_buff pressed_key_buff;
 
 		InputSystem();
 

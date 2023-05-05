@@ -53,8 +53,9 @@ void Game::main_loop() {
 
 		this->tick(delta);
 		this->render();
-		this->input_system->reset_key_buff();
+		this->input_system->read_input();
 
+		// cap fps
 		if (delta < 1.0f / max_fps) {
 			std::this_thread::sleep_for(chrono::duration<float>(1.0f / max_fps - delta));
 		}
