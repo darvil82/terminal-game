@@ -23,7 +23,7 @@ namespace input {
 
 			constexpr char get_char_code() const { return this->key; }
 
-			virtual constexpr bool matches(std::array<char, 2> key_buff) const {
+			virtual constexpr bool matches(const std::array<char, 2>& key_buff) const {
 				return key_buff[0] == this->key;
 			}
 		};

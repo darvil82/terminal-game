@@ -13,12 +13,12 @@ class Game;
 namespace input {
 	class InputSystem {
 		friend Game;
-		using key_buff = std::array<char, 2>;
+		using key_buff_t = std::array<char, 2>;
 
 		termios old_terminal_config;
 		uint32_t old_stdin_flags;
 
-		key_buff pressed_key_buff;
+		key_buff_t pressed_key_buff;
 
 		InputSystem();
 
