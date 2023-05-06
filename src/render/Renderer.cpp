@@ -8,8 +8,6 @@
 
 
 namespace render {
-
-
 	Renderer::Renderer(buff_size_t width, buff_size_t height) {
 		this->prev_locale = std::setlocale(LC_ALL, nullptr);
 		std::setlocale(LC_ALL, "en_US.utf8");
@@ -74,7 +72,12 @@ namespace render {
 
 	void Renderer::set_pixel(const Pixel& pixel, const RPoint& position) {
 		if (!this->is_in_bounds(position)) return;
-		this->buffer[position.y][position.x] = new const Pixel(pixel);
+		auto& prev_pixel = this->buffer[position.y][position.x];
+
+		if (prev_pixel)
+			delete prev_pixel; // free previous pixel in this position
+
+		prev_pixel = new const Pixel(pixel);
 		this->buffer_changed = true;
 	}
 

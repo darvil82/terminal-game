@@ -10,7 +10,7 @@ namespace entities {
 			r.set_color(this->player_color);
 			r.move_x(4);
 			r.move_y(3);
-			r.move_x(-12);
+			r.move_x(-5);
 			r.move_y(-3);
 		});
 
@@ -41,17 +41,17 @@ namespace entities {
 		bool is_on_ground = this->position.y >= 24;
 
 		if (is_on_ground) {
-			if (INPUT_IS_PRESSED('a')) this->velocity.x = -50;
-			if (INPUT_IS_PRESSED('d')) this->velocity.x = 50;
+			if (INPUT_IS_PRESSED(A)) this->velocity.x = -50;
+			if (INPUT_IS_PRESSED(D)) this->velocity.x = 50;
 
 			this->position.y = 24;
 			this->velocity.x *= pow(0.005, delta);
-//			this->velocity.y = 0;
+			this->velocity.y = 0;
 			this->jumped = 0;
 		}
 
 		// allow jumping on air
-		if (INPUT_IS_PRESSED(' ') && this->jumped < 2) {
+		if (INPUT_IS_PRESSED(J) && this->jumped < 2) {
 			this->velocity.y = -20; // jump
 			this->jumped++;
 

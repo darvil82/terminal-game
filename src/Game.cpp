@@ -39,7 +39,7 @@ void Game::end() {
 
 void Game::main_loop() {
 	timestamp last_frame = chrono::steady_clock::now();
-	constexpr const uint8_t max_fps = 60;
+	constexpr const uint8_t max_fps = 155;
 
 	while (this->running) {
 		const timestamp current_frame = chrono::steady_clock::now();
