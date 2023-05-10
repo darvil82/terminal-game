@@ -39,7 +39,7 @@ namespace input {
 		}
 	}
 
-	bool InputSystem::is_key_pressed(keys::KeyboardKey key) const {
+	bool InputSystem::is_key_pressed(const keys::KeyboardKey& key) const {
 		return key.matches(this->pressed_key_buff);
 	}
 

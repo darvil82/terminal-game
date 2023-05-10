@@ -28,7 +28,7 @@ namespace input {
 
 	public:
 		~InputSystem();
-		bool is_key_pressed(keys::KeyboardKey key) const;
+		bool is_key_pressed(const keys::KeyboardKey& key) const;
 
 		static InputSystem& instance();
 	};

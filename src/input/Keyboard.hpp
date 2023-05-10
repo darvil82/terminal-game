@@ -3,7 +3,7 @@
 #include "InputTypes.hpp"
 
 #define INPUT_KEY(ks) \
-    [] () consteval {                 \
+    [] () constexpr {                 \
         using namespace input::keys; \
         return ks; \
     }()
@@ -21,13 +21,17 @@ namespace input {
 
 			constexpr ~KeyboardKey() = default;
 
-			constexpr const key_buff_t& get_seq() const;
+			constexpr const key_buff_t& get_seq() const {
+				return this->key;
+			}
 
 			virtual constexpr bool matches(const key_buff_t& key_buff) const {
 				return this->key == key_buff;
 			}
 
-			constexpr bool operator==(const KeyboardKey& other) const;
+			constexpr bool operator==(const KeyboardKey& other) const {
+				return this->matches(other.key);
+			}
 		};
 
 
@@ -41,12 +45,14 @@ namespace input {
 			using KeyboardKey::KeyboardKey;
 		};
 
+
 		class ModifierKey : public KeyboardKey {
 		public:
 			using KeyboardKey::KeyboardKey;
 
-			constexpr const KeyboardKey operator+(AlphaKey key) const;
-			constexpr const KeyboardKey operator+(NumericKey key) const;
+			constexpr const KeyboardKey operator+(const AlphaKey& key) const {
+				return KeyboardKey({static_cast<char>(key.get_seq()[0] - this->key[0])});
+			}
 		};
 
 
