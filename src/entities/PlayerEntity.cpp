@@ -5,8 +5,8 @@
 
 namespace entities {
 
-	void PlayerEntity::render(const render::render_helpers::RenderUtils& renderer) const {
-		renderer.draw(this->position, [this](auto&& r) {
+	void PlayerEntity::render(const render::render_helpers::RenderUtils& render_utils) const {
+		render_utils.draw(this->position, [this](auto&& r) {
 			r.set_color(this->player_color);
 			r.move_x(4);
 			r.move_y(3);
@@ -14,14 +14,13 @@ namespace entities {
 			r.move_y(-3);
 		});
 
-		renderer.text({0, 0}, [this](auto&& r) {
+		render_utils.text({0, 0}, [this](auto&& r) {
 			r.put(L"Vel: " + std::to_wstring(this->velocity.x) + L" " + std::to_wstring(this->velocity.y));
 			r.set_position({0, 1});
 			r.put(L"Pos: " + std::to_wstring(this->position.x) + L" " + std::to_wstring(this->position.y));
 			r.set_position({0, 2});
 			r.put(L"Jumps: " + std::to_wstring(this->jumped));
 		});
-
 	}
 
 	void PlayerEntity::tick(float delta) {

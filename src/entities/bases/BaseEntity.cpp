@@ -23,7 +23,7 @@ namespace entities {
 		this->position += this->velocity * delta;
 	}
 
-	void BaseEntity::render(const render::render_helpers::RenderUtils& renderer) const { }
+	void BaseEntity::render(const render::render_helpers::RenderUtils& render_utils) const { }
 
 	void BaseEntity::kill() {
 		delete this;

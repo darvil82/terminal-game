@@ -19,7 +19,7 @@ namespace entities {
 			this->position = {5, 5};
 		}
 
-		void render(const render::render_helpers::RenderUtils& renderer) const override;
+		void render(const render::render_helpers::RenderUtils& render_utils) const override;
 		void tick(float delta) override;
 	};
 
