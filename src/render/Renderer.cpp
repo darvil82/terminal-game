@@ -70,6 +70,10 @@ namespace render {
 		this->buffer_changed = false;
 	}
 
+	std::tuple<Renderer::buff_size_t, Renderer::buff_size_t> Renderer::get_size() const {
+		return { this->buffer_width, this->buffer_height };
+	}
+
 	void Renderer::set_pixel(const Pixel& pixel, const RPoint& position) {
 		if (!this->is_in_bounds(position)) return;
 		auto& prev_pixel = this->buffer[position.y][position.x];
@@ -159,6 +163,10 @@ namespace render {
 
 		void RenderUtils::text(const render::RPoint& start_pos, OpFunc<TextOperation> draw_func) const {
 			draw_func({this->renderer, start_pos});
+		}
+
+		const Renderer& RenderUtils::get_renderer() const {
+			return this->renderer;
 		}
 
 		void RenderOperationBase::push_changes() {

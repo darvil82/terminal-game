@@ -41,8 +41,8 @@ namespace entities {
 		bool is_on_ground = this->position.y >= 24;
 
 		if (is_on_ground) {
-			if (INPUT_IS_PRESSED(A)) this->velocity.x = -50;
-			if (INPUT_IS_PRESSED(D)) this->velocity.x = 50;
+			if (INPUT_IS_PRESSED(LEFT)) this->velocity.x = -50;
+			if (INPUT_IS_PRESSED(RIGHT)) this->velocity.x = 50;
 
 			this->position.y = 24;
 			this->velocity.x *= pow(0.005, delta);
@@ -51,7 +51,7 @@ namespace entities {
 		}
 
 		// allow jumping on air
-		if (INPUT_IS_PRESSED(J) && this->jumped < 2) {
+		if (INPUT_IS_PRESSED(SPACE) && this->jumped < 2) {
 			this->velocity.y = -20; // jump
 			this->jumped++;
 

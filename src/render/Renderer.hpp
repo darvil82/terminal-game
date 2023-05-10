@@ -5,6 +5,7 @@
 #include <sstream>
 #include <optional>
 #include <functional>
+#include <tuple>
 
 #include "Characters.hpp"
 #include "IRenderSequence.hpp"
@@ -43,6 +44,7 @@ namespace render {
 		~Renderer();
 
 		void resize(buff_size_t new_width, buff_size_t new_height);
+		std::tuple<buff_size_t, buff_size_t> get_size() const;
 		void set_pixel(const Pixel& pixel, const RPoint& position);
 		const Pixel& get_pixel(const RPoint& pos) const;
 		void clear_buffer();
@@ -104,6 +106,7 @@ namespace render {
 			using OpFunc = std::function<void(T&&)>;
 
 		public:
+			const Renderer& get_renderer() const;
 
 			void draw(const RPoint& start_pos, OpFunc<DrawOperation> draw_func) const;
 			void text(const RPoint& start_pos, OpFunc<TextOperation> text_func) const;

@@ -1,86 +1,108 @@
 #pragma once
 
+#include "InputTypes.hpp"
+
 #define INPUT_KEY(ks) \
-    [] () constexpr {                 \
+    [] () consteval {                 \
         using namespace input::keys; \
         return ks; \
     }()
 
-#define __DEFINE_INPUT_KEY(type, name, code) \
-	constexpr const type name = type{code}
-
 
 namespace input {
+
 	namespace keys {
 
 		class KeyboardKey {
 		protected:
-			char key;
+			key_buff_t key;
 		public:
-			explicit constexpr KeyboardKey(char key) : key(key) { }
+			explicit constexpr KeyboardKey(key_buff_t key) : key(key) { }
 
 			constexpr ~KeyboardKey() = default;
 
-			constexpr char get_char_code() const { return this->key; }
+			constexpr const key_buff_t& get_seq() const;
 
-			virtual constexpr bool matches(const std::array<char, 2>& key_buff) const {
-				return key_buff[0] == this->key;
+			virtual constexpr bool matches(const key_buff_t& key_buff) const {
+				return this->key == key_buff;
 			}
+
+			constexpr bool operator==(const KeyboardKey& other) const;
 		};
 
+
+		class AlphaKey : public KeyboardKey {
+		public:
+			using KeyboardKey::KeyboardKey;
+		};
+
+		class NumericKey : public KeyboardKey {
+		public:
+			using KeyboardKey::KeyboardKey;
+		};
 
 		class ModifierKey : public KeyboardKey {
 		public:
 			using KeyboardKey::KeyboardKey;
 
-			constexpr const KeyboardKey operator+(KeyboardKey key) const {
-				return KeyboardKey(key.get_char_code() - this->key);
-			}
+			constexpr const KeyboardKey operator+(AlphaKey key) const;
+			constexpr const KeyboardKey operator+(NumericKey key) const;
 		};
+
 
 		class SpecialKey : public KeyboardKey {
 		public:
-			enum : char {
-				UP,
-				DOWN,
-				LEFT,
-				RIGHT,
-				ENTER,
-				SPACE = 32,
-				ESCAPE = 27
-			};
+			using KeyboardKey::KeyboardKey;
 		};
 
-		__DEFINE_INPUT_KEY(KeyboardKey, A, 97);
-		__DEFINE_INPUT_KEY(KeyboardKey, B, 98);
-		__DEFINE_INPUT_KEY(KeyboardKey, C, 99);
-		__DEFINE_INPUT_KEY(KeyboardKey, D, 100);
-		__DEFINE_INPUT_KEY(KeyboardKey, E, 101);
-		__DEFINE_INPUT_KEY(KeyboardKey, F, 102);
-		__DEFINE_INPUT_KEY(KeyboardKey, G, 103);
-		__DEFINE_INPUT_KEY(KeyboardKey, H, 104);
-		__DEFINE_INPUT_KEY(KeyboardKey, I, 105);
-		__DEFINE_INPUT_KEY(KeyboardKey, J, 106);
-		__DEFINE_INPUT_KEY(KeyboardKey, K, 107);
-		__DEFINE_INPUT_KEY(KeyboardKey, L, 108);
-		__DEFINE_INPUT_KEY(KeyboardKey, M, 109);
-		__DEFINE_INPUT_KEY(KeyboardKey, N, 110);
-		__DEFINE_INPUT_KEY(KeyboardKey, O, 111);
-		__DEFINE_INPUT_KEY(KeyboardKey, P, 112);
-		__DEFINE_INPUT_KEY(KeyboardKey, Q, 113);
-		__DEFINE_INPUT_KEY(KeyboardKey, R, 114);
-		__DEFINE_INPUT_KEY(KeyboardKey, S, 115);
-		__DEFINE_INPUT_KEY(KeyboardKey, T, 116);
-		__DEFINE_INPUT_KEY(KeyboardKey, U, 117);
-		__DEFINE_INPUT_KEY(KeyboardKey, V, 118);
-		__DEFINE_INPUT_KEY(KeyboardKey, W, 119);
-		__DEFINE_INPUT_KEY(KeyboardKey, X, 120);
-		__DEFINE_INPUT_KEY(KeyboardKey, Y, 121);
-		__DEFINE_INPUT_KEY(KeyboardKey, Z, 122);
+		constexpr const auto A = AlphaKey({97});
+		constexpr const auto B = AlphaKey({98});
+		constexpr const auto C = AlphaKey({99});
+		constexpr const auto D = AlphaKey({100});
+		constexpr const auto E = AlphaKey({101});
+		constexpr const auto F = AlphaKey({102});
+		constexpr const auto G = AlphaKey({103});
+		constexpr const auto H = AlphaKey({104});
+		constexpr const auto I = AlphaKey({105});
+		constexpr const auto J = AlphaKey({106});
+		constexpr const auto K = AlphaKey({107});
+		constexpr const auto L = AlphaKey({108});
+		constexpr const auto M = AlphaKey({109});
+		constexpr const auto N = AlphaKey({110});
+		constexpr const auto O = AlphaKey({111});
+		constexpr const auto P = AlphaKey({112});
+		constexpr const auto Q = AlphaKey({113});
+		constexpr const auto R = AlphaKey({114});
+		constexpr const auto S = AlphaKey({115});
+		constexpr const auto T = AlphaKey({116});
+		constexpr const auto U = AlphaKey({117});
+		constexpr const auto V = AlphaKey({118});
+		constexpr const auto W = AlphaKey({119});
+		constexpr const auto X = AlphaKey({120});
+		constexpr const auto Y = AlphaKey({121});
+		constexpr const auto Z = AlphaKey({122});
 
+		constexpr const auto ZERO = NumericKey({48});
+		constexpr const auto ONE = NumericKey({49});
+		constexpr const auto TWO = NumericKey({50});
+		constexpr const auto THREE = NumericKey({51});
+		constexpr const auto FOUR = NumericKey({52});
+		constexpr const auto FIVE = NumericKey({53});
+		constexpr const auto SIX = NumericKey({54});
+		constexpr const auto SEVEN = NumericKey({55});
+		constexpr const auto EIGHT = NumericKey({56});
+		constexpr const auto NINE = NumericKey({57});
+
+		constexpr const auto RIGHT = SpecialKey({27, 91, 67});
+		constexpr const auto LEFT = SpecialKey({27, 91, 68});
+		constexpr const auto UP = SpecialKey({27, 91, 65});
+		constexpr const auto DOWN = SpecialKey({27, 91, 66});
+		constexpr const auto ENTER = SpecialKey({10});
+		constexpr const auto SPACE = SpecialKey({32});
+		constexpr const auto ESCAPE = SpecialKey({27});
 
 		// values here represent the number of ascii places to offset from the key
-		__DEFINE_INPUT_KEY(ModifierKey, SHIFT, 32);
-		__DEFINE_INPUT_KEY(ModifierKey, CTRL, 96);
+		constexpr const auto SHIFT = ModifierKey({32});
+		constexpr const auto CTRL = ModifierKey({96});
 	}
 }
