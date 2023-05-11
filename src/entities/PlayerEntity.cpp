@@ -15,11 +15,9 @@ namespace entities {
 		});
 
 		render_utils.text({0, 0}, [this](auto&& r) {
-			r.put(L"Vel: " + std::to_wstring(this->velocity.x) + L" " + std::to_wstring(this->velocity.y));
-			r.set_position({0, 1});
-			r.put(L"Pos: " + std::to_wstring(this->position.x) + L" " + std::to_wstring(this->position.y));
-			r.set_position({0, 2});
-			r.put(L"Jumps: " + std::to_wstring(this->jumped));
+			r.put_line(L"Vel: " + std::to_wstring(this->velocity.x) + L" " + std::to_wstring(this->velocity.y));
+			r.put_line(L"Pos: " + std::to_wstring(this->position.x) + L" " + std::to_wstring(this->position.y));
+			r.put_line(L"Jumps: " + std::to_wstring(this->jumped));
 		});
 	}
 

@@ -243,5 +243,11 @@ namespace render {
 				this->current_pos.x++;
 			}
 		}
+
+		void TextOperation::put_line(const std::wstring& content) {
+			this->put(content);
+			this->current_pos.x -= content.length(); // move back to the start of the line
+			this->current_pos.y++; // move down one line
+		}
 	}
 } // render

@@ -93,6 +93,7 @@ namespace render {
 			using RenderOperationBase::RenderOperationBase;
 		public:
 			void put(const std::wstring& content);
+			void put_line(const std::wstring& content);
 		};
 
 
