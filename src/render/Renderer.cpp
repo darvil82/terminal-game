@@ -17,8 +17,6 @@ namespace render {
 		output_stream << TerminalSequences::CURSOR_HIDE
 			<< TerminalSequences::BUFFER_NEW;
 
-		// we always start_loop with a black bg and white fg
-		this->add_reset_colors();
 		this->push_stream();
 	}
 
@@ -39,10 +37,6 @@ namespace render {
 		if (!this->buffer) return;
 
 		for (buff_size_t y = 0; y < this->buffer_height; y++) {
-			for (buff_size_t x = 0; x < this->buffer_width; x++) {
-				// free each pixel
-				delete this->buffer[y][x];
-			}
 			// free row
 			delete[] this->buffer[y];
 		}
@@ -60,9 +54,9 @@ namespace render {
 		this->free_buff();
 
 		// create new one
-		this->buffer = new const Pixel** [new_height];
+		this->buffer = new Pixel*[new_height];
 		for (buff_size_t y = 0; y < new_height; y++) {
-			this->buffer[y] = new const Pixel* [new_width] { };
+			this->buffer[y] = new Pixel[new_width]; // default pixels have default background and foreground colors
 		}
 
 		this->buffer_width = new_width;
@@ -76,28 +70,21 @@ namespace render {
 
 	void Renderer::set_pixel(const Pixel& pixel, const RPoint& position) {
 		if (!this->is_in_bounds(position)) return;
-		auto& prev_pixel = this->buffer[position.y][position.x];
 
-		if (prev_pixel)
-			delete prev_pixel; // free previous pixel in this position
-
-		prev_pixel = new const Pixel(pixel);
+		this->buffer[position.y][position.x] = pixel;
 		this->buffer_changed = true;
 	}
 
 	const Pixel& Renderer::get_pixel(const RPoint& pos) const {
 		if (!this->is_in_bounds(pos))
 			throw std::out_of_range("Pixel out of bounds");
-		return *this->buffer[pos.y][pos.x];
+		return this->buffer[pos.y][pos.x];
 	}
 
 	void Renderer::clear_buffer() {
 		for (buff_size_t y = 0; y < this->buffer_height; y++) {
 			for (buff_size_t x = 0; x < this->buffer_width; x++) {
-				if (!this->buffer[y][x]) continue;
-
-				delete this->buffer[y][x];
-				this->buffer[y][x] = nullptr;
+				this->buffer[y][x] = Pixel(L' ', default_colors::WHITE, default_colors::BLACK);
 			}
 		}
 		this->buffer_changed = false;
@@ -111,44 +98,27 @@ namespace render {
 
 		for (buff_size_t y = 0; y < this->buffer_height; y++) {
 			for (buff_size_t x = 0; x < this->buffer_width; x++) {
-				const Pixel* current_pixel = this->buffer[y][x];
-
-				if (!current_pixel) {
-					// make sure we reset the background to prevent a mess.
-					// we don't need to if the bg color is already black!
-					if (prev_pixel && prev_pixel->color_bg != default_colors::BLACK) {
-						output_stream << default_colors::BLACK.get_sequence(true);
-						prev_pixel = nullptr;
-					}
-					output_stream << ' ';
-					continue;
-				}
+				const Pixel& current_pixel = this->buffer[y][x];
 
 				// if the previous char colors are the same, we don't need to add the sequence again, just the char
-				if (!prev_pixel || current_pixel->color_fg != prev_pixel->color_fg)
-					output_stream << current_pixel->color_fg.get_sequence();
+				if (!prev_pixel || current_pixel.color_fg != prev_pixel->color_fg)
+					output_stream << current_pixel.color_fg.get_sequence();
 
-				if (!prev_pixel || current_pixel->color_bg != prev_pixel->color_bg)
-					output_stream << current_pixel->color_bg.get_sequence(true);
+				if (!prev_pixel || current_pixel.color_bg != prev_pixel->color_bg)
+					output_stream << current_pixel.color_bg.get_sequence(true);
 
-				output_stream << current_pixel->character;
-				prev_pixel = current_pixel;
+				output_stream << current_pixel.character;
+				prev_pixel = &current_pixel;
 			}
 			output_stream << '\n';
 		}
 
-		this->add_reset_colors();
 		this->push_stream();
 	}
 
 	void Renderer::push_stream() {
 		std::wcout << output_stream.str() << std::flush;
 		output_stream.str(L"");
-	}
-
-	void Renderer::add_reset_colors() {
-		output_stream << default_colors::WHITE.get_sequence()
-			<< default_colors::BLACK.get_sequence(true);
 	}
 
 	const render_helpers::RenderUtils Renderer::get_render_utils() {

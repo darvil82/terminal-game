@@ -31,13 +31,12 @@ namespace render {
 		std::string prev_locale;
 		std::wstringstream output_stream;
 		buff_size_t buffer_width = 50, buffer_height = 50;
-		const Pixel*** buffer = nullptr; // pixel matrix
+		Pixel** buffer = nullptr; // pixel matrix
 		bool buffer_changed = false;
 
 		void free_buff();
 		bool is_in_bounds(const render::RPoint& pos) const;
 		void push_stream();
-		void add_reset_colors();
 
 	public:
 		Renderer(buff_size_t width, buff_size_t height);

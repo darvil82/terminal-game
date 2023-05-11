@@ -48,6 +48,10 @@ namespace render {
 			const Color& bg_color
 		) : color_fg {fg_color}, color_bg {bg_color}, character {character} { }
 
+		Pixel() : Pixel {L' ', default_colors::WHITE, default_colors::BLACK} { }
+
+		const Pixel& operator=(const Pixel& other);
+
 		std::wstring get_sequence() const override;
 	};
 

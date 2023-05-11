@@ -15,6 +15,13 @@ namespace render {
 		return this->r == other.r && this->g == other.g && this->b == other.b;
 	}
 
+	const Pixel& Pixel::operator=(const Pixel& other) {
+		this->color_fg = other.color_fg;
+		this->color_bg = other.color_bg;
+		this->character = other.character;
+		return *this;
+	}
+
 	std::wstring Pixel::get_sequence() const {
 		std::wstringstream buff;
 		buff << this->color_fg.get_sequence()
