@@ -19,7 +19,10 @@ namespace input {
 		termios old_terminal_config;
 		uint32_t old_stdin_flags;
 
+		std::thread input_thread;
+		bool is_reading = true;
 		key_buff_t pressed_key_buff;
+		key_buff_t last_pressed_key_buff; //
 
 		InputSystem();
 

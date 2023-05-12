@@ -39,7 +39,7 @@ void Game::end() {
 
 void Game::main_loop() {
 	timestamp last_frame = chrono::steady_clock::now();
-	constexpr const uint8_t max_fps = 155;
+	constexpr const uint8_t max_fps = 60;
 
 	while (this->running) {
 		const timestamp current_frame = chrono::steady_clock::now();
@@ -49,7 +49,7 @@ void Game::main_loop() {
 
 		this->tick(delta);
 		this->render();
-		this->input_system->read_input();
+		this->input_system->reset_key_buff();
 
 		// cap fps
 		if (delta < 1.0f / max_fps) {
