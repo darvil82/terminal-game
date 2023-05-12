@@ -1,17 +1,14 @@
 #include <math.h>
-#include "PlayerEntity.hpp"
+#include "Cube.hpp"
 #include "../input/InputSystem.hpp"
 #include "../utils/Math.hpp"
 
 namespace entities {
 
-	void PlayerEntity::render(const render::render_helpers::RenderUtils& render_utils) const {
-		render_utils.draw(this->position, [this](auto&& r) {
+	void Cube::render(const render::render_helpers::RenderUtils& render_utils) const {
+		render_utils.draw(utils::Point{ this->position.x - 5, this->position.y - 2 }, [this](auto&& r) {
 			r.set_color(this->player_color);
-			r.move_x(4);
-			r.move_y(3);
-			r.move_x(-5);
-			r.move_y(-3);
+			r.rect({10, 5});
 		});
 
 		render_utils.text({0, 0}, [this](auto&& r) {
@@ -21,7 +18,7 @@ namespace entities {
 		});
 	}
 
-	void PlayerEntity::tick(float delta) {
+	void Cube::tick(float delta) {
 		BaseEntity::tick(delta);
 
 		bool hit_x =

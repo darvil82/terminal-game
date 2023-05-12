@@ -3,7 +3,7 @@
 #include "Game.hpp"
 #include "utils/Cleanup.hpp"
 #include "entities/definition/EntityDB.hpp"
-#include "entities/PlayerEntity.hpp"
+#include "entities/Cube.hpp"
 #include "entities/bases/BaseEntity.hpp"
 #include "input/InputSystem.hpp"
 
@@ -30,7 +30,7 @@ void Game::stop_loop() {
 
 void Game::init() {
 	Scene* s = new Scene();
-	s->attach_entity(ENTITY_CREATE(entities::PlayerEntity, player));
+	s->attach_entity(ENTITY_CREATE(entities::Cube, player));
 	this->current_scene = s;
 }
 

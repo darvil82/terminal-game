@@ -51,9 +51,9 @@ namespace render {
 		__DEFINE_SEQ(INVERT_ALL, "[?5h");
 		__DEFINE_SEQ(NO_INVERT_ALL, "[?5l");
 
-		static RPoint get_terminal_size();
-		static std::wstring cursor_set_pos(RPoint pos);
-		static std::wstring cursor_set_pos_relative(RPoint offset);
+		static utils::UPoint get_terminal_size();
+		static std::wstring cursor_set_pos(utils::UPoint pos);
+		static std::wstring cursor_set_pos_relative(utils::SPoint offset);
 		static std::wstring cursor_move_x(int16_t x);
 		static std::wstring cursor_move_y(int16_t y);
 		static std::wstring set_color(Color color, bool background = false);

@@ -7,14 +7,14 @@
 
 namespace render {
 
-	RPoint TerminalSequences::get_terminal_size() {
+	utils::UPoint TerminalSequences::get_terminal_size() {
 		winsize w;
 		ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 
 		return {w.ws_col, w.ws_row};
 	}
 
-	std::wstring TerminalSequences::cursor_set_pos(RPoint pos) {
+	std::wstring TerminalSequences::cursor_set_pos(utils::UPoint pos) {
 		std::wstringstream buff;
 		buff << TerminalSequences::ESCAPE_SEQUENCE_START
 			<< pos.y << ';'
@@ -42,7 +42,7 @@ namespace render {
 		return buff.str();
 	}
 
-	std::wstring TerminalSequences::cursor_set_pos_relative(RPoint offset) {
+	std::wstring TerminalSequences::cursor_set_pos_relative(utils::SPoint offset) {
 		return TerminalSequences::cursor_move_x(offset.x)
 			+ TerminalSequences::cursor_move_y(offset.y);
 	}

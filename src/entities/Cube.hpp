@@ -7,7 +7,7 @@
 
 namespace entities {
 
-	class PlayerEntity : public BaseHealthEntity {
+	class Cube : public BaseHealthEntity {
 	DEFINE_ENTITY_CLASS(player)
 
 		std::string player_name;
@@ -15,7 +15,7 @@ namespace entities {
 		uint8_t jumped = 2; // start with 2 jumps
 
 	public:
-		PlayerEntity() {
+		Cube() {
 			this->position = {5, 5};
 		}
 
@@ -24,5 +24,5 @@ namespace entities {
 	};
 
 
-	DEFINE_ENTITY_FACTORY(PlayerEntity)
+	DEFINE_ENTITY_FACTORY(Cube)
 }

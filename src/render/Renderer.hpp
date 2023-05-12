@@ -19,8 +19,6 @@ namespace utils {
 }
 
 namespace render {
-	using RPoint = utils::Point<uint16_t>;
-
 	namespace render_helpers {
 		class RenderUtils;
 	}
@@ -35,7 +33,7 @@ namespace render {
 		bool buffer_changed = false;
 
 		void free_buff();
-		bool is_in_bounds(const render::RPoint& pos) const;
+		bool is_in_bounds(const utils::SPoint& pos) const;
 		void push_stream();
 
 	public:
@@ -44,8 +42,8 @@ namespace render {
 
 		void resize(buff_size_t new_width, buff_size_t new_height);
 		std::tuple<buff_size_t, buff_size_t> get_size() const;
-		void set_pixel(const Pixel& pixel, const RPoint& position);
-		const Pixel& get_pixel(const RPoint& pos) const;
+		void set_pixel(const Pixel& pixel, const utils::SPoint& position);
+		const Pixel& get_pixel(const utils::SPoint& pos) const;
 		void clear_buffer();
 		void push_buffer();
 
@@ -62,7 +60,7 @@ namespace render {
 
 			Renderer& renderer;
 		protected:
-			RPoint current_pos;
+			utils::SPoint current_pos;
 			Color current_color = default_colors::WHITE;
 			Color current_color_bg = default_colors::BLACK;
 			wchar_t current_char = default_characters::blocks::FULL;
@@ -70,11 +68,11 @@ namespace render {
 			void push_changes();
 
 		public:
-			RenderOperationBase(Renderer& r, const RPoint& start_pos) : renderer {r}, current_pos {start_pos} { }
+			RenderOperationBase(Renderer& r, const utils::SPoint& start_pos) : renderer {r}, current_pos {start_pos} { }
 
 			void set_color(const Color& color);
 			void set_color_bg(const Color& color);
-			void set_position(const RPoint& pos);
+			void set_position(const utils::SPoint& pos);
 			void set_position_relative(const utils::Point<int16_t>& offset);
 		};
 
@@ -85,6 +83,7 @@ namespace render {
 			void move_x(int16_t offset);
 			void move_y(int16_t offset);
 			void set_char(const wchar_t chr);
+			void rect(const utils::SPoint& size);
 		};
 
 
@@ -108,8 +107,8 @@ namespace render {
 		public:
 			const Renderer& get_renderer() const;
 
-			void draw(const RPoint& start_pos, OpFunc<DrawOperation> draw_func) const;
-			void text(const RPoint& start_pos, OpFunc<TextOperation> text_func) const;
+			void draw(const utils::SPoint& start_pos, OpFunc<DrawOperation> draw_func) const;
+			void text(const utils::SPoint& start_pos, OpFunc<TextOperation> text_func) const;
 		};
 	}
 

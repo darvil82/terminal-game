@@ -29,7 +29,7 @@ namespace render {
 		this->free_buff();
 	}
 
-	bool Renderer::is_in_bounds(const render::RPoint& pos) const {
+	bool Renderer::is_in_bounds(const utils::SPoint& pos) const {
 		return pos.x < this->buffer_width && pos.x >= 0 && pos.y < this->buffer_height && pos.y >= 0;
 	}
 
@@ -68,14 +68,14 @@ namespace render {
 		return { this->buffer_width, this->buffer_height };
 	}
 
-	void Renderer::set_pixel(const Pixel& pixel, const RPoint& position) {
+	void Renderer::set_pixel(const Pixel& pixel, const utils::SPoint& position) {
 		if (!this->is_in_bounds(position)) return;
 
 		this->buffer[position.y][position.x] = pixel;
 		this->buffer_changed = true;
 	}
 
-	const Pixel& Renderer::get_pixel(const RPoint& pos) const {
+	const Pixel& Renderer::get_pixel(const utils::SPoint& pos) const {
 		if (!this->is_in_bounds(pos))
 			throw std::out_of_range("Pixel out of bounds");
 		return this->buffer[pos.y][pos.x];
@@ -127,11 +127,11 @@ namespace render {
 
 	namespace render_helpers {
 
-		void RenderUtils::draw(const render::RPoint& start_pos, OpFunc<DrawOperation> draw_func) const {
+		void RenderUtils::draw(const utils::SPoint& start_pos, OpFunc<DrawOperation> draw_func) const {
 			draw_func({this->renderer, start_pos});
 		}
 
-		void RenderUtils::text(const render::RPoint& start_pos, OpFunc<TextOperation> draw_func) const {
+		void RenderUtils::text(const utils::SPoint& start_pos, OpFunc<TextOperation> draw_func) const {
 			draw_func({this->renderer, start_pos});
 		}
 
@@ -162,7 +162,7 @@ namespace render {
 			this->push_changes();
 		}
 
-		void RenderOperationBase::set_position(const RPoint& pos) {
+		void RenderOperationBase::set_position(const utils::SPoint& pos) {
 			this->current_pos = pos;
 			this->push_changes();
 		}
@@ -204,6 +204,15 @@ namespace render {
 		void DrawOperation::set_char(wchar_t character) {
 			this->current_char = character;
 			this->push_changes();
+		}
+
+		void DrawOperation::rect(const utils::SPoint& size) {
+			auto start_pos = this->current_pos;
+			for (int16_t y = start_pos.y; y < size.y + start_pos.y ; y++) {
+				for (int16_t x = start_pos.x; x < size.x + start_pos.x; x++) {
+					this->set_position({x, y});
+				}
+			}
 		}
 
 		void TextOperation::put(const std::wstring& content) {

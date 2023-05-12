@@ -98,4 +98,8 @@ namespace utils {
 			return this->x == other.x && this->y == other.y;
 		}
 	};
+
+	using SPoint = Point<int16_t>;
+	using UPoint = Point<uint16_t>;
+	using FPoint = Point<float>;
 }
