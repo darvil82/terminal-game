@@ -29,18 +29,25 @@ class Scene : public ITickable, public render::IRenderable {
 
 
 public:
-	const std::vector<entities::BaseEntity*> get_entities_filtered(
+	template<Extends<entities::BaseEntity> T>
+	const std::vector<T*> get_entities_filtered(
 		std::invocable<entities::BaseEntity&> auto... filters
 	) const {
-		std::vector<entities::BaseEntity*> vec;
+		std::vector<T*> vec;
 
 		for (auto& ent: *this) {
 			if ((filters(ent) && ...)) {
-				vec.push_back(&ent);
+				vec.push_back(static_cast<T*>(&ent));
 			}
 		}
 
 		return vec;
+	}
+
+	const std::vector<entities::BaseEntity*> get_entities_filtered(
+		std::invocable<entities::BaseEntity&> auto... filters
+	) const {
+		return this->get_entities_filtered<entities::BaseEntity>(filters...);
 	}
 
 	const std::vector<entities::BaseEntity*> get_entities() const;
@@ -49,6 +56,7 @@ public:
 
 	void attach_entity(entities::BaseEntity& entity);
 	void detach_entity(entities::BaseEntity& entity);
+	size_t get_entity_count() const;
 	void tick(float delta) override;
 	void render(const render::render_helpers::RenderUtils& render_utils) const override;
 };

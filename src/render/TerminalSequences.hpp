@@ -56,6 +56,6 @@ namespace render {
 		static std::wstring cursor_set_pos_relative(utils::SPoint offset);
 		static std::wstring cursor_move_x(int16_t x);
 		static std::wstring cursor_move_y(int16_t y);
-		static std::wstring set_color(Color color, bool background = false);
+		static std::wstring set_color(const Color color, bool background = false);
 	};
 }

@@ -71,3 +71,7 @@ void Scene::render(const render::render_helpers::RenderUtils& render_utils) cons
 		ent.render(render_utils);
 	}
 }
+
+size_t Scene::get_entity_count() const {
+	return this->num_entities;
+}

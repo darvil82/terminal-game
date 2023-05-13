@@ -7,15 +7,14 @@ namespace entities {
 
 	void Cube::render(const render::render_helpers::RenderUtils& render_utils) const {
 		render_utils.draw(utils::Point{ this->position.x - 5, this->position.y - 2 }, [this](auto&& r) {
-			r.set_color(this->player_color);
+			r.set_color(this->color);
 			r.rect({10, 5});
 		});
 
-		render_utils.text({0, 0}, [this](auto&& r) {
-			r.put_line(L"Vel: " + std::to_wstring(this->velocity.x) + L" " + std::to_wstring(this->velocity.y));
-			r.put_line(L"Pos: " + std::to_wstring(this->position.x) + L" " + std::to_wstring(this->position.y));
-			r.put_line(L"Jumps: " + std::to_wstring(this->jumped));
-		});
+//		render_utils.text(this->position, [this](auto&& r) {
+//			r.put_line(L"Vel: " + std::to_wstring(this->velocity.x) + L" " + std::to_wstring(this->velocity.y));
+//			r.put_line(L"Pos: " + std::to_wstring(this->position.x) + L" " + std::to_wstring(this->position.y));
+//		});
 	}
 
 	void Cube::tick(float delta) {
@@ -23,11 +22,14 @@ namespace entities {
 
 		bool hit_x =
 			(this->position.x >= 90 && this->velocity.x > 0) || (this->position.x <= 0 && this->velocity.x < 0);
+		bool hit_y =
+			(this->position.y >= 24 && this->velocity.y > 0) || (this->position.y <= 0 && this->velocity.y < 0);
 
 		if (hit_x) this->velocity.x *= -1;
+		if (hit_y) this->velocity.y *= -1;
 
 		// slowly decrease velocity
-		this->velocity *= pow(0.9, delta);
+		this->velocity *= pow(0.8, delta);
 
 		// apply gravity
 		this->velocity.y += 30 * delta;
@@ -35,27 +37,15 @@ namespace entities {
 		bool is_on_ground = this->position.y >= 24;
 
 		if (is_on_ground) {
-			if (INPUT_IS_PRESSED(LEFT)) this->velocity.x = -50;
-			if (INPUT_IS_PRESSED(RIGHT)) this->velocity.x = 50;
-
 			this->position.y = 24;
 			this->velocity.x *= pow(0.005, delta);
-			this->velocity.y = 0;
-			this->jumped = 0;
 		}
 
-		// allow jumping on air
-		if (INPUT_IS_PRESSED(SPACE) && this->jumped < 2) {
-			this->velocity.y = -20; // jump
-			this->jumped++;
+	}
 
-			this->player_color = render::Color {
-				static_cast<uint8_t>(rand() % 255),
-				static_cast<uint8_t>(rand() % 255),
-				static_cast<uint8_t>(rand() % 255)
-			};
-		}
-
+	void Cube::jump() {
+		this->velocity.x = rand() % 100 - 50;
+		this->velocity.y = rand() % 100 - 50;
 	}
 
 } // entities

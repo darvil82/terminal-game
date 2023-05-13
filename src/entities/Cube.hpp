@@ -8,19 +8,21 @@
 namespace entities {
 
 	class Cube : public BaseHealthEntity {
-	DEFINE_ENTITY_CLASS(player)
+	DEFINE_ENTITY_CLASS(cube)
 
 		std::string player_name;
-		render::Color player_color = render::default_colors::WHITE;
-		uint8_t jumped = 2; // start with 2 jumps
+		render::Color color = render::default_colors::WHITE;
 
 	public:
 		Cube() {
-			this->position = {5, 5};
+			this->position = { static_cast<float>(rand() % 90), static_cast<float>(rand() % 24) };
+			this->color = render::Color{ static_cast<uint8_t>(rand() % 255), static_cast<uint8_t>(rand() % 255), static_cast<uint8_t>(rand() % 255) };
+			this->velocity = { static_cast<float>(rand() % 100 - 50), static_cast<float>(rand() % 100 - 50) };
 		}
 
 		void render(const render::render_helpers::RenderUtils& render_utils) const override;
 		void tick(float delta) override;
+		void jump();
 	};
 
 

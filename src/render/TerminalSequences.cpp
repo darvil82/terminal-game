@@ -47,7 +47,7 @@ namespace render {
 			+ TerminalSequences::cursor_move_y(offset.y);
 	}
 
-	std::wstring TerminalSequences::set_color(Color color, bool background) {
+	std::wstring TerminalSequences::set_color(const Color color, bool background) {
 		std::wstringstream buff;
 		buff << TerminalSequences::ESCAPE_SEQUENCE_START
 			<< (background ? "48" : "38") << ";2;"

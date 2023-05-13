@@ -30,7 +30,9 @@ void Game::stop_loop() {
 
 void Game::init() {
 	Scene* s = new Scene();
-	s->attach_entity(ENTITY_CREATE(entities::Cube, player));
+	for (int i = 0; i < 15; i++) {
+		s->attach_entity(ENTITY_CREATE(entities::Cube, cube));
+	}
 	this->current_scene = s;
 }
 
@@ -64,6 +66,15 @@ void Game::main_loop() {
 void Game::tick(float delta) {
 	if (this->current_scene)
 		this->current_scene->tick(delta);
+
+	if (INPUT_IS_PRESSED(SPACE)) {
+		for (auto& cube : this->current_scene->get_entities_filtered<entities::Cube>(
+			entities::ent_is_classname("cube"))
+		) {
+			cube->jump();
+		}
+		this->current_scene->attach_entity(ENTITY_CREATE(entities::Cube, cube));
+	}
 }
 
 void Game::render() {
@@ -73,5 +84,8 @@ void Game::render() {
 		this->current_scene->render(this->renderer->get_render_utils());
 	}
 
+	this->renderer->get_render_utils().text({0, 0}, [this](auto&& op) {
+		op.put_line(L"ENTITIES: " + std::to_wstring(this->current_scene->get_entity_count()));
+ 	});
 	this->renderer->push_buffer();
 }
