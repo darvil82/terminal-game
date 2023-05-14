@@ -108,7 +108,7 @@ namespace render {
 		}
 	}
 
-	void Renderer::push_buffer() {
+	void Renderer::push_buffer(bool force_render) {
 		std::wstringstream buff;
 		const Pixel* last_pixel = nullptr;
 		uint16_t adjacent_streak = 0; // number streak of adjacent pixels placed
@@ -122,7 +122,7 @@ namespace render {
 				const bool is_unchanged = current_pixel == prev_frame_pixel;
 
 				// if pixel hasn't changed since last frame, skip it
-				if (is_unchanged) {
+				if (is_unchanged && !force_render) {
 					adjacent_streak = 0;
 					continue;
 				}
@@ -164,6 +164,12 @@ namespace render {
 		output_stream << TerminalSequences::CURSOR_HOME;
 		output_stream << buff.str();
 		this->push_stream();
+	}
+
+	void Renderer::render() {
+		this->push_buffer(this->force_render_next_frame);
+
+		this->force_render_next_frame = false;
 	}
 
 	void Renderer::push_stream() {

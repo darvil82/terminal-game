@@ -29,6 +29,8 @@ void Game::stop_loop() {
 }
 
 void Game::init() {
+	this->renderer->set_background_color({ 30, 30, 30 });
+
 	Scene* s = new Scene();
 	for (int i = 0; i < 5; i++) {
 		s->attach_entity(ENTITY_CREATE(entities::Cube, cube));
@@ -90,5 +92,6 @@ void Game::render() {
 	this->renderer->get_render_utils().text({0, 0}, [this](auto&& op) {
 		op.put_line(L"ENTITIES: " + std::to_wstring(this->current_scene->get_entity_count()));
  	});
-	this->renderer->push_buffer();
+
+	this->renderer->render();
 }

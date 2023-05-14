@@ -32,10 +32,12 @@ namespace render {
 		Pixel** current_buffer = nullptr; // pixel matrix
 		Pixel** previous_buffer = nullptr; // previous frame
 		Color background_color = default_colors::BLACK;
+		bool force_render_next_frame = true; // usually just used for first frame
 
 		void free_buff();
 		bool is_in_bounds(const utils::SPoint& pos) const;
 		void push_stream();
+		void push_buffer(bool force_render = false);
 
 	public:
 		Renderer(buff_size_t width, buff_size_t height);
@@ -46,7 +48,7 @@ namespace render {
 		void set_pixel(const Pixel& pixel, const utils::SPoint& position);
 		const Pixel& get_pixel(const utils::SPoint& pos) const;
 		void clear_buffer();
-		void push_buffer();
+		void render();
 		void set_background_color(const Color& color);
 
 		const render_helpers::RenderUtils get_render_utils();
