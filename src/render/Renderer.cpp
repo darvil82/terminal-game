@@ -66,13 +66,13 @@ namespace render {
 		this->free_buff();
 
 		// create new one
-		this->current_buffer = new Pixel*[new_height];
+		this->current_buffer = new Pixel* [new_height];
 		for (buff_size_t y = 0; y < new_height; y++) {
 			this->current_buffer[y] = new Pixel[new_width]; // default pixels have default background and foreground colors
 		}
 
 		// also create previous
-		this->previous_buffer = new Pixel*[new_height];
+		this->previous_buffer = new Pixel* [new_height];
 		for (buff_size_t y = 0; y < new_height; y++) {
 			this->previous_buffer[y] = new Pixel[new_width];
 		}
@@ -82,7 +82,7 @@ namespace render {
 	}
 
 	std::tuple<Renderer::buff_size_t, Renderer::buff_size_t> Renderer::get_size() const {
-		return { this->buffer_width, this->buffer_height };
+		return {this->buffer_width, this->buffer_height};
 	}
 
 	void Renderer::set_pixel(const Pixel& pixel, const utils::SPoint& position) {
@@ -137,11 +137,14 @@ namespace render {
 
 				// if pixel is not adjacent to previous one, we need to place cursor at its position
 				if (adjacent_streak == 0) {
-					buff << TerminalSequences::cursor_set_pos({ x, y });
+					buff << TerminalSequences::cursor_set_pos({x, y});
 				}
 
-				// only print color sequences if they are different from previous pixel
-				if (!last_pixel || last_pixel->color_fg != current_pixel.color_fg) {
+
+				/* only print color sequences if they are different from previous pixel */
+
+				// we don't need to print the foreground color if the text won't be visible!
+				if (current_pixel.character != ' ' && (!last_pixel || last_pixel->color_fg != current_pixel.color_fg)) {
 					buff << current_pixel.color_fg.get_sequence();
 				}
 
@@ -184,6 +187,7 @@ namespace render {
 	const render_helpers::RenderUtils Renderer::get_render_utils() {
 		return render_helpers::RenderUtils(*this);
 	}
+
 
 	namespace render_helpers {
 
@@ -268,7 +272,7 @@ namespace render {
 
 		void DrawOperation::rect(const utils::SPoint& size) {
 			auto start_pos = this->current_pos;
-			for (int16_t y = start_pos.y; y < size.y + start_pos.y ; y++) {
+			for (int16_t y = start_pos.y; y < size.y + start_pos.y; y++) {
 				for (int16_t x = start_pos.x; x < size.x + start_pos.x; x++) {
 					this->set_position({x, y});
 				}

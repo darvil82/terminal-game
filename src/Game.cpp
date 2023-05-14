@@ -29,7 +29,7 @@ void Game::stop_loop() {
 }
 
 void Game::init() {
-	this->renderer->set_background_color({ 30, 30, 30 });
+	this->renderer->set_background_color({30, 30, 30});
 
 	Scene* s = new Scene();
 	for (int i = 0; i < 5; i++) {
@@ -70,9 +70,9 @@ void Game::tick(float delta) {
 		this->current_scene->tick(delta);
 
 	if (INPUT_IS_PRESSED(SPACE)) {
-		for (auto& cube : this->current_scene->get_entities_filtered<entities::Cube>(
+		for (auto& cube: this->current_scene->get_entities_filtered<entities::Cube>(
 			entities::ent_is_classname("cube"))
-		) {
+			) {
 			cube->jump();
 		}
 	}
@@ -91,7 +91,7 @@ void Game::render() {
 
 	this->renderer->get_render_utils().text({0, 0}, [this](auto&& op) {
 		op.put_line(L"ENTITIES: " + std::to_wstring(this->current_scene->get_entity_count()));
- 	});
+	});
 
 	this->renderer->render();
 }

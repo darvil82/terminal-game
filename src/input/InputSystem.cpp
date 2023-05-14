@@ -40,7 +40,7 @@ namespace input {
 
 	void InputSystem::read_input() {
 		while (this->is_reading) {
-			key_buff_t buff = { 0 }; // clear current_buffer
+			key_buff_t buff = {0}; // clear current_buffer
 			if (read(0, &buff, buff.size()) > 0) {
 				this->pressed_key_buff = buff; // only if we read something
 			}
@@ -62,7 +62,6 @@ namespace input {
 	bool InputSystem::is_key_pressed(const keys::KeyboardKey& key) const {
 		return key.matches(this->last_pressed_key_buff);
 	}
-
 
 
 	InputSystem& input::InputSystem::instance() {

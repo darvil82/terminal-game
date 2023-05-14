@@ -40,6 +40,7 @@ namespace input {
 			using KeyboardKey::KeyboardKey;
 		};
 
+
 		class NumericKey : public KeyboardKey {
 		public:
 			using KeyboardKey::KeyboardKey;
@@ -60,6 +61,7 @@ namespace input {
 		public:
 			using KeyboardKey::KeyboardKey;
 		};
+
 
 		constexpr const auto A = AlphaKey({97});
 		constexpr const auto B = AlphaKey({98});

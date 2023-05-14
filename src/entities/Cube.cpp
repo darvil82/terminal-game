@@ -6,7 +6,7 @@
 namespace entities {
 
 	void Cube::render(const render::render_helpers::RenderUtils& render_utils) const {
-		render_utils.draw(utils::Point{ this->position.x - 5, this->position.y - 2 }, [this](auto&& r) {
+		render_utils.draw(utils::Point {this->position.x - 5, this->position.y - 2}, [this](auto&& r) {
 			r.set_color(this->color);
 			r.rect({10, 5});
 		});

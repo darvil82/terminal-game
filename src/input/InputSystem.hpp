@@ -9,6 +9,7 @@
 
 #define INPUT_IS_PRESSED(key) input::InputSystem::instance().is_key_pressed(INPUT_KEY(key))
 
+
 class Game;
 
 namespace input {
