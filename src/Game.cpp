@@ -30,7 +30,7 @@ void Game::stop_loop() {
 
 void Game::init() {
 	Scene* s = new Scene();
-	for (int i = 0; i < 15; i++) {
+	for (int i = 0; i < 5; i++) {
 		s->attach_entity(ENTITY_CREATE(entities::Cube, cube));
 	}
 	this->current_scene = s;
@@ -40,14 +40,14 @@ void Game::end() {
 }
 
 void Game::main_loop() {
-	timestamp last_frame = chrono::steady_clock::now();
+	timestamp last_frame_time = chrono::steady_clock::now();
 	constexpr const uint8_t max_fps = 60;
 
 	while (this->running) {
-		const timestamp current_frame = chrono::steady_clock::now();
+		const timestamp current_frame_time = chrono::steady_clock::now();
 
-		float delta = duration_cast<chrono::duration<float>>(current_frame - last_frame).count();
-		last_frame = current_frame;
+		float delta = duration_cast<chrono::duration<float>>(current_frame_time - last_frame_time).count();
+		last_frame_time = current_frame_time;
 
 		this->tick(delta);
 		this->render();
@@ -73,6 +73,9 @@ void Game::tick(float delta) {
 		) {
 			cube->jump();
 		}
+	}
+
+	if (INPUT_IS_PRESSED(C)) {
 		this->current_scene->attach_entity(ENTITY_CREATE(entities::Cube, cube));
 	}
 }

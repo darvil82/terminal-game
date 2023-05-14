@@ -34,34 +34,51 @@ namespace render {
 	}
 
 	void Renderer::free_buff() {
-		if (!this->buffer) return;
+		if (!this->current_buffer) return;
 
 		for (buff_size_t y = 0; y < this->buffer_height; y++) {
-			// free row
-			delete[] this->buffer[y];
+			// free rows of matrices
+			delete[] this->current_buffer[y];
 		}
 
-		// free buffer
-		delete[] this->buffer;
-		this->buffer = nullptr;
+		// free matrices
+		delete[] this->current_buffer;
+		this->current_buffer = nullptr;
+
+		// free previous
+		if (!this->previous_buffer) return;
+
+		for (buff_size_t y = 0; y < this->buffer_height; y++) {
+			// free rows of matrices
+			delete[] this->previous_buffer[y];
+		}
+
+		// free matrices
+		delete[] this->previous_buffer;
+		this->previous_buffer = nullptr;
 	}
 
 	void Renderer::resize(buff_size_t new_width, buff_size_t new_height) {
 		// unchanged... nothing to do
-		if (this->buffer && new_height == this->buffer_height && new_width == this->buffer_width) return;
+		if (this->current_buffer && new_height == this->buffer_height && new_width == this->buffer_width) return;
 
 		// free previous
 		this->free_buff();
 
 		// create new one
-		this->buffer = new Pixel*[new_height];
+		this->current_buffer = new Pixel*[new_height];
 		for (buff_size_t y = 0; y < new_height; y++) {
-			this->buffer[y] = new Pixel[new_width]; // default pixels have default background and foreground colors
+			this->current_buffer[y] = new Pixel[new_width]; // default pixels have default background and foreground colors
+		}
+
+		// also create previous
+		this->previous_buffer = new Pixel*[new_height];
+		for (buff_size_t y = 0; y < new_height; y++) {
+			this->previous_buffer[y] = new Pixel[new_width];
 		}
 
 		this->buffer_width = new_width;
 		this->buffer_height = new_height;
-		this->buffer_changed = false;
 	}
 
 	std::tuple<Renderer::buff_size_t, Renderer::buff_size_t> Renderer::get_size() const {
@@ -71,54 +88,91 @@ namespace render {
 	void Renderer::set_pixel(const Pixel& pixel, const utils::SPoint& position) {
 		if (!this->is_in_bounds(position)) return;
 
-		this->buffer[position.y][position.x] = pixel;
-		this->buffer_changed = true;
+		this->current_buffer[position.y][position.x] = pixel;
 	}
 
 	const Pixel& Renderer::get_pixel(const utils::SPoint& pos) const {
 		if (!this->is_in_bounds(pos))
 			throw std::out_of_range("Pixel out of bounds");
-		return this->buffer[pos.y][pos.x];
+		return this->current_buffer[pos.y][pos.x];
 	}
 
 	void Renderer::clear_buffer() {
 		for (buff_size_t y = 0; y < this->buffer_height; y++) {
 			for (buff_size_t x = 0; x < this->buffer_width; x++) {
-				this->buffer[y][x] = Pixel(L' ', default_colors::WHITE, default_colors::BLACK);
+				this->previous_buffer[y][x] = this->current_buffer[y][x]; // copy current to previous
+				this->current_buffer[y][x] = Pixel(
+					L' ', default_colors::WHITE, this->background_color
+				);
 			}
 		}
-		this->buffer_changed = false;
 	}
 
 	void Renderer::push_buffer() {
-		if (!this->buffer_changed) return; // don't need to push if nothing changed
-		const Pixel* prev_pixel = nullptr;
-
-		output_stream << TerminalSequences::CURSOR_HOME;
+		std::wstringstream buff;
+		const Pixel* last_pixel = nullptr;
+		uint16_t adjacent_streak = 0; // number streak of adjacent pixels placed
+		uint16_t pixels_changed_count = 0; // number of pixels changed in this frame
 
 		for (buff_size_t y = 0; y < this->buffer_height; y++) {
 			for (buff_size_t x = 0; x < this->buffer_width; x++) {
-				const Pixel& current_pixel = this->buffer[y][x];
+				const Pixel& current_pixel = this->current_buffer[y][x];
+				const Pixel& prev_frame_pixel = this->previous_buffer[y][x];
 
-				// if the previous char colors are the same, we don't need to add the sequence again, just the char
-				if (!prev_pixel || current_pixel.color_fg != prev_pixel->color_fg)
-					output_stream << current_pixel.color_fg.get_sequence();
+				const bool is_unchanged = current_pixel == prev_frame_pixel;
 
-				if (!prev_pixel || current_pixel.color_bg != prev_pixel->color_bg)
-					output_stream << current_pixel.color_bg.get_sequence(true);
+				// if pixel hasn't changed since last frame, skip it
+				if (is_unchanged) {
+					adjacent_streak = 0;
+					continue;
+				}
 
-				output_stream << current_pixel.character;
-				prev_pixel = &current_pixel;
+				/*
+				 * pixel should be placed at x0 (first pixel in line). If this one is adjacent to previous one,
+				 * this means we are wrapping to next line, so we need to place cursor there.
+				 */
+				if (x == 0 && adjacent_streak != 0) {
+					buff << '\n'; // wrap to next line
+				}
+
+				// if pixel is not adjacent to previous one, we need to place cursor at its position
+				if (adjacent_streak == 0) {
+					buff << TerminalSequences::cursor_set_pos({ x, y });
+				}
+
+				// only print color sequences if they are different from previous pixel
+				if (!last_pixel || last_pixel->color_fg != current_pixel.color_fg) {
+					buff << current_pixel.color_fg.get_sequence();
+				}
+
+				if (!last_pixel || last_pixel->color_bg != current_pixel.color_bg) {
+					buff << current_pixel.color_bg.get_sequence(true);
+				}
+
+				buff << current_pixel.character; // print character
+
+				last_pixel = &current_pixel;
+				adjacent_streak++;
+				pixels_changed_count++;
 			}
-			output_stream << '\n';
 		}
 
+		// if nothing changed, don't push anything
+		if (pixels_changed_count == 0) return;
+
+		// move cursor to home position (0, 0)
+		output_stream << TerminalSequences::CURSOR_HOME;
+		output_stream << buff.str();
 		this->push_stream();
 	}
 
 	void Renderer::push_stream() {
 		std::wcout << output_stream.str() << std::flush;
 		output_stream.str(L"");
+	}
+
+	void Renderer::set_background_color(const Color& color) {
+		this->background_color = color;
 	}
 
 	const render_helpers::RenderUtils Renderer::get_render_utils() {

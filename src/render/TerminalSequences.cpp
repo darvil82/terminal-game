@@ -17,8 +17,8 @@ namespace render {
 	std::wstring TerminalSequences::cursor_set_pos(utils::UPoint pos) {
 		std::wstringstream buff;
 		buff << TerminalSequences::ESCAPE_SEQUENCE_START
-			<< pos.y << ';'
-			<< pos.x << 'f';
+			<< pos.y + 1 << ';'
+			<< pos.x + 1 << 'f';
 		return buff.str();
 	}
 

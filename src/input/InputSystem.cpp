@@ -40,7 +40,7 @@ namespace input {
 
 	void InputSystem::read_input() {
 		while (this->is_reading) {
-			key_buff_t buff = { 0 }; // clear buffer
+			key_buff_t buff = { 0 }; // clear current_buffer
 			if (read(0, &buff, buff.size()) > 0) {
 				this->pressed_key_buff = buff; // only if we read something
 			}
@@ -49,7 +49,7 @@ namespace input {
 	}
 
 	/**
-	 * Resets the key buffer if the key buffer has not changed since the last reset.
+	 * Resets the key current_buffer if the key current_buffer has not changed since the last reset.
 	 */
 	void InputSystem::reset_key_buff() {
 		if (this->pressed_key_buff == this->last_pressed_key_buff) {

@@ -51,6 +51,7 @@ namespace render {
 		Pixel() : Pixel {L' ', default_colors::WHITE, default_colors::BLACK} { }
 
 		const Pixel& operator=(const Pixel& other);
+		bool operator==(const Pixel& other) const;
 
 		std::wstring get_sequence() const override;
 	};

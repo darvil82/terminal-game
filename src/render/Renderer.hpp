@@ -29,8 +29,9 @@ namespace render {
 		std::string prev_locale;
 		std::wstringstream output_stream;
 		buff_size_t buffer_width = 50, buffer_height = 50;
-		Pixel** buffer = nullptr; // pixel matrix
-		bool buffer_changed = false;
+		Pixel** current_buffer = nullptr; // pixel matrix
+		Pixel** previous_buffer = nullptr; // previous frame
+		Color background_color = default_colors::BLACK;
 
 		void free_buff();
 		bool is_in_bounds(const utils::SPoint& pos) const;
@@ -46,6 +47,7 @@ namespace render {
 		const Pixel& get_pixel(const utils::SPoint& pos) const;
 		void clear_buffer();
 		void push_buffer();
+		void set_background_color(const Color& color);
 
 		const render_helpers::RenderUtils get_render_utils();
 	};
