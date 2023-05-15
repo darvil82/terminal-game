@@ -27,6 +27,8 @@ namespace render {
 		std::setlocale(LC_ALL, prev_locale.c_str());
 
 		this->free_buff();
+
+		this->stop_render_loop();
 	}
 
 	bool Renderer::is_in_bounds(const utils::SPoint& pos) const {
@@ -79,6 +81,7 @@ namespace render {
 
 		this->buffer_width = new_width;
 		this->buffer_height = new_height;
+		this->force_render_next_frame = true;
 	}
 
 	std::tuple<Renderer::buff_size_t, Renderer::buff_size_t> Renderer::get_size() const {
@@ -101,14 +104,12 @@ namespace render {
 		for (buff_size_t y = 0; y < this->buffer_height; y++) {
 			for (buff_size_t x = 0; x < this->buffer_width; x++) {
 				this->previous_buffer[y][x] = this->current_buffer[y][x]; // copy current to previous
-				this->current_buffer[y][x] = Pixel(
-					L' ', default_colors::WHITE, this->background_color
-				);
+				this->current_buffer[y][x] = this->background_pixel;
 			}
 		}
 	}
 
-	void Renderer::push_buffer(bool force_render) {
+	uint16_t Renderer::push_buffer(bool force_render) {
 		std::wstringstream buff;
 		const Pixel* last_pixel = nullptr;
 		utils::Point<buff_size_t> last_pixel_position = { 0, 0 };
@@ -175,16 +176,19 @@ namespace render {
 		}
 
 		// if nothing changed, don't push anything
-		if (pixels_changed_count == 0) return;
+		if (pixels_changed_count == 0) return 0;
 
 		output_stream << buff.str();
 		this->push_stream();
+
+		return pixels_changed_count;
 	}
 
-	void Renderer::render() {
-		this->push_buffer(this->force_render_next_frame);
+	uint16_t Renderer::render() {
+		auto pixels_changed = this->push_buffer(this->force_render_next_frame);
 
 		this->force_render_next_frame = false;
+		return pixels_changed;
 	}
 
 	void Renderer::push_stream() {
@@ -192,12 +196,30 @@ namespace render {
 		output_stream.str(L"");
 	}
 
-	void Renderer::set_background_color(const Color& color) {
-		this->background_color = color;
+	void Renderer::set_background_pixel(const Pixel& pixel) {
+		this->background_pixel = pixel;
 	}
 
 	const render_helpers::RenderUtils Renderer::get_render_utils() {
 		return render_helpers::RenderUtils(*this);
+	}
+
+	void Renderer::start_render_loop(std::function<void(const render_helpers::RenderUtils&)> func) {
+		this->is_rendering = true;
+		this->render_thread = std::thread([this, func]() {
+			while (this->is_rendering) {
+				this->clear_buffer();
+				func(this->get_render_utils());
+				auto changed_pixels = this->render();
+
+				std::this_thread::sleep_for(std::chrono::milliseconds(10));
+			}
+		});
+	}
+
+	void Renderer::stop_render_loop() {
+		this->is_rendering = false;
+		this->render_thread.join();
 	}
 
 

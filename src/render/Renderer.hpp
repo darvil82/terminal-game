@@ -6,6 +6,7 @@
 #include <optional>
 #include <functional>
 #include <tuple>
+#include <thread>
 
 #include "Characters.hpp"
 #include "IRenderSequence.hpp"
@@ -26,18 +27,21 @@ namespace render {
 	class Renderer {
 		using buff_size_t = uint16_t;
 
-		std::string prev_locale;
+		std::string prev_locale; // previous locale
 		std::wstringstream output_stream;
+		std::thread render_thread;
 		buff_size_t buffer_width = 50, buffer_height = 50;
 		Pixel** current_buffer = nullptr; // pixel matrix
 		Pixel** previous_buffer = nullptr; // previous frame
-		Color background_color = default_colors::BLACK;
+		Pixel background_pixel = { ' ', default_colors::WHITE, default_colors::BLACK };
 		bool force_render_next_frame = true; // usually just used for first frame
+		bool is_rendering = false;
+		uint8_t max_fps = 60;
 
 		void free_buff();
 		bool is_in_bounds(const utils::SPoint& pos) const;
 		void push_stream();
-		void push_buffer(bool force_render = false);
+		uint16_t push_buffer(bool force_render = false);
 
 	public:
 		Renderer(buff_size_t width, buff_size_t height);
@@ -48,8 +52,10 @@ namespace render {
 		void set_pixel(const Pixel& pixel, const utils::SPoint& position);
 		const Pixel& get_pixel(const utils::SPoint& pos) const;
 		void clear_buffer();
-		void render();
-		void set_background_color(const Color& color);
+		uint16_t render();
+		void set_background_pixel(const Pixel& pixel);
+		void start_render_loop(std::function<void(const render_helpers::RenderUtils&)> func);
+		void stop_render_loop();
 
 		const render_helpers::RenderUtils get_render_utils();
 	};

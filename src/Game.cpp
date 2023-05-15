@@ -30,7 +30,9 @@ void Game::stop_loop() {
 }
 
 void Game::init() {
-	this->renderer->set_background_color({30, 30, 30});
+	this->renderer->start_render_loop([this](auto& render_utils) {
+		this->render(render_utils);
+	});
 
 	Scene* s = new Scene();
 	this->current_scene = s;
@@ -41,7 +43,7 @@ void Game::end() {
 
 void Game::main_loop() {
 	timestamp last_frame_time = chrono::steady_clock::now();
-	constexpr const uint8_t max_fps = 50;
+	constexpr const uint8_t max_tps = 60;
 
 	while (this->running) {
 		const timestamp current_frame_time = chrono::steady_clock::now();
@@ -50,12 +52,11 @@ void Game::main_loop() {
 		last_frame_time = current_frame_time;
 
 		this->tick(delta);
-		this->render();
 		this->input_system->reset_key_buff();
 
-		// cap fps
-		if (delta < 1.0f / max_fps) {
-			std::this_thread::sleep_for(chrono::duration<float>(1.0f / max_fps - delta));
+		// cap the max_tps
+		if (delta < 1.0f / max_tps) {
+			std::this_thread::sleep_for(chrono::duration<float>(1.0f / max_tps - delta));
 		}
 	}
 
@@ -80,20 +81,16 @@ void Game::tick(float delta) {
 	}
 }
 
-void Game::render() {
-	this->renderer->clear_buffer();
-
-	this->renderer->get_render_utils().text({30, 10}, [](auto&& op) {
+void Game::render(const render::render_helpers::RenderUtils& render_utils) const {
+	render_utils.text({30, 10}, [](auto&& op) {
 		op.put_line(L"Press C to spawn a cube, SPACE to shake all cubes!");
 	});
 
 	if (this->current_scene) {
-		this->current_scene->render(this->renderer->get_render_utils());
+		this->current_scene->render(render_utils);
 	}
 
-	this->renderer->get_render_utils().text({0, 0}, [this](auto&& op) {
+	render_utils.text({0, 0}, [this](auto&& op) {
 		op.put_line(L"ENTITIES: " + std::to_wstring(this->current_scene->get_entity_count()));
 	});
-
-	this->renderer->render();
 }
