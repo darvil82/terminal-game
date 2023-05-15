@@ -134,9 +134,8 @@ namespace render {
 					}
 
 					/*
-					 * if pixel now needs to be placed at x0 (first pixel in line).
-					 * If this one is adjacent to previous one, this means we are wrapping to next line,
-					 * so we need to place cursor there.
+					 * if pixel now needs to be placed at x0 (first pixel in line) and it is adjacent to the previous
+					 * one, this means we are wrapping to next line, so we need to place cursor there.
 					 *
 					 * We could just send the set_pos sequence, but that would use more bytes to write than just a
 					 * single '\n' character.
