@@ -122,41 +122,36 @@ namespace render {
 
 				const bool is_unchanged = current_pixel == prev_frame_pixel;
 
+
+				// if pixel hasn't changed since last frame, skip it
+				if (is_unchanged && !force_render) {
+					adjacent_streak = 0;
+					continue;
+				}
+
 				/*
-				 * not worth it to do anything in here if the pixel is the first one to be placed.
-				 * position isn't important either because the cursor is placed at 0,0 at the beginning of the frame.
+				 * if pixel now needs to be placed at x0 (first pixel in line) and it is adjacent to the previous
+				 * one, this means we are wrapping to next line, so we need to place cursor there.
+				 *
+				 * We could just send the set_pos sequence, but that would use more bytes to write than just a
+				 * single '\n' character.
 				 */
-				if (last_pixel) {
-					// if pixel hasn't changed since last frame, skip it
-					if (is_unchanged && !force_render) {
-						adjacent_streak = 0;
-						continue;
-					}
+				if (x == 0 && adjacent_streak != 0) {
+					buff << '\n'; // wrap to next line
+				}
 
-					/*
-					 * if pixel now needs to be placed at x0 (first pixel in line) and it is adjacent to the previous
-					 * one, this means we are wrapping to next line, so we need to place cursor there.
-					 *
-					 * We could just send the set_pos sequence, but that would use more bytes to write than just a
-					 * single '\n' character.
-					 */
-					if (x == 0 && adjacent_streak != 0) {
-						buff << '\n'; // wrap to next line
-					}
-
-					// if pixel is not adjacent to previous one, we need to place cursor at its position
-					if (adjacent_streak == 0) {
-						buff << (
-							/*
-							 * if last pixel was on the same line, we can just move cursor to the right.
-							 * we can save a few bytes to write here by doing this. the move_x writes fewer characters
-							 * than the set_pos, since it doesn't need to write the y coordinate.
-							 */
-							(last_pixel_position.y == y)
-								? TerminalSequences::cursor_move_x(x - last_pixel_position.x - 1)
-								: TerminalSequences::cursor_set_pos({x, y})
-						);
-					}
+				// if pixel is not adjacent to previous one, we need to place cursor at its position
+				if (adjacent_streak == 0) {
+					buff << (
+						/*
+						 * if last pixel was on the same line, we can just move cursor to the right.
+						 * we can save a few bytes to write here by doing this. the move_x writes fewer characters
+						 * than the set_pos, since it doesn't need to write the y coordinate.
+						 */
+						(last_pixel && last_pixel_position.y == y)
+							? TerminalSequences::cursor_move_x(x - last_pixel_position.x - 1)
+							: TerminalSequences::cursor_set_pos({x, y})
+					);
 				}
 
 
@@ -182,8 +177,6 @@ namespace render {
 		// if nothing changed, don't push anything
 		if (pixels_changed_count == 0) return;
 
-		// move cursor to home position (0, 0)
-		output_stream << TerminalSequences::CURSOR_HOME;
 		output_stream << buff.str();
 		this->push_stream();
 	}
