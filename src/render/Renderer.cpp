@@ -111,6 +111,7 @@ namespace render {
 	void Renderer::push_buffer(bool force_render) {
 		std::wstringstream buff;
 		const Pixel* last_pixel = nullptr;
+		utils::Point<buff_size_t> last_pixel_position = { 0, 0 };
 		uint16_t adjacent_streak = 0; // number streak of adjacent pixels placed
 		uint16_t pixels_changed_count = 0; // number of pixels changed in this frame
 
@@ -121,30 +122,48 @@ namespace render {
 
 				const bool is_unchanged = current_pixel == prev_frame_pixel;
 
-				// if pixel hasn't changed since last frame, skip it
-				if (is_unchanged && !force_render) {
-					adjacent_streak = 0;
-					continue;
-				}
-
 				/*
-				 * pixel should be placed at x0 (first pixel in line). If this one is adjacent to previous one,
-				 * this means we are wrapping to next line, so we need to place cursor there.
+				 * not worth it to do anything in here if the pixel is the first one to be placed.
+				 * position isn't important either because the cursor is placed at 0,0 at the beginning of the frame.
 				 */
-				if (x == 0 && adjacent_streak != 0) {
-					buff << '\n'; // wrap to next line
-				}
+				if (last_pixel) {
+					// if pixel hasn't changed since last frame, skip it
+					if (is_unchanged && !force_render) {
+						adjacent_streak = 0;
+						continue;
+					}
 
-				// if pixel is not adjacent to previous one, we need to place cursor at its position
-				if (adjacent_streak == 0) {
-					buff << TerminalSequences::cursor_set_pos({x, y});
+					/*
+					 * if pixel now needs to be placed at x0 (first pixel in line).
+					 * If this one is adjacent to previous one, this means we are wrapping to next line,
+					 * so we need to place cursor there.
+					 *
+					 * We could just send the set_pos sequence, but that would use more bytes to write than just a
+					 * single '\n' character.
+					 */
+					if (x == 0 && adjacent_streak != 0) {
+						buff << '\n'; // wrap to next line
+					}
+
+					// if pixel is not adjacent to previous one, we need to place cursor at its position
+					if (adjacent_streak == 0) {
+						buff << (
+							/*
+							 * if last pixel was on the same line, we can just move cursor to the right.
+							 * we can save a few bytes to write here by doing this. the move_x writes fewer characters
+							 * than the set_pos, since it doesn't need to write the y coordinate.
+							 */
+							(last_pixel_position.y == y)
+								? TerminalSequences::cursor_move_x(x - last_pixel_position.x - 1)
+								: TerminalSequences::cursor_set_pos({x, y})
+						);
+					}
 				}
 
 
 				/* only print color sequences if they are different from previous pixel */
 
-				// we don't need to print the foreground color if the text won't be visible!
-				if (current_pixel.character != ' ' && (!last_pixel || last_pixel->color_fg != current_pixel.color_fg)) {
+				if (!last_pixel || last_pixel->color_fg != current_pixel.color_fg) {
 					buff << current_pixel.color_fg.get_sequence();
 				}
 
@@ -155,6 +174,7 @@ namespace render {
 				buff << current_pixel.character; // print character
 
 				last_pixel = &current_pixel;
+				last_pixel_position = { x, y };
 				adjacent_streak++;
 				pixels_changed_count++;
 			}

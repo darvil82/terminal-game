@@ -13,6 +13,7 @@ using timestamp = decltype(chrono::steady_clock::now());
 Game::Game() {
 	this->renderer = std::make_unique<render::Renderer>(90, 25);
 	this->input_system = &input::InputSystem::instance();
+	std::srand(std::time(nullptr));
 }
 
 void Game::start_loop() {
@@ -32,9 +33,6 @@ void Game::init() {
 	this->renderer->set_background_color({30, 30, 30});
 
 	Scene* s = new Scene();
-	for (int i = 0; i < 5; i++) {
-		s->attach_entity(ENTITY_CREATE(entities::Cube, cube));
-	}
 	this->current_scene = s;
 }
 
@@ -43,7 +41,7 @@ void Game::end() {
 
 void Game::main_loop() {
 	timestamp last_frame_time = chrono::steady_clock::now();
-	constexpr const uint8_t max_fps = 60;
+	constexpr const uint8_t max_fps = 50;
 
 	while (this->running) {
 		const timestamp current_frame_time = chrono::steady_clock::now();
@@ -84,6 +82,10 @@ void Game::tick(float delta) {
 
 void Game::render() {
 	this->renderer->clear_buffer();
+
+	this->renderer->get_render_utils().text({30, 10}, [](auto&& op) {
+		op.put_line(L"Press C to spawn a cube, SPACE to shake all cubes!");
+	});
 
 	if (this->current_scene) {
 		this->current_scene->render(this->renderer->get_render_utils());

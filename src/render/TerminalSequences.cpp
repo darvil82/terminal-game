@@ -26,9 +26,12 @@ namespace render {
 		if (x == 0) return L"";
 
 		std::wstringstream buff;
-		buff << TerminalSequences::ESCAPE_SEQUENCE_START
-			<< abs(x)
-			<< (x < 0 ? 'D' : 'C');
+		buff << TerminalSequences::ESCAPE_SEQUENCE_START;
+
+		if (auto absolute = abs(x); absolute != 1)
+			buff << absolute;
+
+		buff << (x < 0 ? 'D' : 'C');
 		return buff.str();
 	}
 
@@ -36,9 +39,12 @@ namespace render {
 		if (y == 0) return L"";
 
 		std::wstringstream buff;
-		buff << TerminalSequences::ESCAPE_SEQUENCE_START
-			<< abs(y)
-			<< (y < 0 ? 'A' : 'B');
+		buff << TerminalSequences::ESCAPE_SEQUENCE_START;
+
+		if (auto absolute = abs(y); absolute != 1)
+			buff << absolute;
+
+		buff << (y < 0 ? 'A' : 'B');
 		return buff.str();
 	}
 
