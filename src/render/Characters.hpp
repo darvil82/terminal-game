@@ -2,6 +2,10 @@
 
 namespace render {
 	namespace default_characters {
+		enum : wchar_t {
+			SPACE = L' ',
+		};
+
 		namespace lines {
 			namespace light {
 				enum : wchar_t {

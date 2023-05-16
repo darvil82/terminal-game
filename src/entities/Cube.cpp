@@ -6,9 +6,9 @@
 namespace entities {
 
 	void Cube::render(const render::render_helpers::RenderUtils& render_utils) const {
-		render_utils.draw(utils::Point {this->position.x - 2, this->position.y - 1}, [this](auto&& r) {
+		render_utils.draw(this->position, [this](auto&& r) {
 			r.set_color(this->color);
-			r.rect({4, 2});
+//			r.rect({4, 2});
 		});
 
 //		render_utils.text(this->position, [this](auto&& r) {
@@ -21,9 +21,9 @@ namespace entities {
 		BaseEntity::tick(delta);
 
 		bool hit_x =
-			(this->position.x >= 90 && this->velocity.x > 0) || (this->position.x <= 0 && this->velocity.x < 0);
+			(this->position.x >= 120 && this->velocity.x > 0) || (this->position.x <= 0 && this->velocity.x < 0);
 		bool hit_y =
-			(this->position.y >= 24 && this->velocity.y > 0) || (this->position.y <= 0 && this->velocity.y < 0);
+			(this->position.y >= 30 && this->velocity.y > 0) || (this->position.y <= 0 && this->velocity.y < 0);
 
 		if (hit_x) this->velocity.x *= -1;
 		if (hit_y) this->velocity.y *= -1;
@@ -34,10 +34,10 @@ namespace entities {
 		// apply gravity
 		this->velocity.y += 30 * delta;
 
-		bool is_on_ground = this->position.y >= 24;
+		bool is_on_ground = this->position.y >= 30;
 
 		if (is_on_ground) {
-			this->position.y = 24;
+			this->position.y = 30;
 			this->velocity.x *= pow(0.005, delta);
 		}
 

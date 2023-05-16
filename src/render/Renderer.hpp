@@ -33,27 +33,33 @@ namespace render {
 		buff_size_t buffer_width = 50, buffer_height = 50;
 		Pixel** current_buffer = nullptr; // pixel matrix
 		Pixel** previous_buffer = nullptr; // previous frame
-		Pixel background_pixel = { ' ', default_colors::WHITE, default_colors::BLACK };
+		Pixel background_pixel = {
+			default_characters::SPACE, default_colors::WHITE, default_colors::BLACK
+		};
 		bool force_render_next_frame = true; // usually just used for first frame
 		bool is_rendering = false;
-		uint8_t max_fps = 60;
+		uint8_t max_fps = 60, current_fps = 60;
 
 		void free_buff();
 		bool is_in_bounds(const utils::SPoint& pos) const;
 		void push_stream();
+		void clear_buffer();
 		uint16_t push_buffer(bool force_render = false);
+		void render(std::function<void(const render_helpers::RenderUtils&)> func);
 
 	public:
 		Renderer(buff_size_t width, buff_size_t height);
 		~Renderer();
 
-		void resize(buff_size_t new_width, buff_size_t new_height);
 		std::tuple<buff_size_t, buff_size_t> get_size() const;
 		void set_pixel(const Pixel& pixel, const utils::SPoint& position);
 		const Pixel& get_pixel(const utils::SPoint& pos) const;
-		void clear_buffer();
-		uint16_t render();
 		void set_background_pixel(const Pixel& pixel);
+		void set_max_fps(uint8_t fps);
+		uint8_t get_max_fps() const;
+		uint8_t get_current_fps() const;
+
+		void resize(buff_size_t new_width, buff_size_t new_height);
 		void start_render_loop(std::function<void(const render_helpers::RenderUtils&)> func);
 		void stop_render_loop();
 

@@ -2,16 +2,15 @@
 #include <thread>
 #include "Game.hpp"
 #include "utils/Cleanup.hpp"
+#include "utils/Typedefs.hpp"
 #include "entities/definition/EntityDB.hpp"
 #include "entities/Cube.hpp"
 #include "entities/bases/BaseEntity.hpp"
 #include "input/InputSystem.hpp"
 
-namespace chrono = std::chrono;
-using timestamp = decltype(chrono::steady_clock::now());
 
 Game::Game() {
-	this->renderer = std::make_unique<render::Renderer>(90, 25);
+	this->renderer = std::make_unique<render::Renderer>(120, 30);
 	this->input_system = &input::InputSystem::instance();
 	std::srand(std::time(nullptr));
 }
@@ -30,26 +29,31 @@ void Game::stop_loop() {
 }
 
 void Game::init() {
+	Scene* s = new Scene();
+	for (int i = 0; i < 750; i++) {
+		s->attach_entity(ENTITY_CREATE(entities::Cube, cube));
+	}
+	this->current_scene = s;
+
+	this->renderer->set_max_fps(100);
+
 	this->renderer->start_render_loop([this](auto& render_utils) {
 		this->render(render_utils);
 	});
-
-	Scene* s = new Scene();
-	this->current_scene = s;
 }
 
 void Game::end() {
 }
 
 void Game::main_loop() {
-	timestamp last_frame_time = chrono::steady_clock::now();
+	timestamp last_tick_time = chrono::steady_clock::now();
 	constexpr const uint8_t max_tps = 60;
 
 	while (this->running) {
-		const timestamp current_frame_time = chrono::steady_clock::now();
+		const timestamp current_tick_time = chrono::steady_clock::now();
 
-		float delta = duration_cast<chrono::duration<float>>(current_frame_time - last_frame_time).count();
-		last_frame_time = current_frame_time;
+		float delta = duration_cast<chrono::duration<float>>(current_tick_time - last_tick_time).count();
+		last_tick_time = current_tick_time;
 
 		this->tick(delta);
 		this->input_system->reset_key_buff();
@@ -92,5 +96,6 @@ void Game::render(const render::render_helpers::RenderUtils& render_utils) const
 
 	render_utils.text({0, 0}, [this](auto&& op) {
 		op.put_line(L"ENTITIES: " + std::to_wstring(this->current_scene->get_entity_count()));
+		op.put_line(L"FPS: " + std::to_wstring(this->renderer->get_current_fps()));
 	});
 }

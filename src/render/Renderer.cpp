@@ -1,10 +1,12 @@
 #include <stdexcept>
 #include <sstream>
 #include <iostream>
+#include <cmath>
 
 #include "Renderer.hpp"
 #include "TerminalSequences.hpp"
 #include "Pixel.hpp"
+#include "../utils/Typedefs.hpp"
 
 
 namespace render {
@@ -184,11 +186,28 @@ namespace render {
 		return pixels_changed_count;
 	}
 
-	uint16_t Renderer::render() {
-		auto pixels_changed = this->push_buffer(this->force_render_next_frame);
+	void Renderer::render(std::function<void(const render_helpers::RenderUtils&)> func) {
+		timestamp last_frame_time = chrono::steady_clock::now();
 
-		this->force_render_next_frame = false;
-		return pixels_changed;
+		while (this->is_rendering) {
+			const timestamp current_frame_time = chrono::steady_clock::now();
+			const double frame_time = chrono::duration_cast<chrono::duration<double>>(current_frame_time - last_frame_time).count();
+			last_frame_time = current_frame_time;
+
+			this->clear_buffer();
+			func(this->get_render_utils());
+			auto changed_pixels = this->push_buffer(this->force_render_next_frame);
+
+			// limit the framerate logarithmically based on how many pixels changed
+			this->current_fps = this->max_fps * pow(0.4, changed_pixels / 500.0);
+
+			// cap framerate to current max fps. make sure we don't wait the first frame
+			if (!this->force_render_next_frame && frame_time < 1.0f / this->current_fps) {
+				std::this_thread::sleep_for(chrono::duration<float>(1.0f / this->current_fps - frame_time));
+			}
+
+			this->force_render_next_frame = false;
+		}
 	}
 
 	void Renderer::push_stream() {
@@ -204,17 +223,21 @@ namespace render {
 		return render_helpers::RenderUtils(*this);
 	}
 
+	void Renderer::set_max_fps(uint8_t fps) {
+		this->max_fps = fps;
+	}
+
+	uint8_t Renderer::get_max_fps() const {
+		return this->max_fps;
+	}
+
+	uint8_t Renderer::get_current_fps() const {
+		return this->current_fps;
+	}
+
 	void Renderer::start_render_loop(std::function<void(const render_helpers::RenderUtils&)> func) {
 		this->is_rendering = true;
-		this->render_thread = std::thread([this, func]() {
-			while (this->is_rendering) {
-				this->clear_buffer();
-				func(this->get_render_utils());
-				auto changed_pixels = this->render();
-
-				std::this_thread::sleep_for(std::chrono::milliseconds(10));
-			}
-		});
+		this->render_thread = std::thread(&Renderer::render, this, func);
 	}
 
 	void Renderer::stop_render_loop() {
