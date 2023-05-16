@@ -198,7 +198,7 @@ namespace render {
 			func(this->get_render_utils());
 			auto changed_pixels = this->push_buffer(this->force_render_next_frame);
 
-			// limit the framerate logarithmically based on how many pixels changed
+			// limit the framerate exponentially based on how many pixels changed
 			this->current_fps = this->max_fps * pow(0.4, changed_pixels / 500.0);
 
 			// cap framerate to current max fps. make sure we don't wait the first frame
