@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <sstream>
 #include <iostream>
+#include <cstring>
 #include "TerminalSequences.hpp"
 #include "Pixel.hpp"
 
@@ -12,6 +13,26 @@ namespace render {
 		ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 
 		return {w.ws_col, w.ws_row};
+	}
+
+	bool TerminalSequences::is_a_terminal() {
+		return isatty(STDOUT_FILENO);
+	}
+
+	bool TerminalSequences::is_a_tty() {
+		if (!TerminalSequences::is_a_terminal()) return false;
+
+		auto* terminal_name = ttyname(STDOUT_FILENO);
+
+		if (!terminal_name) return false;
+
+		// check if terminal name ends with "ttyN" where N is a number
+		for (auto i = strlen(terminal_name) - 1; i >= 0; i--) {
+			if (terminal_name[i] == '/') break;
+			if (terminal_name[i] == 'y' && terminal_name[i - 1] == 't' && terminal_name[i - 2] == 't') return true;
+		}
+
+		return false;
 	}
 
 	std::wstring TerminalSequences::cursor_set_pos(utils::UPoint pos) {

@@ -1,6 +1,7 @@
 #include <cwchar>
 #include <thread>
 #include "Game.hpp"
+#include "render/TerminalSequences.hpp"
 #include "utils/Cleanup.hpp"
 #include "utils/Typedefs.hpp"
 #include "entities/definition/EntityDB.hpp"
@@ -10,7 +11,9 @@
 
 
 Game::Game() {
-	this->renderer = std::make_unique<render::Renderer>(120, 30);
+	auto [ width, height ] = render::TerminalSequences::get_terminal_size();
+	this->renderer = std::make_unique<render::Renderer>(width, height);
+
 	this->input_system = &input::InputSystem::instance();
 	std::srand(std::time(nullptr));
 }
@@ -30,12 +33,12 @@ void Game::stop_loop() {
 
 void Game::init() {
 	Scene* s = new Scene();
-	for (int i = 0; i < 750; i++) {
+
+	for (int i = 0; i < 700; i++) {
 		s->attach_entity(ENTITY_CREATE(entities::Cube, cube));
 	}
-	this->current_scene = s;
 
-	this->renderer->set_max_fps(100);
+	this->current_scene = s;
 
 	this->renderer->start_render_loop([this](auto& render_utils) {
 		this->render(render_utils);
@@ -47,7 +50,7 @@ void Game::end() {
 
 void Game::main_loop() {
 	timestamp last_tick_time = chrono::steady_clock::now();
-	constexpr const uint8_t max_tps = 60;
+	constexpr const uint8_t max_tps = 50;
 
 	while (this->running) {
 		const timestamp current_tick_time = chrono::steady_clock::now();

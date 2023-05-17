@@ -14,14 +14,14 @@ class Scene;
 
 
 #define DEFINE_ENTITY_FACTORY(type) \
-    inline definition::EntityFactory<type> classname(type::classname);
+    inline definition::EntityFactory<type> classname(type::CLASSNAME);
 
 #define DEFINE_ENTITY_CLASS(clsname) \
     public:                               \
-        static constexpr const char* classname = #clsname; \
+        static constexpr const char* CLASSNAME = #clsname; \
                                        \
         virtual constexpr const char* get_classname() override { \
-            return classname;    \
+            return CLASSNAME;    \
         }                              \
                                        \
     private:

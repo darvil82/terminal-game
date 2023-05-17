@@ -21,7 +21,7 @@ namespace entities {
 		BaseEntity::tick(delta);
 
 		bool hit_x =
-			(this->position.x >= 120 && this->velocity.x > 0) || (this->position.x <= 0 && this->velocity.x < 0);
+			(this->position.x >= 90 && this->velocity.x > 0) || (this->position.x <= 0 && this->velocity.x < 0);
 		bool hit_y =
 			(this->position.y >= 30 && this->velocity.y > 0) || (this->position.y <= 0 && this->velocity.y < 0);
 

@@ -38,8 +38,10 @@ namespace render {
 		};
 		bool force_render_next_frame = true; // usually just used for first frame
 		bool is_rendering = false;
-		uint8_t max_fps = 60, current_fps = 60;
+		bool enabled_optimization = false; // terminal emulators struggle with lots data per frame
+		uint8_t max_fps = 50, current_fps = max_fps;
 
+		void set_current_fps(uint8_t fps);
 		void free_buff();
 		bool is_in_bounds(const utils::SPoint& pos) const;
 		void push_stream();

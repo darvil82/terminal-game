@@ -14,6 +14,8 @@ namespace render {
 		this->prev_locale = std::setlocale(LC_ALL, nullptr);
 		std::setlocale(LC_ALL, "en_US.utf8");
 
+		this->enabled_optimization = !TerminalSequences::is_a_tty();
+
 		this->resize(width, height);
 
 		output_stream << TerminalSequences::CURSOR_HIDE
@@ -23,18 +25,24 @@ namespace render {
 	}
 
 	Renderer::~Renderer() {
+		this->stop_render_loop();
+
 		output_stream << TerminalSequences::CURSOR_SHOW
+			<< TerminalSequences::CLEAR_ALL
 			<< TerminalSequences::BUFFER_OLD;
+
 		this->push_stream();
 		std::setlocale(LC_ALL, prev_locale.c_str());
 
 		this->free_buff();
-
-		this->stop_render_loop();
 	}
 
 	bool Renderer::is_in_bounds(const utils::SPoint& pos) const {
 		return pos.x < this->buffer_width && pos.x >= 0 && pos.y < this->buffer_height && pos.y >= 0;
+	}
+
+	void Renderer::set_current_fps(uint8_t fps) {
+		this->current_fps = std::max(std::min(fps, this->max_fps), static_cast<uint8_t>(1));
 	}
 
 	void Renderer::free_buff() {
@@ -187,7 +195,9 @@ namespace render {
 	}
 
 	void Renderer::render(std::function<void(const render_helpers::RenderUtils&)> func) {
-		timestamp last_frame_time = chrono::steady_clock::now();
+		constexpr const double PIXEL_CHANGE_THRESHOLD = 500.0;
+		constexpr const double FRAME_RATE_FACTOR = 0.4;
+		timestamp last_frame_time;
 
 		while (this->is_rendering) {
 			const timestamp current_frame_time = chrono::steady_clock::now();
@@ -199,10 +209,11 @@ namespace render {
 			auto changed_pixels = this->push_buffer(this->force_render_next_frame);
 
 			// limit the framerate exponentially based on how many pixels changed
-			this->current_fps = this->max_fps * pow(0.4, changed_pixels / 500.0);
+			if (this->enabled_optimization && changed_pixels > 0)
+				this->set_current_fps(this->max_fps * pow(FRAME_RATE_FACTOR, changed_pixels / PIXEL_CHANGE_THRESHOLD));
 
 			// cap framerate to current max fps. make sure we don't wait the first frame
-			if (!this->force_render_next_frame && frame_time < 1.0f / this->current_fps) {
+			if (frame_time < 1.0f / this->current_fps) {
 				std::this_thread::sleep_for(chrono::duration<float>(1.0f / this->current_fps - frame_time));
 			}
 
@@ -241,6 +252,7 @@ namespace render {
 	}
 
 	void Renderer::stop_render_loop() {
+		if (!this->is_rendering) return;
 		this->is_rendering = false;
 		this->render_thread.join();
 	}
