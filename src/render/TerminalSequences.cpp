@@ -22,14 +22,12 @@ namespace render {
 	bool TerminalSequences::is_a_tty() {
 		if (!TerminalSequences::is_a_terminal()) return false;
 
-		auto* terminal_name = ttyname(STDOUT_FILENO);
-
-		if (!terminal_name) return false;
-
-		// check if terminal name ends with "ttyN" where N is a number
-		for (auto i = strlen(terminal_name) - 1; i >= 0; i--) {
-			if (terminal_name[i] == '/') break;
-			if (terminal_name[i] == 'y' && terminal_name[i - 1] == 't' && terminal_name[i - 2] == 't') return true;
+		if (const char* terminal_name = ttyname(STDOUT_FILENO)) {
+			// check if terminal name ends with "ttyN" where N is a number
+			for (auto i = strlen(terminal_name) - 1; i >= 0; i--) {
+				if (terminal_name[i] == '/') break;
+				if (terminal_name[i] == 'y' && terminal_name[i - 1] == 't' && terminal_name[i - 2] == 't') return true;
+			}
 		}
 
 		return false;
