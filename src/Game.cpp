@@ -1,7 +1,7 @@
 #include <cwchar>
 #include <thread>
 #include "Game.hpp"
-#include "render/TerminalSequences.hpp"
+#include "utils/Terminal.hpp"
 #include "utils/Cleanup.hpp"
 #include "utils/Typedefs.hpp"
 #include "entities/definition/EntityDB.hpp"
@@ -11,7 +11,7 @@
 
 
 Game::Game() {
-	auto [ width, height ] = render::TerminalSequences::get_terminal_size();
+	auto [width, height] = render::Terminal::get_terminal_size();
 	this->renderer = std::make_unique<render::Renderer>(width, height);
 
 	this->input_system = &input::InputSystem::instance();

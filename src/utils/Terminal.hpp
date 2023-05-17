@@ -2,15 +2,15 @@
 
 #include <cstdint>
 #include <string>
-#include "Renderer.hpp"
-#include "Pixel.hpp"
+#include "../render/Renderer.hpp"
+#include "../render/Pixel.hpp"
 
 #define __DEFINE_SEQ(name, value) static constexpr const char* name = "\x1b" value
 
 namespace render {
 
-	struct TerminalSequences final {
-		TerminalSequences() = delete;
+	struct Terminal final {
+		Terminal() = delete;
 
 		static constexpr const char ESCAPE = '\x1b';
 		static constexpr const char* ESCAPE_SEQUENCE_START = "\x1b[";

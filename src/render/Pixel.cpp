@@ -1,10 +1,10 @@
 #include "Pixel.hpp"
-#include "TerminalSequences.hpp"
+#include "../utils/Terminal.hpp"
 
 namespace render {
 
 	std::wstring Color::get_sequence(bool background) const {
-		return TerminalSequences::set_color(*this, background);
+		return Terminal::set_color(*this, background);
 	}
 
 	std::wstring Color::get_sequence() const {

@@ -4,7 +4,7 @@
 #include <cmath>
 
 #include "Renderer.hpp"
-#include "TerminalSequences.hpp"
+#include "../utils/Terminal.hpp"
 #include "Pixel.hpp"
 #include "../utils/Typedefs.hpp"
 
@@ -14,12 +14,12 @@ namespace render {
 		this->prev_locale = std::setlocale(LC_ALL, nullptr);
 		std::setlocale(LC_ALL, "en_US.utf8");
 
-		this->enabled_optimization = !TerminalSequences::is_a_tty();
+		this->enabled_optimization = !Terminal::is_a_tty();
 
 		this->resize(width, height);
 
-		output_stream << TerminalSequences::CURSOR_HIDE
-			<< TerminalSequences::BUFFER_NEW;
+		output_stream << Terminal::CURSOR_HIDE
+			<< Terminal::BUFFER_NEW;
 
 		this->push_stream();
 	}
@@ -27,9 +27,9 @@ namespace render {
 	Renderer::~Renderer() {
 		this->stop_render_loop();
 
-		output_stream << TerminalSequences::CURSOR_SHOW
-			<< TerminalSequences::CLEAR_ALL
-			<< TerminalSequences::BUFFER_OLD;
+		output_stream << Terminal::CURSOR_SHOW
+			<< Terminal::CLEAR_ALL
+			<< Terminal::BUFFER_OLD;
 
 		this->push_stream();
 		std::setlocale(LC_ALL, prev_locale.c_str());
@@ -122,7 +122,7 @@ namespace render {
 	uint16_t Renderer::push_buffer(bool force_render) {
 		std::wstringstream buff;
 		const Pixel* last_pixel = nullptr;
-		utils::Point<buff_size_t> last_pixel_position = { 0, 0 };
+		utils::Point<buff_size_t> last_pixel_position = {0, 0};
 		uint16_t adjacent_streak = 0; // number streak of adjacent pixels placed
 		uint16_t pixels_changed_count = 0; // number of pixels changed in this frame
 
@@ -160,8 +160,8 @@ namespace render {
 						 * than the set_pos, since it doesn't need to write the y coordinate.
 						 */
 						(last_pixel && last_pixel_position.y == y)
-							? TerminalSequences::cursor_move_x(x - last_pixel_position.x - 1)
-							: TerminalSequences::cursor_set_pos({x, y})
+							? Terminal::cursor_move_x(x - last_pixel_position.x - 1)
+							: Terminal::cursor_set_pos({x, y})
 					);
 				}
 
@@ -179,7 +179,7 @@ namespace render {
 				buff << current_pixel.character; // print character
 
 				last_pixel = &current_pixel;
-				last_pixel_position = { x, y };
+				last_pixel_position = {x, y};
 				adjacent_streak++;
 				pixels_changed_count++;
 			}
@@ -201,7 +201,8 @@ namespace render {
 
 		while (this->is_rendering) {
 			const timestamp current_frame_time = chrono::steady_clock::now();
-			const double frame_time = chrono::duration_cast<chrono::duration<double>>(current_frame_time - last_frame_time).count();
+			const double frame_time = chrono::duration_cast<chrono::duration<double>>(
+				current_frame_time - last_frame_time).count();
 			last_frame_time = current_frame_time;
 
 			this->clear_buffer();
