@@ -9,7 +9,6 @@
 #include <thread>
 
 #include "Characters.hpp"
-#include "IRenderSequence.hpp"
 #include "../utils/Point.hpp"
 #include "Pixel.hpp"
 #include "../utils/Concepts.hpp"
@@ -34,7 +33,7 @@ namespace render {
 		Pixel** current_buffer = nullptr; // pixel matrix
 		Pixel** previous_buffer = nullptr; // previous frame
 		Pixel background_pixel = {
-			default_characters::SPACE, default_colors::WHITE, default_colors::BLACK
+			default_characters::SPACE, utils::default_colors::WHITE, utils::default_colors::BLACK
 		};
 		bool force_render_next_frame = true; // usually just used for first frame
 		bool is_rendering = false;
@@ -79,8 +78,8 @@ namespace render {
 			Renderer& renderer;
 		protected:
 			utils::SPoint current_pos;
-			Color current_color = default_colors::WHITE;
-			Color current_color_bg = default_colors::BLACK;
+			utils::Color current_color = utils::default_colors::WHITE;
+			utils::Color current_color_bg = utils::default_colors::BLACK;
 			wchar_t current_char = default_characters::blocks::FULL;
 
 			void push_changes();
@@ -88,8 +87,8 @@ namespace render {
 		public:
 			RenderOperationBase(Renderer& r, const utils::SPoint& start_pos) : renderer {r}, current_pos {start_pos} { }
 
-			void set_color(const Color& color);
-			void set_color_bg(const Color& color);
+			void set_color(const utils::Color& color);
+			void set_color_bg(const utils::Color& color);
 			void set_position(const utils::SPoint& pos);
 			void set_position_relative(const utils::Point<int16_t>& offset);
 		};

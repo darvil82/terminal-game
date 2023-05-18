@@ -11,7 +11,7 @@
 
 
 Game::Game() {
-	auto [width, height] = render::Terminal::get_terminal_size();
+	auto [width, height] = utils::Terminal::get_terminal_size();
 	this->renderer = std::make_unique<render::Renderer>(width, height);
 
 	this->input_system = &input::InputSystem::instance();
@@ -34,7 +34,7 @@ void Game::stop_loop() {
 void Game::init() {
 	Scene* s = new Scene();
 
-	for (int i = 0; i < 700; i++) {
+	for (int i = 0; i < 3; i++) {
 		s->attach_entity(ENTITY_CREATE(entities::Cube, cube));
 	}
 
@@ -78,7 +78,7 @@ void Game::tick(float delta) {
 	if (INPUT_IS_PRESSED(SPACE)) {
 		for (auto& cube: this->current_scene->get_entities_filtered<entities::Cube>(
 			entities::ent_is_classname("cube"))
-			) {
+		) {
 			cube->jump();
 		}
 	}

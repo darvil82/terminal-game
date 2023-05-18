@@ -2,13 +2,13 @@
 
 #include <cstdint>
 #include <string>
-#include "../render/Renderer.hpp"
-#include "../render/Pixel.hpp"
+
+#include "Color.hpp"
+#include "Point.hpp"
 
 #define __DEFINE_SEQ(name, value) static constexpr const char* name = "\x1b" value
 
-namespace render {
-
+namespace utils {
 	struct Terminal final {
 		Terminal() = delete;
 
@@ -58,6 +58,6 @@ namespace render {
 		static std::wstring cursor_set_pos_relative(utils::SPoint offset);
 		static std::wstring cursor_move_x(int16_t x);
 		static std::wstring cursor_move_y(int16_t y);
-		static std::wstring set_color(const Color color, bool background = false);
+		static std::wstring set_color(const utils::Color color, bool background = false);
 	};
 }

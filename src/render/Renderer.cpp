@@ -14,12 +14,12 @@ namespace render {
 		this->prev_locale = std::setlocale(LC_ALL, nullptr);
 		std::setlocale(LC_ALL, "en_US.utf8");
 
-		this->enabled_optimization = !Terminal::is_a_tty();
+		this->enabled_optimization = !utils::Terminal::is_a_tty();
 
 		this->resize(width, height);
 
-		output_stream << Terminal::CURSOR_HIDE
-			<< Terminal::BUFFER_NEW;
+		output_stream << utils::Terminal::CURSOR_HIDE
+			<< utils::Terminal::BUFFER_NEW;
 
 		this->push_stream();
 	}
@@ -27,9 +27,9 @@ namespace render {
 	Renderer::~Renderer() {
 		this->stop_render_loop();
 
-		output_stream << Terminal::CURSOR_SHOW
-			<< Terminal::CLEAR_ALL
-			<< Terminal::BUFFER_OLD;
+		output_stream << utils::Terminal::CURSOR_SHOW
+			<< utils::Terminal::CLEAR_ALL
+			<< utils::Terminal::BUFFER_OLD;
 
 		this->push_stream();
 		std::setlocale(LC_ALL, prev_locale.c_str());
@@ -160,8 +160,8 @@ namespace render {
 						 * than the set_pos, since it doesn't need to write the y coordinate.
 						 */
 						(last_pixel && last_pixel_position.y == y)
-							? Terminal::cursor_move_x(x - last_pixel_position.x - 1)
-							: Terminal::cursor_set_pos({x, y})
+							? utils::Terminal::cursor_move_x(x - last_pixel_position.x - 1)
+							: utils::Terminal::cursor_set_pos({x, y})
 					);
 				}
 
@@ -196,13 +196,14 @@ namespace render {
 
 	void Renderer::render(std::function<void(const render_helpers::RenderUtils&)> func) {
 		constexpr const double PIXEL_CHANGE_THRESHOLD = 500.0;
-		constexpr const double FRAME_RATE_FACTOR = 0.4;
+		constexpr const double FRAME_RATE_FACTOR = 0.5;
 		timestamp last_frame_time;
 
 		while (this->is_rendering) {
 			const timestamp current_frame_time = chrono::steady_clock::now();
 			const double frame_time = chrono::duration_cast<chrono::duration<double>>(
-				current_frame_time - last_frame_time).count();
+				current_frame_time - last_frame_time
+			).count();
 			last_frame_time = current_frame_time;
 
 			this->clear_buffer();
@@ -281,12 +282,12 @@ namespace render {
 			}, this->current_pos);
 		}
 
-		void RenderOperationBase::set_color(const Color& color) {
+		void RenderOperationBase::set_color(const utils::Color& color) {
 			this->current_color = color;
 			this->push_changes();
 		}
 
-		void RenderOperationBase::set_color_bg(const Color& color) {
+		void RenderOperationBase::set_color_bg(const utils::Color& color) {
 			this->current_color_bg = color;
 			this->push_changes();
 		}

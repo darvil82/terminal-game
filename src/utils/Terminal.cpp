@@ -8,7 +8,7 @@
 #include "Terminal.hpp"
 #include "../render/Pixel.hpp"
 
-namespace render {
+namespace utils {
 
 	utils::UPoint Terminal::get_terminal_size() {
 		winsize w;
