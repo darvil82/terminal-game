@@ -34,7 +34,7 @@ void Game::stop_loop() {
 void Game::init() {
 	Scene* s = new Scene();
 
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 15; i++) {
 		s->attach_entity(ENTITY_CREATE(entities::Cube, cube));
 	}
 

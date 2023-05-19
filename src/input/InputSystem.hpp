@@ -22,8 +22,10 @@ namespace input {
 
 		std::thread input_thread;
 		bool is_reading = true;
+
 		key_buff_t pressed_key_buff;
-		key_buff_t last_pressed_key_buff; //
+		// used to check if the key current_buffer has changed since the last reset
+		key_buff_t last_pressed_key_buff;
 
 		InputSystem();
 

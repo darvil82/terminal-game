@@ -124,7 +124,6 @@ namespace render {
 		const Pixel* last_pixel = nullptr;
 		utils::Point<buff_size_t> last_pixel_position = {0, 0};
 		uint16_t adjacent_streak = 0; // number streak of adjacent pixels placed
-		uint16_t pixels_changed_count = 0; // number of pixels changed in this frame
 
 		for (buff_size_t y = 0; y < this->buffer_height; y++) {
 			for (buff_size_t x = 0; x < this->buffer_width; x++) {
@@ -181,22 +180,26 @@ namespace render {
 				last_pixel = &current_pixel;
 				last_pixel_position = {x, y};
 				adjacent_streak++;
-				pixels_changed_count++;
 			}
 		}
 
-		// if nothing changed, don't push anything
-		if (pixels_changed_count == 0) return 0;
+		auto str = buff.str();
+		size_t size = str.length();
 
-		output_stream << buff.str();
+		// if nothing changed, don't push anything
+		if (size == 0) return 0;
+
+		output_stream << str;
 		this->push_stream();
 
-		return pixels_changed_count;
+		return size;
 	}
 
 	void Renderer::render(std::function<void(const render_helpers::RenderUtils&)> func) {
-		constexpr const double PIXEL_CHANGE_THRESHOLD = 500.0;
+		// just some values that seem to work well
+		constexpr const double CHARS_PRINTED_THRESHOLD = 8000.0;
 		constexpr const double FRAME_RATE_FACTOR = 0.5;
+
 		timestamp last_frame_time;
 
 		while (this->is_rendering) {
@@ -208,11 +211,13 @@ namespace render {
 
 			this->clear_buffer();
 			func(this->get_render_utils());
-			auto changed_pixels = this->push_buffer(this->force_render_next_frame);
+			auto num_printed_chars = this->push_buffer(this->force_render_next_frame);
 
-			// limit the framerate exponentially based on how many pixels changed
-			if (this->enabled_optimization && changed_pixels > 0)
-				this->set_current_fps(this->max_fps * pow(FRAME_RATE_FACTOR, changed_pixels / PIXEL_CHANGE_THRESHOLD));
+			// limit the framerate exponentially based on how many characters were printed
+			if (this->enabled_optimization && num_printed_chars > 0)
+				this->set_current_fps(
+					this->max_fps * pow(FRAME_RATE_FACTOR, num_printed_chars / CHARS_PRINTED_THRESHOLD)
+				);
 
 			// cap framerate to current max fps. make sure we don't wait the first frame
 			if (frame_time < 1.0f / this->current_fps) {
