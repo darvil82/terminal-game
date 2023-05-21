@@ -75,14 +75,15 @@ namespace render {
 		class RenderOperationBase {
 			friend RenderUtils;
 
-			Renderer& renderer;
 		protected:
+			Renderer& renderer;
 			utils::SPoint current_pos;
 			utils::Color current_color = utils::default_colors::WHITE;
 			utils::Color current_color_bg = utils::default_colors::BLACK;
 			wchar_t current_char = default_characters::blocks::FULL;
 
-			void push_changes();
+			virtual void push_changes();
+			void set_pixel_at(const utils::SPoint& pos);
 
 		public:
 			RenderOperationBase(Renderer& r, const utils::SPoint& start_pos) : renderer {r}, current_pos {start_pos} { }
@@ -91,16 +92,20 @@ namespace render {
 			void set_color_bg(const utils::Color& color);
 			void set_position(const utils::SPoint& pos);
 			void set_position_relative(const utils::Point<int16_t>& offset);
+			void move_x(int16_t offset);
+			void move_y(int16_t offset);
 		};
 
 
 		class DrawOperation : public RenderOperationBase {
+			uint8_t thickness_size = 1;
+
 			using RenderOperationBase::RenderOperationBase;
+
+			void push_changes() override;
 		public:
-			void move_x(int16_t offset);
-			void move_y(int16_t offset);
 			void set_char(const wchar_t chr);
-			void rect(const utils::SPoint& size);
+			void thickness(uint8_t size);
 		};
 
 

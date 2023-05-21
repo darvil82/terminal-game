@@ -6,9 +6,8 @@
 namespace entities {
 
 	void Cube::render(const render::render_helpers::RenderUtils& render_utils) const {
-		render_utils.draw( utils::Point { this->position.x - 2, this->position.y - 1 }, [this](auto&& r) {
+		render_utils.draw(this->position, [this](auto&& r) {
 			r.set_color(this->color);
-			r.rect({4, 2});
 		});
 
 //		render_utils.text(this->position, [this](auto&& r) {
@@ -29,16 +28,16 @@ namespace entities {
 		if (hit_y) this->velocity.y *= -1;
 
 		// slowly decrease velocity
-		this->velocity *= pow(0.8, delta);
+		this->velocity *= std::pow(0.8, delta);
 
 		// apply gravity
-		this->velocity.y += 30 * delta;
+		this->velocity.y += 40 * delta;
 
 		bool is_on_ground = this->position.y >= 30;
 
 		if (is_on_ground) {
 			this->position.y = 30;
-			this->velocity.x *= pow(0.005, delta);
+			this->velocity.x *= std::pow(0.005, delta);
 		}
 
 	}

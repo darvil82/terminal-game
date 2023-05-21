@@ -100,7 +100,7 @@ namespace utils {
 	};
 
 
-	using SPoint = Point<int16_t>;
-	using UPoint = Point<uint16_t>;
+	using SPoint = Point<int32_t>;
+	using UPoint = Point<uint32_t>;
 	using FPoint = Point<float>;
 }

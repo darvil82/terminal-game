@@ -197,8 +197,8 @@ namespace render {
 
 	void Renderer::render(std::function<void(const render_helpers::RenderUtils&)> func) {
 		// just some values that seem to work well
-		constexpr const double CHARS_PRINTED_THRESHOLD = 8000.0;
-		constexpr const double FRAME_RATE_FACTOR = 0.5;
+		constexpr const double CHARS_PRINTED_THRESHOLD = 9000.0;
+		constexpr const double FRAME_RATE_FACTOR = 0.3;
 
 		timestamp last_frame_time;
 
@@ -216,7 +216,7 @@ namespace render {
 			// limit the framerate exponentially based on how many characters were printed
 			if (this->enabled_optimization && num_printed_chars > 0)
 				this->set_current_fps(
-					this->max_fps * pow(FRAME_RATE_FACTOR, num_printed_chars / CHARS_PRINTED_THRESHOLD)
+					this->max_fps * std::pow(FRAME_RATE_FACTOR, num_printed_chars / CHARS_PRINTED_THRESHOLD)
 				);
 
 			// cap framerate to current max fps. make sure we don't wait the first frame
@@ -280,11 +280,15 @@ namespace render {
 		}
 
 		void RenderOperationBase::push_changes() {
+			this->set_pixel_at(this->current_pos);
+		}
+
+		void RenderOperationBase::set_pixel_at(const utils::SPoint& pos) {
 			this->renderer.set_pixel({
 				this->current_char,
 				this->current_color,
 				this->current_color_bg
-			}, this->current_pos);
+			}, pos);
 		}
 
 		void RenderOperationBase::set_color(const utils::Color& color) {
@@ -307,7 +311,7 @@ namespace render {
 			this->push_changes();
 		}
 
-		void DrawOperation::move_x(int16_t offset) {
+		void RenderOperationBase::move_x(int16_t offset) {
 			if (offset == 0) return;
 
 			if (offset > 0) {
@@ -324,7 +328,7 @@ namespace render {
 			}
 		}
 
-		void DrawOperation::move_y(int16_t offset) {
+		void RenderOperationBase::move_y(int16_t offset) {
 			if (offset == 0) return;
 
 			if (offset > 0) {
@@ -346,13 +350,9 @@ namespace render {
 			this->push_changes();
 		}
 
-		void DrawOperation::rect(const utils::SPoint& size) {
-			auto start_pos = this->current_pos;
-			for (int16_t y = start_pos.y; y < size.y + start_pos.y; y++) {
-				for (int16_t x = start_pos.x; x < size.x + start_pos.x; x++) {
-					this->set_position({x, y});
-				}
-			}
+		void DrawOperation::thickness(uint8_t size) {
+			this->thickness_size = size;
+			this->push_changes();
 		}
 
 		void TextOperation::put(const std::wstring& content) {
