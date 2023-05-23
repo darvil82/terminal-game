@@ -12,17 +12,10 @@
 #include "../utils/Point.hpp"
 #include "Pixel.hpp"
 #include "../utils/Concepts.hpp"
+#include "RenderHelpers.hpp"
 
-namespace utils {
-	template<class T>
-	struct Point;
-}
 
 namespace render {
-	namespace render_helpers {
-		class RenderUtils;
-	}
-
 	class Renderer {
 		using buff_size_t = uint16_t;
 
@@ -46,7 +39,7 @@ namespace render {
 		void push_stream();
 		void clear_buffer();
 		uint16_t push_buffer(bool force_render = false);
-		void render(std::function<void(const render_helpers::RenderUtils&)> func);
+		void render(std::function<void(const RenderUtils&)> func);
 
 	public:
 		Renderer(buff_size_t width, buff_size_t height);
@@ -61,78 +54,13 @@ namespace render {
 		uint8_t get_current_fps() const;
 
 		void resize(buff_size_t new_width, buff_size_t new_height);
-		void start_render_loop(std::function<void(const render_helpers::RenderUtils&)> func);
+		void start_render_loop(std::function<void(const RenderUtils&)> func);
 		void stop_render_loop();
 
-		const render_helpers::RenderUtils get_render_utils();
+		const RenderUtils get_render_utils();
 	};
 
-	namespace render_helpers {
 
-		class RenderUtils;
-
-
-		class RenderOperationBase {
-			friend RenderUtils;
-
-		protected:
-			Renderer& renderer;
-			utils::SPoint current_pos;
-			utils::Color current_color = utils::default_colors::WHITE;
-			utils::Color current_color_bg = utils::default_colors::BLACK;
-			wchar_t current_char = default_characters::blocks::FULL;
-
-			virtual void push_changes();
-			void set_pixel_at(const utils::SPoint& pos);
-
-		public:
-			RenderOperationBase(Renderer& r, const utils::SPoint& start_pos) : renderer {r}, current_pos {start_pos} { }
-
-			void set_color(const utils::Color& color);
-			void set_color_bg(const utils::Color& color);
-			void set_position(const utils::SPoint& pos);
-			void set_position_relative(const utils::Point<int16_t>& offset);
-			void move_x(int16_t offset);
-			void move_y(int16_t offset);
-		};
-
-
-		class DrawOperation : public RenderOperationBase {
-			uint8_t thickness_size = 1;
-
-			using RenderOperationBase::RenderOperationBase;
-
-			void push_changes() override;
-		public:
-			void set_char(const wchar_t chr);
-			void thickness(uint8_t size);
-		};
-
-
-		class TextOperation : public RenderOperationBase {
-			using RenderOperationBase::RenderOperationBase;
-		public:
-			void put(const std::wstring& content);
-			void put_line(const std::wstring& content);
-		};
-
-
-		class RenderUtils {
-			friend Renderer;
-			Renderer& renderer;
-
-			RenderUtils(Renderer& r) : renderer {r} { }
-
-			template<Extends<RenderOperationBase> T>
-			using OpFunc = std::function<void(T&&)>;
-
-		public:
-			const Renderer& get_renderer() const;
-
-			void draw(const utils::SPoint& start_pos, OpFunc<DrawOperation> draw_func) const;
-			void text(const utils::SPoint& start_pos, OpFunc<TextOperation> text_func) const;
-		};
-	}
 
 
 } // render

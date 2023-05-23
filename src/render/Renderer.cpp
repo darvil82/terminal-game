@@ -42,7 +42,7 @@ namespace render {
 	}
 
 	void Renderer::set_current_fps(uint8_t fps) {
-		this->current_fps = std::max(std::min(fps, this->max_fps), static_cast<uint8_t>(1));
+		this->current_fps = std::max<uint8_t>(std::min(fps, this->max_fps), 1);
 	}
 
 	void Renderer::free_buff() {
@@ -195,7 +195,7 @@ namespace render {
 		return size;
 	}
 
-	void Renderer::render(std::function<void(const render_helpers::RenderUtils&)> func) {
+	void Renderer::render(std::function<void(const RenderUtils&)> func) {
 		// just some values that seem to work well
 		constexpr const double CHARS_PRINTED_THRESHOLD = 9000.0;
 		constexpr const double FRAME_RATE_FACTOR = 0.3;
@@ -237,8 +237,8 @@ namespace render {
 		this->background_pixel = pixel;
 	}
 
-	const render_helpers::RenderUtils Renderer::get_render_utils() {
-		return render_helpers::RenderUtils(*this);
+	const RenderUtils Renderer::get_render_utils() {
+		return RenderUtils(*this);
 	}
 
 	void Renderer::set_max_fps(uint8_t fps) {
@@ -253,7 +253,7 @@ namespace render {
 		return this->current_fps;
 	}
 
-	void Renderer::start_render_loop(std::function<void(const render_helpers::RenderUtils&)> func) {
+	void Renderer::start_render_loop(std::function<void(const RenderUtils&)> func) {
 		this->is_rendering = true;
 		this->render_thread = std::thread(&Renderer::render, this, func);
 	}
@@ -267,106 +267,5 @@ namespace render {
 
 	namespace render_helpers {
 
-		void RenderUtils::draw(const utils::SPoint& start_pos, OpFunc<DrawOperation> draw_func) const {
-			draw_func({this->renderer, start_pos});
-		}
-
-		void RenderUtils::text(const utils::SPoint& start_pos, OpFunc<TextOperation> draw_func) const {
-			draw_func({this->renderer, start_pos});
-		}
-
-		const Renderer& RenderUtils::get_renderer() const {
-			return this->renderer;
-		}
-
-		void RenderOperationBase::push_changes() {
-			this->set_pixel_at(this->current_pos);
-		}
-
-		void RenderOperationBase::set_pixel_at(const utils::SPoint& pos) {
-			this->renderer.set_pixel({
-				this->current_char,
-				this->current_color,
-				this->current_color_bg
-			}, pos);
-		}
-
-		void RenderOperationBase::set_color(const utils::Color& color) {
-			this->current_color = color;
-			this->push_changes();
-		}
-
-		void RenderOperationBase::set_color_bg(const utils::Color& color) {
-			this->current_color_bg = color;
-			this->push_changes();
-		}
-
-		void RenderOperationBase::set_position_relative(const utils::Point<int16_t>& offset) {
-			this->current_pos += offset;
-			this->push_changes();
-		}
-
-		void RenderOperationBase::set_position(const utils::SPoint& pos) {
-			this->current_pos = pos;
-			this->push_changes();
-		}
-
-		void RenderOperationBase::move_x(int16_t offset) {
-			if (offset == 0) return;
-
-			if (offset > 0) {
-				for (int16_t i = 0; i < offset; i++) {
-					this->current_pos.x++;
-					this->push_changes();
-				}
-				return;
-			}
-
-			for (int16_t i = 0; i > offset; i--) {
-				this->current_pos.x--;
-				this->push_changes();
-			}
-		}
-
-		void RenderOperationBase::move_y(int16_t offset) {
-			if (offset == 0) return;
-
-			if (offset > 0) {
-				for (int16_t i = 0; i < offset; i++) {
-					this->current_pos.y++;
-					this->push_changes();
-				}
-				return;
-			}
-
-			for (int16_t i = 0; i > offset; i--) {
-				this->current_pos.y--;
-				this->push_changes();
-			}
-		}
-
-		void DrawOperation::set_char(wchar_t character) {
-			this->current_char = character;
-			this->push_changes();
-		}
-
-		void DrawOperation::thickness(uint8_t size) {
-			this->thickness_size = size;
-			this->push_changes();
-		}
-
-		void TextOperation::put(const std::wstring& content) {
-			for (size_t i = 0; i < content.length(); i++) {
-				this->current_char = content[i];
-				this->push_changes();
-				this->current_pos.x++;
-			}
-		}
-
-		void TextOperation::put_line(const std::wstring& content) {
-			this->put(content);
-			this->current_pos.x -= content.length(); // move back to the start of the line
-			this->current_pos.y++; // move down one line
-		}
 	}
 } // render

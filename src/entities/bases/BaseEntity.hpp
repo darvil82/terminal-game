@@ -8,6 +8,7 @@
 #include "../definition/EntityFactory.hpp"
 #include "../../utils/Concepts.hpp"
 #include "../../utils/Typedefs.hpp"
+#include "RenderUtils.hpp"
 
 
 class Scene;
@@ -37,7 +38,7 @@ namespace entities {
 		utils::Point<> velocity {0, 0};
 
 		void tick(float delta) override;
-		void render(const render::render_helpers::RenderUtils& render_utils) const override;
+		void render(const RenderUtils& render_utils) const override;
 
 	public:
 		BaseEntity() = default;

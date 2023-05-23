@@ -4,6 +4,7 @@
 #include "bases/BaseEntity.hpp"
 #include "../utils/Point.hpp"
 #include "bases/BaseHealthEntity.hpp"
+#include "RenderUtils.hpp"
 
 namespace entities {
 
@@ -21,7 +22,7 @@ namespace entities {
 			this->velocity = {static_cast<float>(rand() % 100 - 50), static_cast<float>(rand() % 100 - 50)};
 		}
 
-		void render(const render::render_helpers::RenderUtils& render_utils) const override;
+		void render(const RenderUtils& render_utils) const override;
 		void tick(float delta) override;
 		void jump();
 	};

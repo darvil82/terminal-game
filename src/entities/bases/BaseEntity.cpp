@@ -1,5 +1,6 @@
 #include <functional>
 #include "BaseEntity.hpp"
+#include "RenderUtils.hpp"
 
 namespace entities {
 	BaseEntity::~BaseEntity() {
@@ -23,7 +24,7 @@ namespace entities {
 		this->position += this->velocity * delta;
 	}
 
-	void BaseEntity::render(const render::render_helpers::RenderUtils& render_utils) const { }
+	void BaseEntity::render(const RenderUtils& render_utils) const { }
 
 	void BaseEntity::kill() {
 		delete this;
