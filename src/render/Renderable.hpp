@@ -6,7 +6,7 @@
 namespace render {
 
 	class IRenderable {
-		virtual void render(const RenderUtils& render_utils) const = 0;
+		virtual void render(render::Renderer& renderer) const = 0;
 	};
 
 }

@@ -2,12 +2,11 @@
 #include "Cube.hpp"
 #include "../input/InputSystem.hpp"
 #include "../utils/Math.hpp"
-#include "RenderUtils.hpp"
 
 namespace entities {
 
-	void Cube::render(const RenderUtils& render_utils) const {
-		render_utils.draw(this->position, [this](auto&& r) {
+	void Cube::render(render::Renderer& renderer) const {
+		renderer.draw(this->position, [this](auto&& r) {
 			r.set_color(this->color);
 		});
 

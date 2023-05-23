@@ -2,7 +2,6 @@
 #include <stdexcept>
 
 #include "Scene.hpp"
-#include "RenderUtils.hpp"
 
 
 Scene::EntitiesIterator Scene::begin() const {
@@ -67,9 +66,9 @@ void Scene::tick(float delta) {
 	}
 }
 
-void Scene::render(const RenderUtils& render_utils) const {
+void Scene::render(render::Renderer& renderer) const {
 	for (auto& ent: *this) {
-		ent.render(render_utils);
+		ent.render(renderer);
 	}
 }
 

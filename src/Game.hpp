@@ -6,7 +6,6 @@
 #include "Tickable.hpp"
 #include "Scene.hpp"
 #include "input/InputSystem.hpp"
-#include "RenderUtils.hpp"
 
 namespace input {
 	class InputSystem;
@@ -19,7 +18,7 @@ class Game {
 	input::InputSystem* input_system;
 
 	void tick(float delta);
-	void render(const RenderUtils& render_utils) const;
+	void render(render::Renderer& render_utils) const;
 	void main_loop();
 	void init();
 	void end();

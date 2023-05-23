@@ -39,25 +39,31 @@ namespace render {
 		void push_stream();
 		void clear_buffer();
 		uint16_t push_buffer(bool force_render = false);
-		void render(std::function<void(const RenderUtils&)> func);
+		void render(std::function<void(Renderer&)> func);
 
 	public:
 		Renderer(buff_size_t width, buff_size_t height);
 		~Renderer();
 
 		std::tuple<buff_size_t, buff_size_t> get_size() const;
+
+		void insert(render_helpers::RenderHelper&& helper);
+
+		Renderer& operator<<(render_helpers::RenderHelper&& helper);
+
 		void set_pixel(const Pixel& pixel, const utils::SPoint& position);
 		const Pixel& get_pixel(const utils::SPoint& pos) const;
+
 		void set_background_pixel(const Pixel& pixel);
+
 		void set_max_fps(uint8_t fps);
 		uint8_t get_max_fps() const;
+
 		uint8_t get_current_fps() const;
 
 		void resize(buff_size_t new_width, buff_size_t new_height);
-		void start_render_loop(std::function<void(const RenderUtils&)> func);
+		void start_render_loop(std::function<void(Renderer&)> func);
 		void stop_render_loop();
-
-		const RenderUtils get_render_utils();
 	};
 
 

@@ -3,7 +3,6 @@
 #include <functional>
 #include "entities/bases/BaseEntity.hpp"
 #include "utils/Typedefs.hpp"
-#include "RenderUtils.hpp"
 
 namespace entities {
 	class BaseEntity;
@@ -59,6 +58,6 @@ public:
 	void detach_entity(entities::BaseEntity& entity);
 	size_t get_entity_count() const;
 	void tick(float delta) override;
-	void render(const RenderUtils& render_utils) const override;
+	void render(render::Renderer& renderer) const override;
 };
 

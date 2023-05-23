@@ -195,7 +195,7 @@ namespace render {
 		return size;
 	}
 
-	void Renderer::render(std::function<void(const RenderUtils&)> func) {
+	void Renderer::render(std::function<void(Renderer&)> func) {
 		// just some values that seem to work well
 		constexpr const double CHARS_PRINTED_THRESHOLD = 9000.0;
 		constexpr const double FRAME_RATE_FACTOR = 0.3;
@@ -210,7 +210,7 @@ namespace render {
 			last_frame_time = current_frame_time;
 
 			this->clear_buffer();
-			func(this->get_render_utils());
+			func(*this);
 			auto num_printed_chars = this->push_buffer(this->force_render_next_frame);
 
 			// limit the framerate exponentially based on how many characters were printed
@@ -237,10 +237,6 @@ namespace render {
 		this->background_pixel = pixel;
 	}
 
-	const RenderUtils Renderer::get_render_utils() {
-		return RenderUtils(*this);
-	}
-
 	void Renderer::set_max_fps(uint8_t fps) {
 		this->max_fps = fps;
 	}
@@ -253,7 +249,7 @@ namespace render {
 		return this->current_fps;
 	}
 
-	void Renderer::start_render_loop(std::function<void(const RenderUtils&)> func) {
+	void Renderer::start_render_loop(std::function<void(Renderer&)> func) {
 		this->is_rendering = true;
 		this->render_thread = std::thread(&Renderer::render, this, func);
 	}
@@ -262,6 +258,15 @@ namespace render {
 		if (!this->is_rendering) return;
 		this->is_rendering = false;
 		this->render_thread.join();
+	}
+
+	void Renderer::insert(render_helpers::RenderHelper&& helper) {
+		helper(*this);
+	}
+
+	Renderer& Renderer::operator<<(render_helpers::RenderHelper&& helper) {
+		this->insert(std::move(helper));
+		return *this;
 	}
 
 

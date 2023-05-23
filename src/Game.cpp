@@ -8,7 +8,6 @@
 #include "entities/Cube.hpp"
 #include "entities/bases/BaseEntity.hpp"
 #include "input/InputSystem.hpp"
-#include "RenderUtils.hpp"
 
 
 Game::Game() {
@@ -89,7 +88,7 @@ void Game::tick(float delta) {
 	}
 }
 
-void Game::render(const RenderUtils& render_utils) const {
+void Game::render(render::Renderer& render_utils) const {
 	render_utils.text({30, 10}, [](auto&& op) {
 		op.put_line(L"Press C to spawn a cube, SPACE to shake all cubes!");
 	});
