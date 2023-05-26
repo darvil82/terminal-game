@@ -6,6 +6,7 @@
 #include "Renderer.hpp"
 #include "IRenderHelper.hpp"
 #include "../utils/Concepts.hpp"
+#include "../utils/Math.hpp"
 
 
 namespace render {
@@ -19,7 +20,7 @@ namespace render {
 			using This = D; // used for subclasses
 			using BaseRenderHelper = RenderHelper<D>; // used for subclasses
 
-			wchar_t character = L' ';
+			wchar_t character = render::default_characters::blocks::FULL;
 			utils::SPoint position;
 			utils::Color fg = utils::default_colors::WHITE;
 			utils::Color bg = utils::default_colors::BLACK;
@@ -38,11 +39,11 @@ namespace render {
 
 			RenderHelper(const utils::SPoint& position) : position(position) { }
 		private:
-			std::vector<ActionFn> actions;
+			std::deque<ActionFn> actions;
 
 		public:
 			This&& set_character(wchar_t chr) {
-				this->add_action([&, this] (Renderer&) {
+				this->add_action([=, this] (Renderer&) {
 					this->character = chr;
 				});
 				return static_cast<This&&>(*this);
@@ -71,8 +72,14 @@ namespace render {
 
 
 		class DrawRenderHelper : public RenderHelper<DrawRenderHelper> {
+			bool is_drawing = false;
 		public:
 			DrawRenderHelper(const utils::SPoint& position) : RenderHelper(position) { }
+
+			This&& start();
+			This&& stop();
+			This&& move_x(int16_t dist);
+			This&& move_y(int16_t dist);
 		};
 	}
 }

@@ -8,8 +8,14 @@ namespace entities {
 	void Cube::render(render::Renderer& renderer) const {
 		renderer << render::render_helpers::DrawRenderHelper { this->position }
 			.set_color_fg(this->color)
-			.set_character(L' ');
-
+			.start()
+			.move_x(10)
+			.move_y(5)
+			.move_x(-10)
+			.stop()
+			.move_x(-3)
+			.start()
+			.move_y(-5);
 
 //		render_utils.text(this->position, [this](auto&& r) {
 //			r.put_line(L"Vel: " + std::to_wstring(this->velocity.x) + L" " + std::to_wstring(this->velocity.y));
