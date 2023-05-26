@@ -12,7 +12,7 @@
 #include "../utils/Point.hpp"
 #include "Pixel.hpp"
 #include "../utils/Concepts.hpp"
-#include "RenderHelpers.hpp"
+#include "IRenderHelper.hpp"
 
 
 namespace render {
@@ -47,9 +47,9 @@ namespace render {
 
 		std::tuple<buff_size_t, buff_size_t> get_size() const;
 
-		void insert(render_helpers::RenderHelper&& helper);
+		void insert(render_helpers::IRenderHelper&& helper);
 
-		Renderer& operator<<(render_helpers::RenderHelper&& helper);
+		Renderer& operator<<(render_helpers::IRenderHelper&& helper);
 
 		void set_pixel(const Pixel& pixel, const utils::SPoint& position);
 		const Pixel& get_pixel(const utils::SPoint& pos) const;

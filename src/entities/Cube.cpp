@@ -6,9 +6,10 @@
 namespace entities {
 
 	void Cube::render(render::Renderer& renderer) const {
-		renderer.draw(this->position, [this](auto&& r) {
-			r.set_color(this->color);
-		});
+		renderer << render::render_helpers::DrawRenderHelper { this->position }
+			.set_color_fg(this->color)
+			.set_character(L' ');
+
 
 //		render_utils.text(this->position, [this](auto&& r) {
 //			r.put_line(L"Vel: " + std::to_wstring(this->velocity.x) + L" " + std::to_wstring(this->velocity.y));

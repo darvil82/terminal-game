@@ -89,16 +89,16 @@ void Game::tick(float delta) {
 }
 
 void Game::render(render::Renderer& render_utils) const {
-	render_utils.text({30, 10}, [](auto&& op) {
-		op.put_line(L"Press C to spawn a cube, SPACE to shake all cubes!");
-	});
+//	render_utils.text({30, 10}, [](auto&& op) {
+//		op.put_line(L"Press C to spawn a cube, SPACE to shake all cubes!");
+//	});
 
 	if (this->current_scene) {
 		this->current_scene->render(render_utils);
 	}
 
-	render_utils.text({0, 0}, [this](auto&& op) {
-		op.put_line(L"ENTITIES: " + std::to_wstring(this->current_scene->get_entity_count()));
-		op.put_line(L"FPS: " + std::to_wstring(this->renderer->get_current_fps()));
-	});
+//	render_utils.text({0, 0}, [this](auto&& op) {
+//		op.put_line(L"ENTITIES: " + std::to_wstring(this->current_scene->get_entity_count()));
+//		op.put_line(L"FPS: " + std::to_wstring(this->renderer->get_current_fps()));
+//	});
 }

@@ -260,11 +260,11 @@ namespace render {
 		this->render_thread.join();
 	}
 
-	void Renderer::insert(render_helpers::RenderHelper&& helper) {
+	void Renderer::insert(render_helpers::IRenderHelper&& helper) {
 		helper(*this);
 	}
 
-	Renderer& Renderer::operator<<(render_helpers::RenderHelper&& helper) {
+	Renderer& Renderer::operator<<(render_helpers::IRenderHelper&& helper) {
 		this->insert(std::move(helper));
 		return *this;
 	}
