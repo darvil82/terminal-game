@@ -18,6 +18,8 @@ namespace render {
 		}
 
 		DrawRenderHelper::This&& DrawRenderHelper::move_x(int16_t dist) {
+			if (dist == 0) return static_cast<This&&>(*this);
+
 			this->add_action([=, this] (Renderer& r) {
 				if (!this->is_drawing) {
 					this->position.x += dist;
@@ -29,11 +31,16 @@ namespace render {
 					this->push_pixel(r);
 				}
 			});
+
 			return static_cast<This&&>(*this);
 		}
 
 		DrawRenderHelper::This&& DrawRenderHelper::move_y(int16_t dist) {
+			if (dist == 0) return static_cast<This&&>(*this);
+
 			this->add_action([=, this] (Renderer& r) {
+				if (dist == 0) return;
+
 				if (!this->is_drawing) {
 					this->position.y += dist;
 					return;
@@ -44,6 +51,7 @@ namespace render {
 					this->push_pixel(r);
 				}
 			});
+
 			return static_cast<This&&>(*this);
 		}
 	}
