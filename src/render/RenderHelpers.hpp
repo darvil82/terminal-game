@@ -42,13 +42,6 @@ namespace render {
 			std::deque<ActionFn> actions;
 
 		public:
-			This&& set_character(wchar_t chr) {
-				this->add_action([=, this] (Renderer&) {
-					this->character = chr;
-				});
-				return static_cast<This&&>(*this);
-			}
-
 			This&& set_color_fg(const utils::Color& color) {
 				this->add_action([&, this] (Renderer&) {
 					this->fg = color;
@@ -76,10 +69,19 @@ namespace render {
 		public:
 			DrawRenderHelper(const utils::SPoint& position) : RenderHelper(position) { }
 
+			This&& set_character(wchar_t chr);
 			This&& start();
 			This&& stop();
 			This&& move_x(int16_t dist);
 			This&& move_y(int16_t dist);
+		};
+
+
+		struct TextRenderHelper : public RenderHelper<TextRenderHelper> {
+			TextRenderHelper(const utils::SPoint& position) : RenderHelper(position) { }
+
+			This&& put(const std::wstring& text);
+			This&& put_line(const std::wstring& text);
 		};
 	}
 }

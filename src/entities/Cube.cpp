@@ -17,10 +17,14 @@ namespace entities {
 			.start()
 			.move_y(-5);
 
-//		render_utils.text(this->position, [this](auto&& r) {
-//			r.put_line(L"Vel: " + std::to_wstring(this->velocity.x) + L" " + std::to_wstring(this->velocity.y));
-//			r.put_line(L"Pos: " + std::to_wstring(this->position.x) + L" " + std::to_wstring(this->position.y));
-//		});
+		renderer << render::render_helpers::TextRenderHelper { utils::SPoint(this->position.x, this->position.y - 3) }
+			.set_color_fg(utils::default_colors::CYAN)
+			.put_line(
+				L"Vel: " + std::to_wstring(this->velocity.x) + L" " + std::to_wstring(this->velocity.y)
+			)
+			.put_line(
+				L"Pos: " + std::to_wstring(this->position.x) + L" " + std::to_wstring(this->position.y)
+			);
 	}
 
 	void Cube::tick(float delta) {
