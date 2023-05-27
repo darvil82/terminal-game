@@ -2,11 +2,6 @@
 
 #include <inttypes.h>
 #include <string>
-#include <sstream>
-#include <optional>
-#include <functional>
-#include "Characters.hpp"
-#include "../utils/Point.hpp"
 #include "../utils/Color.hpp"
 #include "../utils/ITerminalSequence.hpp"
 
