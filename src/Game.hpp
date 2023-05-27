@@ -18,7 +18,7 @@ class Game {
 	input::InputSystem* input_system;
 
 	void tick(float delta);
-	void render(render::Renderer& render_utils) const;
+	void render(render::Renderer& r) const;
 	void main_loop();
 	void init();
 	void end();
