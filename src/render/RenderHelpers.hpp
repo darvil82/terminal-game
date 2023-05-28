@@ -16,7 +16,7 @@ namespace render {
 		template<class D>
 		class RenderHelper : public IRenderHelper {
 		protected:
-			using ActionFn = std::function<void(Renderer&)>;
+			using ActionFn = std::function<void()>;
 			using This = D; // used for subclasses
 			using BaseRenderHelper = RenderHelper<D>; // used for subclasses
 
@@ -29,51 +29,62 @@ namespace render {
 				this->actions.push_back(action);
 			}
 
-			void push_pixel(Renderer& renderer) {
-				renderer.set_pixel({
+			void set_pixel(const utils::SPoint& pos) {
+				renderer->set_pixel({
 					this->character,
 					this->fg,
 					this->bg
-				}, this->position);
+				}, pos);
+			}
+
+			virtual void push_changes() {
+				this->set_pixel(this->position);
 			}
 
 			RenderHelper(const utils::SPoint& position) : position(position) { }
-		private:
-			std::deque<ActionFn> actions;
 
 		public:
 			This&& set_color_fg(const utils::Color& color) {
-				this->add_action([&, this] (Renderer&) {
+				this->add_action([&, this] () {
 					this->fg = color;
 				});
 				return static_cast<This&&>(*this);
 			}
 
 			This&& set_color_bg(const utils::Color& color) {
-				this->add_action([&, this] (Renderer&) {
+				this->add_action([&, this] () {
 					this->bg = color;
 				});
 				return static_cast<This&&>(*this);
 			}
 
-			void operator()(Renderer& renderer) override {
+			void operator()(Renderer& r) override {
+				this->renderer = &r;
+
 				for (auto& action : this->actions) {
-					action(renderer);
+					action();
 				}
 			}
+
+		private:
+			std::deque<ActionFn> actions;
+			Renderer* renderer = nullptr; // set when operator() is called
 		};
 
 
 		class DrawRenderHelper : public RenderHelper<DrawRenderHelper> {
 			bool is_drawing = false;
+			uint8_t thickness = 1;
 		public:
 			DrawRenderHelper(const utils::SPoint& position) : RenderHelper(position) { }
 
+			void push_changes() override;
 			This&& set_character(wchar_t chr);
 			This&& start();
 			This&& stop();
 			This&& move_x(int16_t dist);
 			This&& move_y(int16_t dist);
+			This&& set_thickness(uint8_t t);
 		};
 
 

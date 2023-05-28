@@ -8,14 +8,8 @@ namespace entities {
 	void Cube::render(render::Renderer& renderer) const {
 		renderer << render::render_helpers::DrawRenderHelper { this->position }
 			.set_color_fg(this->color)
-			.start()
-			.move_x(10)
-			.move_y(5)
-			.move_x(-10)
-			.stop()
-			.move_x(-3)
-			.start()
-			.move_y(-5);
+			.set_thickness(4)
+			.start();
 
 		renderer << render::render_helpers::TextRenderHelper { utils::SPoint(this->position.x, this->position.y - 3) }
 			.set_color_fg(utils::default_colors::CYAN)

@@ -186,7 +186,7 @@ namespace render {
 		auto str = buff.str();
 		size_t size = str.length();
 
-		// if nothing changed, don't push anything
+		// if nothing changed, don't push_changes anything
 		if (size == 0) return 0;
 
 		output_stream << str;
