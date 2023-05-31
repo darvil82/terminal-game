@@ -89,7 +89,8 @@ void Game::tick(float delta) {
 }
 
 void Game::render(render::Renderer& r) const {
-	r << render::render_helpers::TextRenderHelper {{30, 10}}
+	r << render::render_helpers::TextRenderHelper {{50, 10}}
+		.set_alignment(render::render_helpers::Alignment::CENTER)
 		.put_line(L"Press C to spawn a cube, SPACE to shake all cubes!");
 
 	if (this->current_scene) {

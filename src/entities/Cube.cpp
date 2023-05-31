@@ -9,16 +9,13 @@ namespace entities {
 		renderer << render::render_helpers::DrawRenderHelper { this->position }
 			.set_color_fg(this->color)
 			.set_thickness(4)
-			.start();
+			.put();
 
-		renderer << render::render_helpers::TextRenderHelper { utils::SPoint(this->position.x, this->position.y - 3) }
+		renderer << render::render_helpers::TextRenderHelper {utils::SPoint(this->position.x, this->position.y - 6)}
 			.set_color_fg(utils::default_colors::CYAN)
-			.put_line(
-				L"Vel: " + std::to_wstring(this->velocity.x) + L" " + std::to_wstring(this->velocity.y)
-			)
-			.put_line(
-				L"Pos: " + std::to_wstring(this->position.x) + L" " + std::to_wstring(this->position.y)
-			);
+			.set_alignment(render::render_helpers::Alignment::LEFT)
+			.put_line(L"Vel: " + std::to_wstring(this->velocity.x) + L" " + std::to_wstring(this->velocity.y))
+			.put_line(L"Pos: " + std::to_wstring(this->position.x) + L" " + std::to_wstring(this->position.y));
 	}
 
 	void Cube::tick(float delta) {

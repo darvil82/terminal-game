@@ -1,3 +1,4 @@
+#include <iterator>
 #include "RenderHelpers.hpp"
 
 namespace render {
@@ -27,6 +28,12 @@ namespace render {
 		DrawRenderHelper::This&& DrawRenderHelper::start() {
 			this->add_action([this]() {
 				this->is_drawing = true;
+			});
+			return this->put();
+		}
+
+		DrawRenderHelper::This&& DrawRenderHelper::put() {
+			this->add_action([this]() {
 				this->push_changes();
 			});
 			return static_cast<This&&>(*this);
@@ -77,20 +84,37 @@ namespace render {
 			return static_cast<This&&>(*this);
 		}
 
-		DrawRenderHelper::This&& DrawRenderHelper::set_thickness(uint8_t t) {
-			if (t < 1)
+		DrawRenderHelper::This&& DrawRenderHelper::set_thickness(uint8_t new_thickness) {
+			if (new_thickness < 1)
 				throw std::invalid_argument("thickness cannot be less than 1");
 
 			this->add_action([=, this]() {
-				this->thickness = t;
+				this->thickness = new_thickness;
 			});
 
 			return static_cast<This&&>(*this);
 		}
 
 
+		TextRenderHelper::This&& TextRenderHelper::set_alignment(Alignment new_alignment) {
+			this->add_action([=, this]() {
+				this->alignment = new_alignment;
+			});
+			return static_cast<This&&>(*this);
+		}
+
+		size_t TextRenderHelper::get_line_x_offset(const std::wstring& text) const {
+			if (this->alignment == Alignment::RIGHT)
+				return text.length();
+			else if (this->alignment == Alignment::CENTER)
+				return text.length() / 2;
+			else return 0;
+		}
+
 		TextRenderHelper::This&& TextRenderHelper::put(const std::wstring& text) {
 			this->add_action([&, this]() {
+				this->position.x -= this->get_line_x_offset(text);
+
 				for (auto& chr : text) {
 					this->character = chr;
 					this->push_changes();
@@ -106,8 +130,8 @@ namespace render {
 
 			// then jump to next line
 			this->add_action([&, this]() {
-				this->position.x -= text.length();
-				this->position.y++;
+				this->position.x = this->initial_pos.x; // reset x position
+				this->position.y++; // jump to next line
 			});
 
 			return static_cast<This&&>(*this);

@@ -10,9 +10,17 @@
 
 
 namespace render {
+
 	class Renderer;
 
 	namespace render_helpers {
+
+		enum class Alignment : uint8_t {
+			LEFT,
+			CENTER,
+			RIGHT
+		};
+
 		template<class D>
 		class RenderHelper : public IRenderHelper {
 		protected:
@@ -81,16 +89,23 @@ namespace render {
 			void push_changes() override;
 			This&& set_character(wchar_t chr);
 			This&& start();
+			This&& put();
 			This&& stop();
 			This&& move_x(int16_t dist);
 			This&& move_y(int16_t dist);
-			This&& set_thickness(uint8_t t);
+			This&& set_thickness(uint8_t new_thickness);
 		};
 
 
-		struct TextRenderHelper : public RenderHelper<TextRenderHelper> {
+		class TextRenderHelper : public RenderHelper<TextRenderHelper> {
+			Alignment alignment = Alignment::LEFT;
+			utils::SPoint initial_pos = this->position;
+
+			size_t get_line_x_offset(const std::wstring& text) const;
+		public:
 			TextRenderHelper(const utils::SPoint& position) : RenderHelper(position) { }
 
+			This&& set_alignment(Alignment new_alignment);
 			This&& put(const std::wstring& text);
 			This&& put_line(const std::wstring& text);
 		};
