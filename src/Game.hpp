@@ -15,7 +15,7 @@ class Game {
 	std::unique_ptr<render::Renderer> renderer;
 	Scene* current_scene = nullptr;
 	bool running = false;
-	input::InputSystem* input_system;
+	input::InputSystem* input_system = nullptr;
 
 	void tick(float delta);
 	void render(render::Renderer& r) const;
