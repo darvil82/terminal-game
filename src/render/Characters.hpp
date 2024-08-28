@@ -2,43 +2,43 @@
 
 namespace render {
 	namespace default_characters {
-		const std::string SPACE = " ";
+		static const char* SPACE = " ";
 
 		namespace lines {
 			namespace light {
-				const std::string HORIZONTAL = "─";
-				const std::string VERTICAL = "│";
-				const std::string TOP_RIGHT = "┐";
-				const std::string TOP_LEFT = "┌";
-				const std::string BOTTOM_RIGHT = "┘";
-				const std::string BOTTOM_LEFT = "└";
-				const std::string VERTICAL_RIGHT = "┤";
-				const std::string VERTICAL_LEFT = "├";
-				const std::string HORIZONTAL_DOWN = "┴";
-				const std::string HORIZONTAL_UP = "┬";
-				const std::string CROSS = "┼";
+				static const char* HORIZONTAL = "─";
+				static const char* VERTICAL = "│";
+				static const char* TOP_RIGHT = "┐";
+				static const char* TOP_LEFT = "┌";
+				static const char* BOTTOM_RIGHT = "┘";
+				static const char* BOTTOM_LEFT = "└";
+				static const char* VERTICAL_RIGHT = "┤";
+				static const char* VERTICAL_LEFT = "├";
+				static const char* HORIZONTAL_DOWN = "┴";
+				static const char* HORIZONTAL_UP = "┬";
+				static const char* CROSS = "┼";
 			}
 
 			namespace bold {
-				const std::string HORIZONTAL = "━";
-				const std::string VERTICAL = "┃";
-				const std::string TOP_RIGHT = "┓";
-				const std::string TOP_LEFT = "┏";
-				const std::string BOTTOM_RIGHT = "┛";
-				const std::string BOTTOM_LEFT = "┗";
-				const std::string VERTICAL_RIGHT = "┫";
-				const std::string VERTICAL_LEFT = "┣";
-				const std::string HORIZONTAL_DOWN = "┻";
-				const std::string HORIZONTAL_UP = "┳";
-				const std::string CROSS = "╋";
+				static const char* HORIZONTAL = "━";
+				static const char* VERTICAL = "┃";
+				static const char* TOP_RIGHT = "┓";
+				static const char* TOP_LEFT = "┏";
+				static const char* BOTTOM_RIGHT = "┛";
+				static const char* BOTTOM_LEFT = "┗";
+				static const char* VERTICAL_RIGHT = "┫";
+				static const char* VERTICAL_LEFT = "┣";
+				static const char* HORIZONTAL_DOWN = "┻";
+				static const char* HORIZONTAL_UP = "┳";
+				static const char* CROSS = "╋";
 			}
 		};
 
 		namespace blocks {
-			const std::string FULL = "█";
-			const std::string FULL_1 = "▓";
-			const std::string FULL_2 = "▒";
-			const std::string FULL_3 = "░";
+			static const char* FULL = "█";
+			static const char* FULL_1 = "▓";
+			static const char* FULL_2 = "▒";
+			static const char* FULL_3 = "░";
 		};
 	}
 }
