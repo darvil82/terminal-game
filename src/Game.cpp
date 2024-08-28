@@ -1,4 +1,3 @@
-#include <cwchar>
 #include <thread>
 #include "Game.hpp"
 #include "utils/Terminal.hpp"
@@ -91,13 +90,13 @@ void Game::tick(float delta) {
 void Game::render(render::Renderer& r) const {
 	r << render::render_helpers::TextRenderHelper {{50, 10}}
 		.set_alignment(render::render_helpers::Alignment::CENTER)
-		.put_line(L"Press C to spawn a cube, SPACE to shake all cubes!");
+		.put_line("Press C to spawn a cube, SPACE to shake all cubes!");
 
 	if (this->current_scene) {
 		this->current_scene->render(r);
 	}
 
 	r << render::render_helpers::TextRenderHelper {{0, 0}}
-		.put_line(L"ENTITIES: " + std::to_wstring(this->current_scene->get_entity_count()))
-		.put_line(L"FPS: " + std::to_wstring(r.get_current_fps()));
+		.put_line("ENTITIES: " + std::to_string(this->current_scene->get_entity_count()))
+		.put_line("FPS: " + std::to_string(r.get_current_fps()));
 }

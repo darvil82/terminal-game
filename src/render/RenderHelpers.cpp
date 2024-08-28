@@ -18,7 +18,7 @@ namespace render {
 			}
 		}
 
-		DrawRenderHelper::This&& DrawRenderHelper::set_character(wchar_t chr) {
+		DrawRenderHelper::This&& DrawRenderHelper::set_character(std::string chr) {
 			this->add_action([=, this]() {
 				this->character = chr;
 			});
@@ -103,7 +103,7 @@ namespace render {
 			return static_cast<This&&>(*this);
 		}
 
-		size_t TextRenderHelper::get_line_x_offset(const std::wstring& text) const {
+		size_t TextRenderHelper::get_line_x_offset(const std::string& text) const {
 			if (this->alignment == Alignment::RIGHT)
 				return text.length();
 			else if (this->alignment == Alignment::CENTER)
@@ -111,7 +111,7 @@ namespace render {
 			else return 0;
 		}
 
-		TextRenderHelper::This&& TextRenderHelper::put(const std::wstring& text) {
+		TextRenderHelper::This&& TextRenderHelper::put(const std::string& text) {
 			this->add_action([&, this]() {
 				this->position.x -= this->get_line_x_offset(text);
 
@@ -125,7 +125,7 @@ namespace render {
 			return static_cast<This&&>(*this);
 		}
 
-		TextRenderHelper::This&& TextRenderHelper::put_line(const std::wstring& text) {
+		TextRenderHelper::This&& TextRenderHelper::put_line(const std::string& text) {
 			this->put(text); // first append action to push_changes text
 
 			// then jump to next line

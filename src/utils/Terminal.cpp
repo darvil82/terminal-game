@@ -35,18 +35,18 @@ namespace utils {
 		return false;
 	}
 
-	std::wstring Terminal::cursor_set_pos(utils::UPoint pos) {
-		std::wstringstream buff;
+	std::string Terminal::cursor_set_pos(utils::UPoint pos) {
+		std::stringstream buff;
 		buff << Terminal::ESCAPE_SEQUENCE_START
 			<< pos.y + 1 << ';'
 			<< pos.x + 1 << 'f';
 		return buff.str();
 	}
 
-	std::wstring Terminal::cursor_move_x(int16_t x) {
-		if (x == 0) return L"";
+	std::string Terminal::cursor_move_x(int16_t x) {
+		if (x == 0) return "";
 
-		std::wstringstream buff;
+		std::stringstream buff;
 		buff << Terminal::ESCAPE_SEQUENCE_START;
 
 		if (auto absolute = abs(x); absolute != 1)
@@ -56,10 +56,10 @@ namespace utils {
 		return buff.str();
 	}
 
-	std::wstring Terminal::cursor_move_y(int16_t y) {
-		if (y == 0) return L"";
+	std::string Terminal::cursor_move_y(int16_t y) {
+		if (y == 0) return "";
 
-		std::wstringstream buff;
+		std::stringstream buff;
 		buff << Terminal::ESCAPE_SEQUENCE_START;
 
 		if (auto absolute = abs(y); absolute != 1)
@@ -69,13 +69,13 @@ namespace utils {
 		return buff.str();
 	}
 
-	std::wstring Terminal::cursor_set_pos_relative(utils::SPoint offset) {
+	std::string Terminal::cursor_set_pos_relative(utils::SPoint offset) {
 		return Terminal::cursor_move_x(offset.x)
 			+ Terminal::cursor_move_y(offset.y);
 	}
 
-	std::wstring Terminal::set_color(const Color color, bool background) {
-		std::wstringstream buff;
+	std::string Terminal::set_color(const Color color, bool background) {
+		std::stringstream buff;
 		buff << Terminal::ESCAPE_SEQUENCE_START
 			<< (background ? "48" : "38") << ";2;"
 			<< color.r << ';'

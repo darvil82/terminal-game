@@ -120,7 +120,7 @@ namespace render {
 	}
 
 	uint16_t Renderer::push_buffer(bool force_render) {
-		std::wstringstream buff;
+		std::stringstream buff;
 		const Pixel* last_pixel = nullptr;
 		utils::Point<buff_size_t> last_pixel_position = {0, 0};
 		uint16_t adjacent_streak = 0; // number streak of adjacent pixels placed
@@ -229,8 +229,8 @@ namespace render {
 	}
 
 	void Renderer::push_stream() {
-		std::wcout << output_stream.str() << std::flush;
-		output_stream.str(L"");
+		std::cout << output_stream.str() << std::flush;
+		output_stream.str("");
 	}
 
 	void Renderer::set_background_pixel(const Pixel& pixel) {

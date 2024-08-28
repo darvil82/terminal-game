@@ -28,7 +28,7 @@ namespace render {
 			using This = D; // used for subclasses
 			using BaseRenderHelper = RenderHelper<D>; // used for subclasses
 
-			wchar_t character = render::default_characters::blocks::FULL;
+			std::string character = render::default_characters::blocks::FULL;
 			utils::SPoint position;
 			utils::Color fg = utils::default_colors::WHITE;
 			utils::Color bg = utils::default_colors::BLACK;
@@ -87,7 +87,7 @@ namespace render {
 			DrawRenderHelper(const utils::SPoint& position) : RenderHelper(position) { }
 
 			void push_changes() override;
-			This&& set_character(wchar_t chr);
+			This&& set_character(std::string chr);
 			This&& start();
 			This&& put();
 			This&& stop();
@@ -101,13 +101,13 @@ namespace render {
 			Alignment alignment = Alignment::LEFT;
 			utils::SPoint initial_pos = this->position;
 
-			size_t get_line_x_offset(const std::wstring& text) const;
+			size_t get_line_x_offset(const std::string& text) const;
 		public:
 			TextRenderHelper(const utils::SPoint& position) : RenderHelper(position) { }
 
 			This&& set_alignment(Alignment new_alignment);
-			This&& put(const std::wstring& text);
-			This&& put_line(const std::wstring& text);
+			This&& put(const std::string& text);
+			This&& put_line(const std::string& text);
 		};
 	}
 }

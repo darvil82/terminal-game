@@ -22,8 +22,8 @@ namespace utils {
 
 		bool operator==(const Color& other) const;
 
-		std::wstring get_sequence(bool background) const;
-		std::wstring get_sequence() const override;
+		std::string get_sequence(bool background) const;
+		std::string get_sequence() const override;
 	};
 
 

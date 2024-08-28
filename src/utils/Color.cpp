@@ -2,11 +2,11 @@
 #include "Terminal.hpp"
 
 namespace utils {
-	std::wstring Color::get_sequence(bool background) const {
+	std::string Color::get_sequence(bool background) const {
 		return Terminal::set_color(*this, background);
 	}
 
-	std::wstring Color::get_sequence() const {
+	std::string Color::get_sequence() const {
 		return this->get_sequence(false);
 	}
 

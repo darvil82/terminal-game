@@ -36,3 +36,7 @@ cmake-build-debug/**
 
 # ides
 .idea
+.vscode
+
+# build folder
+build/

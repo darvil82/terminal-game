@@ -52,10 +52,10 @@ namespace utils {
 		static utils::UPoint get_terminal_size();
 		static bool is_a_terminal();
 		static bool is_a_tty();
-		static std::wstring cursor_set_pos(utils::UPoint pos);
-		static std::wstring cursor_set_pos_relative(utils::SPoint offset);
-		static std::wstring cursor_move_x(int16_t x);
-		static std::wstring cursor_move_y(int16_t y);
-		static std::wstring set_color(const utils::Color color, bool background = false);
+		static std::string cursor_set_pos(utils::UPoint pos);
+		static std::string cursor_set_pos_relative(utils::SPoint offset);
+		static std::string cursor_move_x(int16_t x);
+		static std::string cursor_move_y(int16_t y);
+		static std::string set_color(const utils::Color color, bool background = false);
 	};
 }

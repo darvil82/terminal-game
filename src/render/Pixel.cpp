@@ -15,8 +15,8 @@ namespace render {
 			&& this->character == other.character;
 	}
 
-	std::wstring Pixel::get_sequence() const {
-		std::wstringstream buff;
+	std::string Pixel::get_sequence() const {
+		std::stringstream buff;
 		buff << this->color_fg.get_sequence()
 			<< this->color_bg.get_sequence(true)
 			<< this->character;

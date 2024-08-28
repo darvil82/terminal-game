@@ -8,6 +8,6 @@
 namespace utils {
 
 	class ITerminalSequence {
-		virtual std::wstring get_sequence() const = 0;
+		virtual std::string get_sequence() const = 0;
 	};
 }

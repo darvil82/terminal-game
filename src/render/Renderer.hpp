@@ -20,7 +20,7 @@ namespace render {
 		using buff_size_t = uint16_t;
 
 		std::string prev_locale; // previous locale
-		std::wstringstream output_stream;
+		std::stringstream output_stream;
 		std::thread render_thread;
 		buff_size_t buffer_width = 50, buffer_height = 50;
 		Pixel** current_buffer = nullptr; // pixel matrix

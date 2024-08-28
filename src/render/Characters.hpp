@@ -2,51 +2,43 @@
 
 namespace render {
 	namespace default_characters {
-		enum : wchar_t {
-			SPACE = L' ',
-		};
+		const std::string SPACE = " ";
 
 		namespace lines {
 			namespace light {
-				enum : wchar_t {
-					HORIZONTAL = L'─',
-					VERTICAL = L'│',
-					TOP_RIGHT = L'┐',
-					TOP_LEFT = L'┌',
-					BOTTOM_RIGHT = L'┘',
-					BOTTOM_LEFT = L'└',
-					VERTICAL_RIGHT = L'┤',
-					VERTICAL_LEFT = L'├',
-					HORIZONTAL_DOWN = L'┴',
-					HORIZONTAL_UP = L'┬',
-					CROSS = L'┼',
-				};
+				const std::string HORIZONTAL = "─";
+				const std::string VERTICAL = "│";
+				const std::string TOP_RIGHT = "┐";
+				const std::string TOP_LEFT = "┌";
+				const std::string BOTTOM_RIGHT = "┘";
+				const std::string BOTTOM_LEFT = "└";
+				const std::string VERTICAL_RIGHT = "┤";
+				const std::string VERTICAL_LEFT = "├";
+				const std::string HORIZONTAL_DOWN = "┴";
+				const std::string HORIZONTAL_UP = "┬";
+				const std::string CROSS = "┼";
 			}
 
 			namespace bold {
-				enum : wchar_t {
-					HORIZONTAL = L'━',
-					VERTICAL = L'┃',
-					TOP_RIGHT = L'┓',
-					TOP_LEFT = L'┏',
-					BOTTOM_RIGHT = L'┛',
-					BOTTOM_LEFT = L'┗',
-					VERTICAL_RIGHT = L'┫',
-					VERTICAL_LEFT = L'┣',
-					HORIZONTAL_DOWN = L'┻',
-					HORIZONTAL_UP = L'┳',
-					CROSS = L'╋',
-				};
+				const std::string HORIZONTAL = "━";
+				const std::string VERTICAL = "┃";
+				const std::string TOP_RIGHT = "┓";
+				const std::string TOP_LEFT = "┏";
+				const std::string BOTTOM_RIGHT = "┛";
+				const std::string BOTTOM_LEFT = "┗";
+				const std::string VERTICAL_RIGHT = "┫";
+				const std::string VERTICAL_LEFT = "┣";
+				const std::string HORIZONTAL_DOWN = "┻";
+				const std::string HORIZONTAL_UP = "┳";
+				const std::string CROSS = "╋";
 			}
 		};
 
 		namespace blocks {
-			enum : wchar_t {
-				FULL = L'█',
-				THREE_QUARTERS = L'▓',
-				HALF = L'▒',
-				QUARTER = L'░',
-			};
+			const std::string FULL = "█";
+			const std::string FULL_1 = "▓";
+			const std::string FULL_2 = "▒";
+			const std::string FULL_3 = "░";
 		};
 	}
 }
