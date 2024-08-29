@@ -2,6 +2,7 @@
 #include <csignal>
 
 #include "src/Game.hpp"
+#include "src/utils/Terminal.hpp"
 
 
 Game game;

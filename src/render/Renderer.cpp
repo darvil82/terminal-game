@@ -18,8 +18,7 @@ namespace render {
 
 		this->resize(width, height);
 
-		output_stream << utils::Terminal::CURSOR_HIDE
-			<< utils::Terminal::BUFFER_NEW;
+		output_stream << utils::Terminal::init_new_buff();
 
 		this->push_stream();
 	}
@@ -27,9 +26,7 @@ namespace render {
 	Renderer::~Renderer() {
 		this->stop_render_loop();
 
-		output_stream << utils::Terminal::CURSOR_SHOW
-			<< utils::Terminal::CLEAR_ALL
-			<< utils::Terminal::BUFFER_OLD;
+		output_stream << utils::Terminal::close_new_buff();
 
 		this->push_stream();
 		std::setlocale(LC_ALL, prev_locale.c_str());

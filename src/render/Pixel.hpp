@@ -4,6 +4,7 @@
 #include <string>
 #include "../utils/Color.hpp"
 #include "../utils/ITerminalSequence.hpp"
+#include "../render/Characters.hpp"
 
 
 namespace render {
@@ -18,7 +19,7 @@ namespace render {
 			const utils::Color& bg_color
 		) : color_fg {fg_color}, color_bg {bg_color}, character {character} { }
 
-		Pixel() : Pixel {" ", utils::default_colors::WHITE, utils::default_colors::BLACK} { }
+		Pixel() : Pixel {render::default_characters::SPACE, utils::default_colors::WHITE, utils::default_colors::BLACK} { }
 
 		const Pixel& operator=(const Pixel& other);
 		bool operator==(const Pixel& other) const;

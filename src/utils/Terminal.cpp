@@ -37,7 +37,7 @@ namespace utils {
 
 	std::string Terminal::cursor_set_pos(utils::UPoint pos) {
 		std::stringstream buff;
-		buff << Terminal::ESCAPE_SEQUENCE_START
+		buff << Terminal::ESCAPE << '['
 			<< pos.y + 1 << ';'
 			<< pos.x + 1 << 'f';
 		return buff.str();
@@ -47,7 +47,7 @@ namespace utils {
 		if (x == 0) return "";
 
 		std::stringstream buff;
-		buff << Terminal::ESCAPE_SEQUENCE_START;
+		buff << Terminal::ESCAPE << '[';
 
 		if (auto absolute = abs(x); absolute != 1)
 			buff << absolute;
@@ -60,7 +60,7 @@ namespace utils {
 		if (y == 0) return "";
 
 		std::stringstream buff;
-		buff << Terminal::ESCAPE_SEQUENCE_START;
+		buff << Terminal::ESCAPE << '[';
 
 		if (auto absolute = abs(y); absolute != 1)
 			buff << absolute;
@@ -76,11 +76,26 @@ namespace utils {
 
 	std::string Terminal::set_color(const Color color, bool background) {
 		std::stringstream buff;
-		buff << Terminal::ESCAPE_SEQUENCE_START
+		buff << Terminal::ESCAPE << '['
 			<< (background ? "48" : "38") << ";2;"
-			<< color.r << ';'
-			<< color.g << ';'
-			<< color.b << 'm';
+			<< std::to_string(color.r) << ';'
+			<< std::to_string(color.g) << ';'
+			<< std::to_string(color.b) << 'm';
+		return buff.str();
+	}
+
+	std::string Terminal::init_new_buff() {
+		std::stringstream buff;
+		buff << Terminal::ESCAPE << Terminal::BUFFER_NEW
+			<< Terminal::ESCAPE << Terminal::CURSOR_HIDE;
+		return buff.str();
+	}
+
+	std::string Terminal::close_new_buff() {
+		std::stringstream buff;
+		buff << Terminal::ESCAPE << Terminal::CURSOR_SHOW
+			<< Terminal::ESCAPE << Terminal::CLEAR_ALL
+			<< Terminal::ESCAPE << Terminal::BUFFER_OLD;
 		return buff.str();
 	}
 }
