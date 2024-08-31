@@ -39,7 +39,7 @@ namespace entities {
 			this->velocity.y = 0;
 		} else {
 			// apply gravity
-			this->velocity.y += 40 * delta;
+			// this->velocity.y += 40 * delta;
 		}
 
 		if (is_on_ground) {
