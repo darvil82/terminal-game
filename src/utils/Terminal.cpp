@@ -45,24 +45,46 @@ namespace utils {
 
 	std::string Terminal::cursor_move_x(int16_t x) {
 		if (x == 0) return "";
+		auto absolute = abs(x);
+		auto is_neg = x < 0;
 
 		std::stringstream buff;
+
+		if (absolute < 4 && is_neg) {
+			for (u_int8_t x = 0; x < absolute; x++) {
+				buff << '\b';
+			}
+
+			return buff.str();
+		}
+
 		buff << Terminal::ESCAPE << '[';
 
-		if (auto absolute = abs(x); absolute != 1)
+		if (absolute != 1)
 			buff << absolute;
 
-		buff << (x < 0 ? 'D' : 'C');
+		buff << (is_neg ? 'D' : 'C');
 		return buff.str();
 	}
 
 	std::string Terminal::cursor_move_y(int16_t y) {
 		if (y == 0) return "";
+		auto absolute = abs(y);
+		auto is_neg = y < 0;
 
 		std::stringstream buff;
+
+		if (absolute < 4 && !is_neg) {
+			for (u_int8_t x = 0; x < absolute; x++) {
+				buff << '\v';
+			}
+
+			return buff.str();
+		}
+
 		buff << Terminal::ESCAPE << '[';
 
-		if (auto absolute = abs(y); absolute != 1)
+		if (absolute != 1)
 			buff << absolute;
 
 		buff << (y < 0 ? 'A' : 'B');

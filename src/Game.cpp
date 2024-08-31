@@ -12,6 +12,7 @@
 Game::Game() {
 	auto [width, height] = utils::Terminal::get_terminal_size();
 	this->renderer = std::make_unique<render::Renderer>(width, height);
+	// this->renderer->set_max_fps(1);
 
 	this->input_system = &input::InputSystem::instance();
 	std::srand(std::time(nullptr));
@@ -98,5 +99,6 @@ void Game::render(render::Renderer& r) const {
 
 	r << render::render_helpers::TextRenderHelper {{0, 0}}
 		.put_line("ENTITIES: " + std::to_string(this->current_scene->get_entity_count()))
+		.put_line("CHANGES: " + std::to_string(r.get_changed_pixels()))
 		.put_line("FPS: " + std::to_string(r.get_current_fps()));
 }

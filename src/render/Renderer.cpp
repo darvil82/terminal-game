@@ -118,8 +118,6 @@ namespace render {
 
 	uint16_t Renderer::push_buffer(bool force_render) {
 		std::stringstream buff;
-		const Pixel* last_pixel = nullptr;
-		utils::Point<buff_size_t> last_pixel_position = {0, 0};
 		uint16_t adjacent_streak = 0; // number streak of adjacent pixels placed
 
 		for (buff_size_t y = 0; y < this->buffer_height; y++) {
@@ -155,8 +153,8 @@ namespace render {
 						 * we can save a few bytes to write here by doing this. the move_x writes fewer characters
 						 * than the set_pos, since it doesn't need to write the y coordinate.
 						 */
-						(last_pixel && last_pixel_position.y == y)
-							? utils::Terminal::cursor_move_x(x - last_pixel_position.x - 1)
+						(last_pixel && this->last_pixel_position.y == y)
+							? utils::Terminal::cursor_move_x(x - this->last_pixel_position.x - 1)
 							: utils::Terminal::cursor_set_pos({x, y})
 					);
 				}
@@ -174,8 +172,8 @@ namespace render {
 
 				buff << current_pixel.character; // print character
 
-				last_pixel = &current_pixel;
-				last_pixel_position = {x, y};
+				this->last_pixel = &current_pixel;
+				this->last_pixel_position = {x, y};
 				adjacent_streak++;
 			}
 		}
@@ -208,12 +206,12 @@ namespace render {
 
 			this->clear_buffer();
 			func(*this);
-			auto num_printed_chars = this->push_buffer(this->force_render_next_frame);
+			this->changed_pixels = this->push_buffer(this->force_render_next_frame);
 
 			// limit the framerate exponentially based on how many characters were printed
-			if (this->enabled_optimization && num_printed_chars > 0)
+			if (this->enabled_optimization && this->changed_pixels > 0)
 				this->set_current_fps(
-					this->max_fps * std::pow(FRAME_RATE_FACTOR, num_printed_chars / CHARS_PRINTED_THRESHOLD)
+					this->max_fps * std::pow(FRAME_RATE_FACTOR, this->changed_pixels / CHARS_PRINTED_THRESHOLD)
 				);
 
 			// cap framerate to current max fps. make sure we don't wait the first frame
@@ -244,6 +242,10 @@ namespace render {
 
 	uint8_t Renderer::get_current_fps() const {
 		return this->current_fps;
+	}
+
+	uint16_t Renderer::get_changed_pixels() const {
+		return this->changed_pixels;
 	}
 
 	void Renderer::start_render_loop(std::function<void(Renderer&)> func) {

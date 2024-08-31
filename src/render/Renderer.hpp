@@ -31,7 +31,10 @@ namespace render {
 		bool force_render_next_frame = true; // usually just used for first frame
 		bool is_rendering = false;
 		bool enabled_optimization = false; // terminal emulators struggle with lots data per frame
+		utils::Point<buff_size_t> last_pixel_position = {0, 0};
+		const Pixel* last_pixel = nullptr;
 		uint8_t max_fps = 50, current_fps = max_fps;
+		uint16_t changed_pixels = 0;
 
 		void set_current_fps(uint8_t fps);
 		void free_buff();
@@ -60,6 +63,7 @@ namespace render {
 		uint8_t get_max_fps() const;
 
 		uint8_t get_current_fps() const;
+		uint16_t get_changed_pixels() const;
 
 		void resize(buff_size_t new_width, buff_size_t new_height);
 		void start_render_loop(std::function<void(Renderer&)> func);
