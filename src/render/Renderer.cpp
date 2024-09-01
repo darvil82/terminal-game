@@ -119,6 +119,8 @@ namespace render {
 	uint16_t Renderer::push_buffer(bool force_render) {
 		std::stringstream buff;
 		uint16_t adjacent_streak = 0; // number streak of adjacent pixels placed
+		const Pixel* last_pixel_ptr = force_render ? nullptr : &this->last_pixel;
+
 
 		for (buff_size_t y = 0; y < this->buffer_height; y++) {
 			for (buff_size_t x = 0; x < this->buffer_width; x++) {
@@ -132,6 +134,7 @@ namespace render {
 					adjacent_streak = 0;
 					continue;
 				}
+
 
 				/*
 				 * if pixel now needs to be placed at x0 (first pixel in line) and it is adjacent to the previous
@@ -152,7 +155,7 @@ namespace render {
 						 * we can save a few bytes to write here by doing this. the move_x writes fewer characters
 						 * than the set_pos, since it doesn't need to write the y coordinate.
 						 */
-						(this->last_pixel && this->last_pixel_position.y == y)
+						(last_pixel_ptr && this->last_pixel_position.y == y)
 							? utils::Terminal::cursor_move_x(x - this->last_pixel_position.x - 1)
 							: utils::Terminal::cursor_set_pos({x, y})
 					);
@@ -161,17 +164,17 @@ namespace render {
 
 				/* only print color sequences if they are different from previous pixel */
 
-				if (!this->last_pixel || this->last_pixel->color_fg != current_pixel.color_fg) {
+				if (!last_pixel_ptr || last_pixel_ptr->color_fg != current_pixel.color_fg) {
 					buff << current_pixel.color_fg.get_sequence();
 				}
 
-				if (!this->last_pixel || this->last_pixel->color_bg != current_pixel.color_bg) {
+				if (!last_pixel_ptr || last_pixel_ptr->color_bg != current_pixel.color_bg) {
 					buff << current_pixel.color_bg.get_sequence(true);
 				}
 
 				buff << current_pixel.character; // print character
 
-				this->last_pixel = &current_pixel;
+				last_pixel_ptr = &current_pixel;
 				this->last_pixel_position = {x, y};
 				adjacent_streak++;
 			}
@@ -179,6 +182,10 @@ namespace render {
 
 		auto str = buff.str();
 		size_t size = str.length();
+
+		// save a copy since when clearing the buffer the pointer will point to a new pixel
+		if (last_pixel_ptr)
+			this->last_pixel = *last_pixel_ptr;
 
 		// if nothing changed, don't push_changes anything
 		if (size == 0) return 0;

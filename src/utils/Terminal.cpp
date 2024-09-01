@@ -50,8 +50,8 @@ namespace utils {
 
 		std::stringstream buff;
 
-		if (absolute < 4 && is_neg) {
-			for (u_int8_t x = 0; x < absolute; x++) {
+		if (is_neg && absolute < 4) {
+			for (uint8_t x = 0; x < absolute; x++) {
 				buff << '\b';
 			}
 
@@ -75,7 +75,7 @@ namespace utils {
 		std::stringstream buff;
 
 		if (absolute < 4 && !is_neg) {
-			for (u_int8_t x = 0; x < absolute; x++) {
+			for (uint8_t x = 0; x < absolute; x++) {
 				buff << '\v';
 			}
 

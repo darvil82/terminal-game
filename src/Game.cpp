@@ -83,28 +83,16 @@ void Game::tick(float delta) {
 		}
 	}
 
-	if (INPUT_IS_PRESSED(R)) {
-		this->color = utils::Color {static_cast<uint8_t>(rand() % 10)*25, static_cast<uint8_t>(rand() % 10)*25,
-				static_cast<uint8_t>(rand() % 10)*25};
-	}
-
 	if (INPUT_IS_PRESSED(C)) {
 		this->current_scene->attach_entity(ENTITY_CREATE(entities::Cube, cube));
 	}
 }
 
 void Game::render(render::Renderer& r) const {
-	// r << render::render_helpers::TextRenderHelper {{50, 10}}
-	// 	.set_alignment(render::render_helpers::Alignment::CENTER)
-	// 	.put_line("Press C to spawn a cube, SPACE to shake all cubes!");
+	r << render::render_helpers::TextRenderHelper {{50, 10}}
+		.set_alignment(render::render_helpers::Alignment::CENTER)
+		.put_line("Press C to spawn a cube, SPACE to shake all cubes!");
 
-
-	r << render::render_helpers::DrawRenderHelper {{10, 5}}
-		.set_color_fg(this->color)
-		.set_character("X")
-		.set_thickness(20)
-		.start()
-		.move_x(80);
 
 	if (this->current_scene) {
 		this->current_scene->render(r);

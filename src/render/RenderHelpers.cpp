@@ -9,10 +9,10 @@ namespace render {
 				return;
 			}
 
-			uint8_t half_thickness = this->thickness / 2;
+			uint16_t half_thickness = this->thickness / 2;
 
-			for (int8_t y = this->position.y - half_thickness; y <= this->position.y + half_thickness; y++) {
-				for (int8_t x = this->position.x - this->thickness; x <= this->position.x + this->thickness; x++) {
+			for (int16_t y = this->position.y - half_thickness; y <= this->position.y + half_thickness; y++) {
+				for (int16_t x = this->position.x - this->thickness; x <= this->position.x + this->thickness; x++) {
 					this->set_pixel({x, y});
 				}
 			}

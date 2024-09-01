@@ -32,7 +32,7 @@ namespace render {
 		bool is_rendering = false;
 		bool enabled_optimization = false; // terminal emulators struggle with lots data per frame
 		utils::Point<buff_size_t> last_pixel_position = {0, 0};
-		const Pixel* last_pixel = nullptr;
+		Pixel last_pixel;
 		uint8_t max_fps = 50, current_fps = max_fps;
 		uint16_t changed_pixels = 0;
 
