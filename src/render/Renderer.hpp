@@ -24,7 +24,7 @@ namespace render {
 		std::thread render_thread;
 		buff_size_t buffer_width = 50, buffer_height = 50;
 		Pixel** current_buffer = nullptr; // pixel matrix
-		Pixel** previous_buffer = nullptr; // previous frame
+		Pixel** aux_buffer = nullptr; // previous frame
 		Pixel background_pixel = {
 			default_characters::SPACE, utils::default_colors::WHITE, utils::default_colors::BLACK
 		};

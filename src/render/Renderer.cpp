@@ -55,16 +55,16 @@ namespace render {
 		this->current_buffer = nullptr;
 
 		// free previous
-		if (!this->previous_buffer) return;
+		if (!this->aux_buffer) return;
 
 		for (buff_size_t y = 0; y < this->buffer_height; y++) {
 			// free rows of matrices
-			delete[] this->previous_buffer[y];
+			delete[] this->aux_buffer[y];
 		}
 
 		// free matrices
-		delete[] this->previous_buffer;
-		this->previous_buffer = nullptr;
+		delete[] this->aux_buffer;
+		this->aux_buffer = nullptr;
 	}
 
 	void Renderer::resize(buff_size_t new_width, buff_size_t new_height) {
@@ -81,9 +81,9 @@ namespace render {
 		}
 
 		// also create previous
-		this->previous_buffer = new Pixel* [new_height];
+		this->aux_buffer = new Pixel* [new_height];
 		for (buff_size_t y = 0; y < new_height; y++) {
-			this->previous_buffer[y] = new Pixel[new_width];
+			this->aux_buffer[y] = new Pixel[new_width];
 		}
 
 		this->buffer_width = new_width;
@@ -108,9 +108,14 @@ namespace render {
 	}
 
 	void Renderer::clear_buffer() {
+		// swap buffers. move current to previous basically
+		const auto aux_tmp = this->aux_buffer;
+		this->aux_buffer = this->current_buffer;
+		this->current_buffer = aux_tmp;
+
+		// clear new
 		for (buff_size_t y = 0; y < this->buffer_height; y++) {
 			for (buff_size_t x = 0; x < this->buffer_width; x++) {
-				this->previous_buffer[y][x] = this->current_buffer[y][x]; // copy current to previous
 				this->current_buffer[y][x] = this->background_pixel;
 			}
 		}
@@ -125,7 +130,7 @@ namespace render {
 		for (buff_size_t y = 0; y < this->buffer_height; y++) {
 			for (buff_size_t x = 0; x < this->buffer_width; x++) {
 				const Pixel& current_pixel = this->current_buffer[y][x];
-				const Pixel& prev_frame_pixel = this->previous_buffer[y][x];
+				const Pixel& prev_frame_pixel = this->aux_buffer[y][x];
 				const bool is_unchanged = current_pixel == prev_frame_pixel;
 
 
