@@ -16,6 +16,7 @@ class Game {
 	Scene* current_scene = nullptr;
 	bool running = false;
 	input::InputSystem* input_system = nullptr;
+	utils::Color color = utils::default_colors::WHITE;
 
 	void tick(float delta);
 	void render(render::Renderer& r) const;

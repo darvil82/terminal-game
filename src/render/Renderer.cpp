@@ -124,7 +124,6 @@ namespace render {
 			for (buff_size_t x = 0; x < this->buffer_width; x++) {
 				const Pixel& current_pixel = this->current_buffer[y][x];
 				const Pixel& prev_frame_pixel = this->previous_buffer[y][x];
-
 				const bool is_unchanged = current_pixel == prev_frame_pixel;
 
 
@@ -153,7 +152,7 @@ namespace render {
 						 * we can save a few bytes to write here by doing this. the move_x writes fewer characters
 						 * than the set_pos, since it doesn't need to write the y coordinate.
 						 */
-						(last_pixel && this->last_pixel_position.y == y)
+						(this->last_pixel && this->last_pixel_position.y == y)
 							? utils::Terminal::cursor_move_x(x - this->last_pixel_position.x - 1)
 							: utils::Terminal::cursor_set_pos({x, y})
 					);
@@ -162,11 +161,11 @@ namespace render {
 
 				/* only print color sequences if they are different from previous pixel */
 
-				if (!last_pixel || last_pixel->color_fg != current_pixel.color_fg) {
+				if (!this->last_pixel || this->last_pixel->color_fg != current_pixel.color_fg) {
 					buff << current_pixel.color_fg.get_sequence();
 				}
 
-				if (!last_pixel || last_pixel->color_bg != current_pixel.color_bg) {
+				if (!this->last_pixel || this->last_pixel->color_bg != current_pixel.color_bg) {
 					buff << current_pixel.color_bg.get_sequence(true);
 				}
 
