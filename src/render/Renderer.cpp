@@ -43,67 +43,51 @@ namespace render {
 	}
 
 	void Renderer::free_buff() {
-		if (!this->current_buffer) return;
+		if (!this->global_buffer) return;
 
-		for (buff_size_t y = 0; y < this->buffer_height; y++) {
-			// free rows of matrices
-			delete[] this->current_buffer[y];
-		}
-
-		// free matrices
-		delete[] this->current_buffer;
-		this->current_buffer = nullptr;
-
-		// free aux
-		if (!this->aux_buffer) return;
-
-		for (buff_size_t y = 0; y < this->buffer_height; y++) {
-			// free rows of matrices
-			delete[] this->aux_buffer[y];
-		}
-
-		// free matrices
-		delete[] this->aux_buffer;
-		this->aux_buffer = nullptr;
+		delete[] this->global_buffer;
+		this->global_buffer = nullptr;
 	}
 
 	void Renderer::resize(buff_size_t new_width, buff_size_t new_height) {
 		// unchanged... nothing to do
-		if (this->current_buffer && new_height == this->buffer_height && new_width == this->buffer_width) return;
+		if (this->global_buffer && new_height == this->buffer_height && new_width == this->buffer_width) return;
 
 		this->free_buff();
 
-		// create new one
-		this->current_buffer = new Pixel* [new_height];
-		for (buff_size_t y = 0; y < new_height; y++) {
-			this->current_buffer[y] = new Pixel[new_width]; // default pixels have default background and foreground colors
-		}
+		const auto matrix_size = new_height*new_width;
 
-		// also create aux
-		this->aux_buffer = new Pixel* [new_height];
-		for (buff_size_t y = 0; y < new_height; y++) {
-			this->aux_buffer[y] = new Pixel[new_width];
-		}
+		this->global_buffer = new Pixel[matrix_size*2];
+		this->current_buffer = this->global_buffer;
+		this->aux_buffer = this->global_buffer + matrix_size;
 
 		this->buffer_width = new_width;
 		this->buffer_height = new_height;
 		this->force_render_next_frame = true;
 	}
 
+	Pixel& Renderer::get_pixel_from_buffer(const utils::SPoint& pos, Pixel* buff) {
+		return buff[this->buffer_width*pos.y + pos.x];
+	}
+
+	const Pixel& Renderer::get_pixel_from_buffer(const utils::SPoint& pos, Pixel* buff) const {
+		return buff[this->buffer_height*pos.y + pos.x];
+	}
+
 	std::tuple<Renderer::buff_size_t, Renderer::buff_size_t> Renderer::get_size() const {
 		return {this->buffer_width, this->buffer_height};
 	}
 
-	void Renderer::set_pixel(const Pixel& pixel, const utils::SPoint& position) {
-		if (!this->is_in_bounds(position)) return;
+	void Renderer::set_pixel(const Pixel& pixel, const utils::SPoint& pos) {
+		if (!this->is_in_bounds(pos)) return;
 
-		this->current_buffer[position.y][position.x] = pixel;
+		this->get_pixel_from_buffer(pos, this->current_buffer) = pixel;
 	}
 
 	const Pixel& Renderer::get_pixel(const utils::SPoint& pos) const {
 		if (!this->is_in_bounds(pos))
 			throw std::out_of_range("Pixel out of bounds");
-		return this->current_buffer[pos.y][pos.x];
+		return this->get_pixel_from_buffer(pos, this->current_buffer);
 	}
 
 	void Renderer::clear_buffer() {
@@ -115,7 +99,7 @@ namespace render {
 		// clear new
 		for (buff_size_t y = 0; y < this->buffer_height; y++) {
 			for (buff_size_t x = 0; x < this->buffer_width; x++) {
-				this->current_buffer[y][x] = this->background_pixel;
+				this->get_pixel_from_buffer({x, y}, this->current_buffer) = this->background_pixel;
 			}
 		}
 	}
@@ -128,8 +112,8 @@ namespace render {
 
 		for (buff_size_t y = 0; y < this->buffer_height; y++) {
 			for (buff_size_t x = 0; x < this->buffer_width; x++) {
-				const Pixel& current_pixel = this->current_buffer[y][x];
-				const Pixel& prev_frame_pixel = this->aux_buffer[y][x];
+				const Pixel& current_pixel = this->get_pixel_from_buffer({x, y}, this->current_buffer);
+				const Pixel& prev_frame_pixel = this->get_pixel_from_buffer({x, y}, this->aux_buffer);
 				const bool is_unchanged = current_pixel == prev_frame_pixel;
 
 

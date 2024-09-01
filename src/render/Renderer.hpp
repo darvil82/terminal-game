@@ -22,21 +22,28 @@ namespace render {
 		std::string prev_locale; // previous locale
 		std::stringstream output_stream;
 		std::thread render_thread;
-		buff_size_t buffer_width = 50, buffer_height = 50;
-		Pixel** current_buffer = nullptr; // pixel matrix
-		Pixel** aux_buffer = nullptr; // previous frame
-		Pixel background_pixel = {
-			default_characters::SPACE, utils::default_colors::WHITE, utils::default_colors::BLACK
-		};
+
+		buff_size_t buffer_width, buffer_height;
+		Pixel background_pixel = { default_characters::SPACE, utils::default_colors::WHITE, utils::default_colors::BLACK };
+
+		Pixel* global_buffer = nullptr; // heap allocated buffer containing both current and aux matrices
+		Pixel* current_buffer = nullptr; // points to start of current relative to global
+		Pixel* aux_buffer = nullptr; // points to start of aux relative to global
+
 		bool force_render_next_frame = true; // usually just used for first frame
 		bool is_rendering = false;
 		bool enabled_optimization = false; // terminal emulators struggle with lots data per frame
+
 		utils::Point<buff_size_t> last_pixel_position = {0, 0};
 		Pixel last_pixel;
+
 		uint8_t max_fps = 50, current_fps = max_fps;
 		uint16_t changed_pixels = 0;
 
+
 		void set_current_fps(uint8_t fps);
+		Pixel& get_pixel_from_buffer(const utils::SPoint& pos, Pixel* buff);
+		const Pixel& get_pixel_from_buffer(const utils::SPoint& pos, Pixel* buff) const;
 		void free_buff();
 		bool is_in_bounds(const utils::SPoint& pos) const;
 		void push_stream();

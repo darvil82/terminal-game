@@ -30,7 +30,7 @@ namespace entities {
 		if (hit_y) this->velocity.y *= -1;
 
 		// slowly decrease velocity
-		this->velocity *= std::pow(0.5, delta);
+		this->velocity *= std::pow(0.3, delta);
 
 
 		bool is_on_ground = this->position.y >= 30;
