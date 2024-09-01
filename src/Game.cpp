@@ -86,6 +86,12 @@ void Game::tick(float delta) {
 	if (INPUT_IS_PRESSED(C)) {
 		this->current_scene->attach_entity(ENTITY_CREATE(entities::Cube, cube));
 	}
+
+	if (INPUT_IS_PRESSED(K)) {
+		const auto num_ents = this->current_scene->get_entity_count();
+		if (num_ents != 0)
+			this->current_scene->get_entities()[num_ents - 1]->kill();
+	}
 }
 
 void Game::render(render::Renderer& r) const {
