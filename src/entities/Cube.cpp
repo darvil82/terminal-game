@@ -30,21 +30,21 @@ namespace entities {
 		if (hit_y) this->velocity.y *= -1;
 
 		// slowly decrease velocity
-		this->velocity *= std::pow(0.8, delta);
+		this->velocity *= std::pow(0.5, delta);
 
 
 		bool is_on_ground = this->position.y >= 30;
 
-		if (is_on_ground && abs(this->velocity.y) <= 5) {
-			this->velocity.y = 0;
-		} else {
-			// apply gravity
-			// this->velocity.y += 40 * delta;
-		}
+		// if (is_on_ground && abs(this->velocity.y) <= 5) {
+		// 	this->velocity.y = 0;
+		// } else {
+		// 	// apply gravity
+		// 	// this->velocity.y += 40 * delta;
+		// }
 
-		if (is_on_ground) {
-			this->velocity.x *= std::pow(0.005, delta);
-		}
+		// if (is_on_ground) {
+		// 	this->velocity.x *= std::pow(0.005, delta);
+		// }
 
 	}
 

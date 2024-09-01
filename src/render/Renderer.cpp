@@ -54,7 +54,7 @@ namespace render {
 		delete[] this->current_buffer;
 		this->current_buffer = nullptr;
 
-		// free previous
+		// free aux
 		if (!this->aux_buffer) return;
 
 		for (buff_size_t y = 0; y < this->buffer_height; y++) {
@@ -71,7 +71,6 @@ namespace render {
 		// unchanged... nothing to do
 		if (this->current_buffer && new_height == this->buffer_height && new_width == this->buffer_width) return;
 
-		// free previous
 		this->free_buff();
 
 		// create new one
@@ -80,7 +79,7 @@ namespace render {
 			this->current_buffer[y] = new Pixel[new_width]; // default pixels have default background and foreground colors
 		}
 
-		// also create previous
+		// also create aux
 		this->aux_buffer = new Pixel* [new_height];
 		for (buff_size_t y = 0; y < new_height; y++) {
 			this->aux_buffer[y] = new Pixel[new_width];
@@ -108,7 +107,7 @@ namespace render {
 	}
 
 	void Renderer::clear_buffer() {
-		// swap buffers. move current to previous basically
+		// swap buffers. move current to aux basically
 		const auto aux_tmp = this->aux_buffer;
 		this->aux_buffer = this->current_buffer;
 		this->current_buffer = aux_tmp;
