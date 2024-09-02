@@ -48,14 +48,14 @@ void Scene::attach_entity(entities::BaseEntity& entity) {
 		throw std::runtime_error("Entity already attached to a scene");
 	}
 
-	SYNCHRONIZED(this->access_mutex, {
+	SYNCHRONIZED(this->mutex, {
 		this->entities[this->num_entities++] = &entity;
 		entity.scene = this;
 	})
 }
 
 void Scene::detach_entity(entities::BaseEntity& entity) {
-	SYNCHRONIZED(this->access_mutex, {
+	SYNCHRONIZED(this->mutex, {
 		for (size_t i = 0; i < this->num_entities; i++) {
 			if (this->entities[i] == &entity) {
 				this->entities[i] = this->entities[--this->num_entities]; // swap with last
@@ -68,7 +68,7 @@ void Scene::detach_entity(entities::BaseEntity& entity) {
 }
 
 void Scene::tick(float delta) {
-	SYNCHRONIZED(this->access_mutex, {
+	SYNCHRONIZED(this->mutex, {
 		for (auto& ent: *this) {
 			ent.tick(delta);
 		}
@@ -76,7 +76,7 @@ void Scene::tick(float delta) {
 }
 
 void Scene::render(render::Renderer& renderer) const {
-	SYNCHRONIZED(this->access_mutex, {
+	SYNCHRONIZED(this->mutex, {
 		for (auto& ent: *this) {
 			ent.render(renderer);
 		}

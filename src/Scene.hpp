@@ -13,7 +13,7 @@ namespace entities {
 
 class Scene : public ITickable, public render::IRenderable {
 	size_t num_entities = 0;
-	mutable std::mutex access_mutex;
+	mutable std::mutex mutex;
 	entities::BaseEntity* entities[SCENE_MAX_ENTITIES] { };
 
 
