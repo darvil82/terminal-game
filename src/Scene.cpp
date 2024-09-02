@@ -1,7 +1,9 @@
 #include <cstdio>
 #include <stdexcept>
+#include <mutex>
 
 #include "Scene.hpp"
+#include "utils/Threads.hpp"
 
 
 Scene::EntitiesIterator Scene::begin() const {
@@ -30,9 +32,9 @@ const std::vector<entities::BaseEntity*> Scene::get_entities() const {
 	std::vector<entities::BaseEntity*> vec;
 	vec.reserve(this->num_entities);
 
-	for (auto& ent: *this) {
-		vec.push_back(&ent);
-	}
+		for (auto& ent: *this) {
+			vec.push_back(&ent);
+		}
 
 	return vec;
 }
@@ -46,31 +48,39 @@ void Scene::attach_entity(entities::BaseEntity& entity) {
 		throw std::runtime_error("Entity already attached to a scene");
 	}
 
-	this->entities[this->num_entities++] = &entity;
-	entity.scene = this;
+	SYNCHRONIZED(this->access_mutex, {
+		this->entities[this->num_entities++] = &entity;
+		entity.scene = this;
+	})
 }
 
 void Scene::detach_entity(entities::BaseEntity& entity) {
-	for (size_t i = 0; i < this->num_entities; i++) {
-		if (this->entities[i] == &entity) {
-			this->entities[i] = this->entities[--this->num_entities]; // swap with last
-			entity.scene = nullptr; // clear entity's scene
-			return;
+	SYNCHRONIZED(this->access_mutex, {
+		for (size_t i = 0; i < this->num_entities; i++) {
+			if (this->entities[i] == &entity) {
+				this->entities[i] = this->entities[--this->num_entities]; // swap with last
+				entity.scene = nullptr; // clear entity's scene
+				return;
+			}
 		}
-	}
+	})
 	throw std::runtime_error("Entity not found in scene");
 }
 
 void Scene::tick(float delta) {
-	for (auto& ent: *this) {
-		ent.tick(delta);
-	}
+	SYNCHRONIZED(this->access_mutex, {
+		for (auto& ent: *this) {
+			ent.tick(delta);
+		}
+	})
 }
 
 void Scene::render(render::Renderer& renderer) const {
-	for (auto& ent: *this) {
-		ent.render(renderer);
-	}
+	SYNCHRONIZED(this->access_mutex, {
+		for (auto& ent: *this) {
+			ent.render(renderer);
+		}
+	})
 }
 
 size_t Scene::get_entity_count() const {
