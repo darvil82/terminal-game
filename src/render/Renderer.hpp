@@ -8,7 +8,7 @@
 #include <tuple>
 #include <thread>
 
-#include "Characters.hpp"
+#include "Character.hpp"
 #include "../utils/Point.hpp"
 #include "Pixel.hpp"
 #include "../utils/Concepts.hpp"

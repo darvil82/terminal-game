@@ -4,7 +4,7 @@
 #include <string>
 #include "../utils/Color.hpp"
 #include "../utils/ITerminalSequence.hpp"
-#include "../render/Characters.hpp"
+#include "../render/Character.hpp"
 
 
 namespace render {

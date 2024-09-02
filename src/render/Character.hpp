@@ -1,6 +1,14 @@
 #pragma once
 
 namespace render {
+	class UTF8Char {
+		static constexpr const size_t char_size = 4;
+
+		char character[char_size];
+
+	};
+
+
 	namespace default_characters {
 		static const char* SPACE = " ";
 
