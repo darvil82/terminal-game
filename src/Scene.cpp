@@ -32,9 +32,9 @@ const std::vector<entities::BaseEntity*> Scene::get_entities() const {
 	std::vector<entities::BaseEntity*> vec;
 	vec.reserve(this->num_entities);
 
-		for (auto& ent: *this) {
-			vec.push_back(&ent);
-		}
+	for (auto& ent: *this) {
+		vec.push_back(&ent);
+	}
 
 	return vec;
 }
