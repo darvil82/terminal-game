@@ -11,9 +11,6 @@
 
 namespace render {
 	Renderer::Renderer(buff_size_t width, buff_size_t height) {
-		this->prev_locale = std::setlocale(LC_ALL, nullptr);
-		std::setlocale(LC_ALL, "en_US.utf8");
-
 		this->enabled_optimization = !utils::Terminal::is_a_tty();
 
 		this->resize(width, height);
@@ -29,8 +26,6 @@ namespace render {
 		output_stream << utils::Terminal::close_new_buff();
 
 		this->push_stream();
-		std::setlocale(LC_ALL, prev_locale.c_str());
-
 		this->free_buff();
 	}
 

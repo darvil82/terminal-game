@@ -19,7 +19,6 @@ namespace render {
 	class Renderer {
 		using buff_size_t = uint16_t;
 
-		std::string prev_locale; // previous locale
 		std::stringstream output_stream;
 		std::thread render_thread;
 
