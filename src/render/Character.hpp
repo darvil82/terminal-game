@@ -1,11 +1,12 @@
 #pragma once
 
 namespace render {
-	class UTF8Char {
-		static constexpr const size_t char_size = 4;
+	union UTF8Char {
+		char array[4];
+		uint32_t character;
 
-		char character[char_size];
-
+	public:
+		UTF8Char(const uint32_t character): character{character} {}
 	};
 
 
