@@ -19,7 +19,7 @@ namespace render {
 		std::stringstream buff;
 		buff << this->color_fg.get_sequence()
 			<< this->color_bg.get_sequence(true)
-			<< this->character;
+			<< this->character.to_string();
 		return buff.str();
 	}
 

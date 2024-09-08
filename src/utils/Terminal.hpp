@@ -10,7 +10,7 @@ namespace utils {
 	struct Terminal final {
 		Terminal() = delete;
 
-		static constexpr const char ESCAPE = '\e';
+		static constexpr char ESCAPE = '\e';
 
 		// text formatting
 		static constexpr const char* INVERT = "[7m";

@@ -3,6 +3,7 @@
 
 #include "src/Game.hpp"
 #include "src/utils/Terminal.hpp"
+#include "src/render/Character.hpp"
 
 
 Game game;

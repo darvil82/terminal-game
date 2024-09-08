@@ -28,7 +28,7 @@ namespace render {
 			using This = D; // used for subclasses
 			using BaseRenderHelper = RenderHelper<D>; // used for subclasses
 
-			std::string character = render::default_characters::blocks::FULL;
+			UTF8Char character = render::default_characters::blocks::FULL;
 			utils::SPoint position;
 			utils::Color fg = utils::default_colors::WHITE;
 			utils::Color bg = utils::default_colors::BLACK;
@@ -87,7 +87,7 @@ namespace render {
 			DrawRenderHelper(const utils::SPoint& position) : RenderHelper(position) { }
 
 			void push_changes() override;
-			This&& set_character(std::string chr);
+			This&& set_character(UTF8Char chr);
 			This&& start();
 			This&& put();
 			This&& stop();

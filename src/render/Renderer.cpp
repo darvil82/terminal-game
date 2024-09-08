@@ -109,11 +109,9 @@ namespace render {
 			for (buff_size_t x = 0; x < this->buffer_width; x++) {
 				const Pixel& current_pixel = this->get_pixel_from_buffer({x, y}, this->current_buffer);
 				const Pixel& prev_frame_pixel = this->get_pixel_from_buffer({x, y}, this->aux_buffer);
-				const bool is_unchanged = current_pixel == prev_frame_pixel;
-
 
 				// if pixel hasn't changed since last frame, skip it
-				if (is_unchanged && !force_render) {
+				if (!force_render && current_pixel == prev_frame_pixel) {
 					adjacent_streak = 0;
 					continue;
 				}
@@ -155,7 +153,7 @@ namespace render {
 					buff << current_pixel.color_bg.get_sequence(true);
 				}
 
-				buff << current_pixel.character; // print character
+				buff << current_pixel.character.to_string(); // print character
 
 				last_pixel_ptr = &current_pixel;
 				this->last_pixel_position = {x, y};
@@ -181,8 +179,8 @@ namespace render {
 
 	void Renderer::render(std::function<void(Renderer&)> func) {
 		// just some values that seem to work well
-		constexpr const double CHARS_PRINTED_THRESHOLD = 9000.0;
-		constexpr const double FRAME_RATE_FACTOR = 0.3;
+		const double CHARS_PRINTED_THRESHOLD = 9000.0;
+		const double FRAME_RATE_FACTOR = 0.3;
 
 		timestamp last_frame_time;
 

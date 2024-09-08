@@ -50,7 +50,7 @@ void Game::end() {
 
 void Game::main_loop() {
 	timestamp last_tick_time = chrono::steady_clock::now();
-	constexpr const uint8_t max_tps = 50;
+	const uint8_t max_tps = 50;
 
 	while (this->running) {
 		const timestamp current_tick_time = chrono::steady_clock::now();

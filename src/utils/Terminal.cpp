@@ -2,7 +2,6 @@
 #include <unistd.h>
 #include <sstream>
 #include <iostream>
-#include <cstring>
 #include <filesystem>
 
 #include "Terminal.hpp"

@@ -18,7 +18,7 @@ namespace render {
 			}
 		}
 
-		DrawRenderHelper::This&& DrawRenderHelper::set_character(std::string chr) {
+		DrawRenderHelper::This&& DrawRenderHelper::set_character(UTF8Char chr) {
 			this->add_action([=, this]() {
 				this->character = chr;
 			});

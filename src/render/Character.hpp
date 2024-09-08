@@ -1,53 +1,60 @@
 #pragma once
 
-namespace render {
-	union UTF8Char {
-		char array[4];
-		uint32_t character;
+#include <sstream>
 
-	public:
-		UTF8Char(const uint32_t character): character{character} {}
+
+namespace render {
+	struct UTF8Char {
+		uint32_t codepoint;
+
+		constexpr UTF8Char(const uint32_t character): codepoint{character} {}
+
+		std::string to_string() const;
+
+		constexpr bool operator==(UTF8Char other) const {
+			return codepoint == other.codepoint;
+		}
 	};
 
 
 	namespace default_characters {
-		static const char* SPACE = " ";
+		static constexpr UTF8Char SPACE = L' ';
 
 		namespace lines {
 			namespace light {
-				static const char* HORIZONTAL = "─";
-				static const char* VERTICAL = "│";
-				static const char* TOP_RIGHT = "┐";
-				static const char* TOP_LEFT = "┌";
-				static const char* BOTTOM_RIGHT = "┘";
-				static const char* BOTTOM_LEFT = "└";
-				static const char* VERTICAL_RIGHT = "┤";
-				static const char* VERTICAL_LEFT = "├";
-				static const char* HORIZONTAL_DOWN = "┴";
-				static const char* HORIZONTAL_UP = "┬";
-				static const char* CROSS = "┼";
+				static constexpr UTF8Char HORIZONTAL = L'─';
+				static constexpr UTF8Char VERTICAL = L'│';
+				static constexpr UTF8Char TOP_RIGHT = L'┐';
+				static constexpr UTF8Char TOP_LEFT = L'┌';
+				static constexpr UTF8Char BOTTOM_RIGHT = L'┘';
+				static constexpr UTF8Char BOTTOM_LEFT = L'└';
+				static constexpr UTF8Char VERTICAL_RIGHT = L'┤';
+				static constexpr UTF8Char VERTICAL_LEFT = L'├';
+				static constexpr UTF8Char HORIZONTAL_DOWN = L'┴';
+				static constexpr UTF8Char HORIZONTAL_UP = L'┬';
+				static constexpr UTF8Char CROSS = L'┼';
 			}
 
 			namespace bold {
-				static const char* HORIZONTAL = "━";
-				static const char* VERTICAL = "┃";
-				static const char* TOP_RIGHT = "┓";
-				static const char* TOP_LEFT = "┏";
-				static const char* BOTTOM_RIGHT = "┛";
-				static const char* BOTTOM_LEFT = "┗";
-				static const char* VERTICAL_RIGHT = "┫";
-				static const char* VERTICAL_LEFT = "┣";
-				static const char* HORIZONTAL_DOWN = "┻";
-				static const char* HORIZONTAL_UP = "┳";
-				static const char* CROSS = "╋";
+				static constexpr UTF8Char HORIZONTAL = L'━';
+				static constexpr UTF8Char VERTICAL = L'┃';
+				static constexpr UTF8Char TOP_RIGHT = L'┓';
+				static constexpr UTF8Char TOP_LEFT = L'┏';
+				static constexpr UTF8Char BOTTOM_RIGHT = L'┛';
+				static constexpr UTF8Char BOTTOM_LEFT = L'┗';
+				static constexpr UTF8Char VERTICAL_RIGHT = L'┫';
+				static constexpr UTF8Char VERTICAL_LEFT = L'┣';
+				static constexpr UTF8Char HORIZONTAL_DOWN = L'┻';
+				static constexpr UTF8Char HORIZONTAL_UP = L'┳';
+				static constexpr UTF8Char CROSS = L'╋';
 			}
 		};
 
 		namespace blocks {
-			static const char* FULL = "█";
-			static const char* FULL_1 = "▓";
-			static const char* FULL_2 = "▒";
-			static const char* FULL_3 = "░";
+			static constexpr UTF8Char FULL = L'█';
+			static constexpr UTF8Char FULL_1 = L'▓';
+			static constexpr UTF8Char FULL_2 = L'▒';
+			static constexpr UTF8Char FULL_3 = L'░';
 		};
 	}
 }

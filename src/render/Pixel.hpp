@@ -11,10 +11,10 @@ namespace render {
 	struct Pixel : public utils::ITerminalSequence {
 		utils::Color color_fg;
 		utils::Color color_bg;
-		std::string character;
+		UTF8Char character;
 
 		Pixel(
-			const std::string character,
+			const UTF8Char character,
 			const utils::Color& fg_color,
 			const utils::Color& bg_color
 		) : color_fg {fg_color}, color_bg {bg_color}, character {character} { }
