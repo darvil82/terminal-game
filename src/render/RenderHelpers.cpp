@@ -46,41 +46,32 @@ namespace render {
 			return static_cast<This&&>(*this);
 		}
 
-		DrawRenderHelper::This&& DrawRenderHelper::move_x(int16_t dist) {
-			if (dist == 0) return static_cast<This&&>(*this);
+		void DrawRenderHelper::move_position(utils::SPoint::AxisType& axis, int16_t offset) {
+			if (offset == 0) return;
 
-			this->add_action([=, this]() {
+			this->add_action([captured_offset = offset, &axis, this]() {
+				int16_t offset = captured_offset * this->thickness;
+
 				if (!this->is_drawing) {
-					this->position.x += dist;
+					axis = offset;
 					return;
 				}
 
-				for (int16_t i = 1; i < std::abs(dist); i++) {
-					this->position.x += math::sign(dist);
+				for (int16_t i = 0; i < std::abs(offset); i++) {
+					axis += math::sign(offset);
 					this->push_changes();
 				}
 			});
+		}
 
+
+		DrawRenderHelper::This&& DrawRenderHelper::move_x(int16_t dist) {
+			this->move_position(this->position.x, dist);
 			return static_cast<This&&>(*this);
 		}
 
 		DrawRenderHelper::This&& DrawRenderHelper::move_y(int16_t dist) {
-			if (dist == 0) return static_cast<This&&>(*this);
-
-			this->add_action([=, this]() {
-				if (dist == 0) return;
-
-				if (!this->is_drawing) {
-					this->position.y += dist;
-					return;
-				}
-
-				for (int16_t i = 1; i < std::abs(dist); i++) {
-					this->position.y += math::sign(dist);
-					this->push_changes();
-				}
-			});
-
+			this->move_position(this->position.y, dist);
 			return static_cast<This&&>(*this);
 		}
 

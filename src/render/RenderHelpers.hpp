@@ -49,7 +49,7 @@ namespace render {
 				this->set_pixel(this->position);
 			}
 
-			RenderHelper(const utils::SPoint& position) : position(position) { }
+			RenderHelper(utils::SPoint position) : position(position) { }
 
 		public:
 			This&& set_color_fg(const utils::Color& color) {
@@ -83,8 +83,10 @@ namespace render {
 		class DrawRenderHelper : public RenderHelper<DrawRenderHelper> {
 			bool is_drawing = false;
 			uint8_t thickness = 1;
+
+			void move_position(utils::SPoint::AxisType& axis, int16_t offset);
 		public:
-			DrawRenderHelper(const utils::SPoint& position) : RenderHelper(position) { }
+			DrawRenderHelper(utils::SPoint position) : RenderHelper(position) { }
 
 			void push_changes() override;
 			This&& set_character(UTF8Char chr);
@@ -103,7 +105,7 @@ namespace render {
 
 			size_t get_line_x_offset(const std::string& text) const;
 		public:
-			TextRenderHelper(const utils::SPoint& position) : RenderHelper(position) { }
+			TextRenderHelper(utils::SPoint position) : RenderHelper(position) { }
 
 			This&& set_alignment(Alignment new_alignment);
 			This&& put(const std::string& text);

@@ -6,6 +6,8 @@
 namespace utils {
 	template<typename T = float>
 	struct Point {
+		using AxisType = T;
+
 		T x, y;
 
 		constexpr Point(T x, T y) : x {x}, y {y} { }
