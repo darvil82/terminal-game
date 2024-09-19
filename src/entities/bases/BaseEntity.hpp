@@ -20,7 +20,7 @@ class Scene;
     public:                               \
         static constexpr const char* CLASSNAME = #clsname; \
                                        \
-        virtual constexpr const char* get_classname() override { \
+        virtual constexpr const char* get_classname() const override { \
             return CLASSNAME;    \
         }                              \
                                        \
@@ -33,8 +33,8 @@ namespace entities {
 		Scene* scene = nullptr;
 
 	protected:
-		utils::Point<> position {0, 0};
-		utils::Point<> velocity {0, 0};
+		utils::FPoint position {0, 0};
+		utils::FPoint velocity {0, 0};
 
 		void tick(float delta) override;
 		void render(render::Renderer& renderer) const override;
@@ -43,19 +43,19 @@ namespace entities {
 		BaseEntity() = default;
 		virtual ~BaseEntity();
 
-		virtual constexpr const char* get_classname() = 0;
+		virtual constexpr const char* get_classname() const = 0;
 
 		virtual void kill();
 		Scene* get_scene();
-		void set_position(const utils::Point<>& new_pos);
-		void set_velocity(const utils::Point<>& new_vel);
+		void set_position(const utils::FPoint& new_pos);
+		void set_velocity(const utils::FPoint& new_vel);
 	};
 
 
 	template<Extends<BaseEntity> T>
-	bool ent_is_subclass_of(BaseEntity& ent) {
+	bool ent_is_subclass_of(const BaseEntity& ent) {
 		return dynamic_cast<T*>(&ent) != nullptr;
 	}
 
-	Predicate<BaseEntity&> ent_is_classname(const std::string& classname);
+	Predicate<const BaseEntity&> ent_is_classname(const std::string& classname);
 }

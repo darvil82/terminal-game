@@ -4,7 +4,7 @@
 
 
 namespace utils {
-	template<typename T = float>
+	template<typename T>
 	struct Point {
 		using AxisType = T;
 

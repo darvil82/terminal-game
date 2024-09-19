@@ -11,11 +11,11 @@ namespace entities {
 		return this->scene;
 	}
 
-	void BaseEntity::set_position(const utils::Point<>& new_pos) {
+	void BaseEntity::set_position(const utils::FPoint& new_pos) {
 		this->position = new_pos;
 	}
 
-	void BaseEntity::set_velocity(const utils::Point<>& new_vel) {
+	void BaseEntity::set_velocity(const utils::FPoint& new_vel) {
 		this->velocity = new_vel;
 	}
 
@@ -29,8 +29,8 @@ namespace entities {
 		delete this;
 	}
 
-	Predicate<BaseEntity&> ent_is_classname(const std::string& classname) {
-		return [classname](BaseEntity& ent) -> bool {
+	Predicate<const BaseEntity&> ent_is_classname(const std::string& classname) {
+		return [classname](const BaseEntity& ent) -> bool {
 			return ent.get_classname() == classname;
 		};
 	}
