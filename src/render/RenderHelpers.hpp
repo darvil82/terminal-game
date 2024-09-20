@@ -50,9 +50,6 @@ namespace render {
 			}
 
 			RenderHelper(utils::SPoint position) : position(position) { }
-
-			RenderHelper(RenderHelper&& other): renderer(other.renderer), position(other.position), actions(std::move(other.actions)) { }
-
 		public:
 			This&& set_color_fg(utils::Color color) {
 				this->add_action([=] (This& self) {
