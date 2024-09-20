@@ -19,59 +19,60 @@ namespace render {
 		}
 
 		DrawRenderHelper::This&& DrawRenderHelper::set_character(UTF8Char chr) {
-			this->add_action([=, this]() {
-				this->character = chr;
+			this->add_action([=] (This& self) {
+				self.character = chr;
 			});
 			return static_cast<This&&>(*this);
 		}
 
 		DrawRenderHelper::This&& DrawRenderHelper::start() {
-			this->add_action([this]() {
-				this->is_drawing = true;
+			this->add_action([] (This& self) {
+				self.is_drawing = true;
 			});
 			return this->put();
 		}
 
 		DrawRenderHelper::This&& DrawRenderHelper::put() {
-			this->add_action([this]() {
-				this->push_changes();
+			this->add_action([] (This& self) {
+				self.push_changes();
 			});
 			return static_cast<This&&>(*this);
 		}
 
 		DrawRenderHelper::This&& DrawRenderHelper::stop() {
-			this->add_action([this]() {
-				this->is_drawing = false;
+			this->add_action([] (This& self) {
+				self.is_drawing = false;
 			});
 			return static_cast<This&&>(*this);
 		}
 
-		void DrawRenderHelper::move_position(utils::SPoint::AxisType& axis, int16_t offset) {
+		void DrawRenderHelper::move_position(bool is_x, int16_t offset) {
 			if (offset == 0) return;
 
-			this->add_action([captured_offset = offset, &axis, this]() {
-				int16_t offset = captured_offset * this->thickness;
+			this->add_action([captured_offset = offset, is_x] (This& self) {
+				utils::SPoint::AxisType& axis = is_x ? self.position.x : self.position.y;
+				int16_t offset = captured_offset * self.thickness;
 
-				if (!this->is_drawing) {
+				if (!self.is_drawing) {
 					axis = offset;
 					return;
 				}
 
 				for (int16_t i = 0; i < std::abs(offset); i++) {
 					axis += math::sign(offset);
-					this->push_changes();
+					self.push_changes();
 				}
 			});
 		}
 
 
 		DrawRenderHelper::This&& DrawRenderHelper::move_x(int16_t dist) {
-			this->move_position(this->position.x, dist);
+			this->move_position(true, dist);
 			return static_cast<This&&>(*this);
 		}
 
 		DrawRenderHelper::This&& DrawRenderHelper::move_y(int16_t dist) {
-			this->move_position(this->position.y, dist);
+			this->move_position(false, dist);
 			return static_cast<This&&>(*this);
 		}
 
@@ -79,8 +80,8 @@ namespace render {
 			if (new_thickness < 1)
 				throw std::invalid_argument("thickness cannot be less than 1");
 
-			this->add_action([=, this]() {
-				this->thickness = new_thickness;
+			this->add_action([=] (This& self) {
+				self.thickness = new_thickness;
 			});
 
 			return static_cast<This&&>(*this);
@@ -88,8 +89,8 @@ namespace render {
 
 
 		TextRenderHelper::This&& TextRenderHelper::set_alignment(Alignment new_alignment) {
-			this->add_action([=, this]() {
-				this->alignment = new_alignment;
+			this->add_action([=] (This& self) {
+				self.alignment = new_alignment;
 			});
 			return static_cast<This&&>(*this);
 		}
@@ -103,13 +104,13 @@ namespace render {
 		}
 
 		TextRenderHelper::This&& TextRenderHelper::put(const std::string& text) {
-			this->add_action([&, this]() {
-				this->position.x -= this->get_line_x_offset(text);
+			this->add_action([=] (This& self) {
+				self.position.x -= self.get_line_x_offset(text);
 
 				for (auto& chr : text) {
-					this->character = chr;
-					this->push_changes();
-					this->position.x++;
+					self.character = chr;
+					self.push_changes();
+					self.position.x++;
 				}
 			});
 
@@ -120,9 +121,9 @@ namespace render {
 			this->put(text); // first append action to push_changes text
 
 			// then jump to next line
-			this->add_action([&, this]() {
-				this->position.x = this->initial_pos.x; // reset x position
-				this->position.y++; // jump to next line
+			this->add_action([] (This& self) {
+				self.position.x = self.initial_pos.x; // reset x position
+				self.position.y++; // jump to next line
 			});
 
 			return static_cast<This&&>(*this);

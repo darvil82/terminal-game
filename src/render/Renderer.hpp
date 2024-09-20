@@ -57,7 +57,6 @@ namespace render {
 		std::tuple<buff_size_t, buff_size_t> get_size() const;
 
 		void insert(render_helpers::IRenderHelper&& helper);
-
 		Renderer& operator<<(render_helpers::IRenderHelper&& helper);
 
 		void set_pixel(const Pixel& pixel, const utils::SPoint& position);

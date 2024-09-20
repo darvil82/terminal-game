@@ -24,8 +24,8 @@ namespace render {
 		template<class D>
 		class RenderHelper : public IRenderHelper {
 		protected:
-			using ActionFn = std::function<void()>;
 			using This = D; // used for subclasses
+			using ActionFn = std::function<void(This&)>;
 			using BaseRenderHelper = RenderHelper<D>; // used for subclasses
 
 			UTF8Char character = render::default_characters::blocks::FULL;
@@ -51,17 +51,19 @@ namespace render {
 
 			RenderHelper(utils::SPoint position) : position(position) { }
 
+			RenderHelper(RenderHelper&& other): renderer(other.renderer), position(other.position), actions(std::move(other.actions)) { }
+
 		public:
-			This&& set_color_fg(const utils::Color& color) {
-				this->add_action([&, this] () {
-					this->fg = color;
+			This&& set_color_fg(utils::Color color) {
+				this->add_action([=] (This& self) {
+					self.fg = color;
 				});
 				return static_cast<This&&>(*this);
 			}
 
-			This&& set_color_bg(const utils::Color& color) {
-				this->add_action([&, this] () {
-					this->bg = color;
+			This&& set_color_bg(utils::Color color) {
+				this->add_action([=] (This& self) {
+					self.bg = color;
 				});
 				return static_cast<This&&>(*this);
 			}
@@ -70,7 +72,7 @@ namespace render {
 				this->renderer = &r;
 
 				for (auto& action : this->actions) {
-					action();
+					action(static_cast<This&>(*this));
 				}
 			}
 
@@ -84,7 +86,7 @@ namespace render {
 			bool is_drawing = false;
 			uint8_t thickness = 1;
 
-			void move_position(utils::SPoint::AxisType& axis, int16_t offset);
+			void move_position(bool is_x, int16_t offset);
 		public:
 			DrawRenderHelper(utils::SPoint position) : RenderHelper(position) { }
 

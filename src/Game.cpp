@@ -104,7 +104,6 @@ void Game::render(render::Renderer& r) const {
 		this->current_scene->render(r);
 	}
 
-
 	r << render::render_helpers::TextRenderHelper {{0, 0}}
 		.put_line("ENTITIES: " + std::to_string(this->current_scene->get_entity_count()))
 		.put_line("CHANGES: " + std::to_string(r.get_changed_pixels()))
