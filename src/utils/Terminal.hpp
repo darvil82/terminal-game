@@ -56,7 +56,7 @@ namespace utils {
 		static std::string cursor_move_x(int16_t x);
 		static std::string cursor_move_y(int16_t y);
 		static std::string set_color(const utils::Color color, bool background = false);
-		static std::string init_new_buff();
-		static std::string close_new_buff();
+		static std::string prepare(bool alternate_buffer = false);
+		static std::string restore(bool alternate_buffer = false);
 	};
 }

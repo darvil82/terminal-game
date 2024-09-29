@@ -10,12 +10,12 @@
 
 
 namespace render {
-	Renderer::Renderer(buff_size_t width, buff_size_t height) {
-		this->enabled_optimization = !utils::Terminal::is_a_tty();
+	Renderer::Renderer(buff_size_t width, buff_size_t height, bool alternate_buffer) {
+		this->use_alternate_buffer = alternate_buffer;
 
 		this->resize(width, height);
 
-		output_stream << utils::Terminal::init_new_buff();
+		output_stream << utils::Terminal::prepare(alternate_buffer);
 
 		this->push_stream();
 	}
@@ -23,7 +23,7 @@ namespace render {
 	Renderer::~Renderer() {
 		this->stop_render_loop();
 
-		output_stream << utils::Terminal::close_new_buff();
+		output_stream << utils::Terminal::restore(this->use_alternate_buffer);
 
 		this->push_stream();
 		this->free_buff();
@@ -103,7 +103,6 @@ namespace render {
 		std::stringstream buff;
 		uint16_t adjacent_streak = 0; // number streak of adjacent pixels placed
 		const Pixel* last_pixel_ptr = force_render ? nullptr : &this->last_pixel;
-
 
 		for (buff_size_t y = 0; y < this->buffer_height; y++) {
 			for (buff_size_t x = 0; x < this->buffer_width; x++) {

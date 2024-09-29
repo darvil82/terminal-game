@@ -105,18 +105,21 @@ namespace utils {
 		return buff.str();
 	}
 
-	std::string Terminal::init_new_buff() {
+	std::string Terminal::prepare(bool alternate_buffer) {
 		std::stringstream buff;
-		buff << Terminal::ESCAPE << Terminal::BUFFER_NEW
-			<< Terminal::ESCAPE << Terminal::CURSOR_HIDE;
+
+		buff << Terminal::ESCAPE << Terminal::CURSOR_HIDE
+			<< Terminal::ESCAPE << (alternate_buffer ? Terminal::BUFFER_NEW : Terminal::CLEAR_ALL);
+
 		return buff.str();
 	}
 
-	std::string Terminal::close_new_buff() {
+	std::string Terminal::restore(bool alternate_buffer) {
 		std::stringstream buff;
+
 		buff << Terminal::ESCAPE << Terminal::CURSOR_SHOW
-			<< Terminal::ESCAPE << Terminal::CLEAR_ALL
-			<< Terminal::ESCAPE << Terminal::BUFFER_OLD;
+			<< Terminal::ESCAPE << (alternate_buffer ? Terminal::BUFFER_OLD : Terminal::CLEAR_ALL);
+
 		return buff.str();
 	}
 }

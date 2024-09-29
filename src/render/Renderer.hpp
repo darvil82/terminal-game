@@ -31,6 +31,7 @@ namespace render {
 
 		bool force_render_next_frame = true; // usually just used for first frame
 		bool is_rendering = false;
+		bool use_alternate_buffer = false;
 		bool enabled_optimization = false; // terminal emulators struggle with lots data per frame
 
 		utils::Point<buff_size_t> last_pixel_position = {0, 0};
@@ -51,7 +52,7 @@ namespace render {
 		void render(std::function<void(Renderer&)> func);
 
 	public:
-		Renderer(buff_size_t width, buff_size_t height);
+		Renderer(buff_size_t width, buff_size_t height, bool alternate_buffer = false);
 		~Renderer();
 
 		std::tuple<buff_size_t, buff_size_t> get_size() const;

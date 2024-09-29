@@ -11,8 +11,7 @@
 
 Game::Game() {
 	auto [width, height] = utils::Terminal::get_terminal_size();
-	this->renderer = std::make_unique<render::Renderer>(width, height);
-	// this->renderer->set_max_fps(2);
+	this->renderer = std::make_unique<render::Renderer>(width, height, false);
 
 	this->input_system = &input::InputSystem::instance();
 	std::srand(std::time(nullptr));
