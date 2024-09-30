@@ -55,7 +55,8 @@ namespace utils {
 		static std::string cursor_set_pos_relative(utils::SPoint offset);
 		static std::string cursor_move_x(int16_t x);
 		static std::string cursor_move_y(int16_t y);
-		static std::string set_color(const utils::Color color, bool background = false);
+		static std::string set_color(utils::Color color, bool background = false);
+		static std::string clear(bool all);
 		static std::string prepare(bool alternate_buffer = false);
 		static std::string restore(bool alternate_buffer = false);
 	};

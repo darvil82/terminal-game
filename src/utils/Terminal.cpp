@@ -97,11 +97,26 @@ namespace utils {
 
 	std::string Terminal::set_color(const Color color, bool background) {
 		std::stringstream buff;
+
 		buff << Terminal::ESCAPE << '['
 			<< (background ? "48" : "38") << ";2;"
 			<< std::to_string(color.r) << ';'
 			<< std::to_string(color.g) << ';'
 			<< std::to_string(color.b) << 'm';
+
+		return buff.str();
+	}
+
+	std::string Terminal::clear(bool all) {
+		std::stringstream buff;
+
+		buff << Terminal::ESCAPE;
+
+		if (all)
+			buff << Terminal::CURSOR_HOME << Terminal::ESCAPE;
+
+		buff << Terminal::CLEAR_ALL;
+
 		return buff.str();
 	}
 
@@ -109,7 +124,7 @@ namespace utils {
 		std::stringstream buff;
 
 		buff << Terminal::ESCAPE << Terminal::CURSOR_HIDE
-			<< Terminal::ESCAPE << (alternate_buffer ? Terminal::BUFFER_NEW : Terminal::CLEAR_ALL);
+			<< (alternate_buffer ? (Terminal::ESCAPE + Terminal::BUFFER_NEW) : Terminal::clear(true));
 
 		return buff.str();
 	}
@@ -118,7 +133,7 @@ namespace utils {
 		std::stringstream buff;
 
 		buff << Terminal::ESCAPE << Terminal::CURSOR_SHOW
-			<< Terminal::ESCAPE << (alternate_buffer ? Terminal::BUFFER_OLD : Terminal::CLEAR_ALL);
+			<< (alternate_buffer ? (Terminal::ESCAPE + Terminal::BUFFER_OLD) : Terminal::clear(true));
 
 		return buff.str();
 	}

@@ -9,6 +9,9 @@
 Game game;
 
 int main() {
+	if (!utils::Terminal::is_a_terminal())
+		return 1;
+
 	std::signal(SIGINT, [](int) {
 		game.stop_loop();
 	});
