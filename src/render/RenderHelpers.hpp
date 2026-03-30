@@ -33,7 +33,7 @@ namespace render {
 			utils::Color fg = utils::default_colors::WHITE;
 			utils::Color bg = utils::default_colors::BLACK;
 
-			void add_action(const ActionFn& action) {
+			void add_action(ActionFn action) {
 				this->actions.push_back(action);
 			}
 

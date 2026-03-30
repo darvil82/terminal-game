@@ -11,7 +11,7 @@
 
 Game::Game() {
 	auto [width, height] = utils::Terminal::get_terminal_size();
-	this->renderer = std::make_unique<render::Renderer>(width, height, false);
+	this->renderer = std::make_unique<render::Renderer>(width, height, true);
 
 	this->input_system = &input::InputSystem::instance();
 	std::srand(std::time(nullptr));
