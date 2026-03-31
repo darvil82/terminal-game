@@ -33,8 +33,13 @@ namespace render {
 			utils::Color fg = utils::default_colors::WHITE;
 			utils::Color bg = utils::default_colors::BLACK;
 
-			void add_action(ActionFn action) {
-				this->actions.push_back(action);
+			This&& schedule(ActionFn action) {
+				// if we currently executing callbacks just run the new one inmediately
+				this->renderer
+					? action(static_cast<This&>(*this))
+					: this->actions.push_back(action);
+
+				return static_cast<This&&>(*this);
 			}
 
 			void set_pixel(const utils::SPoint& pos) {
@@ -52,17 +57,15 @@ namespace render {
 			RenderHelper(utils::SPoint position) : position(position) { }
 		public:
 			This&& set_color_fg(utils::Color color) {
-				this->add_action([=] (This& self) {
+				return this->schedule([=] (This& self) {
 					self.fg = color;
 				});
-				return static_cast<This&&>(*this);
 			}
 
 			This&& set_color_bg(utils::Color color) {
-				this->add_action([=] (This& self) {
+				return this->schedule([=] (This& self) {
 					self.bg = color;
 				});
-				return static_cast<This&&>(*this);
 			}
 
 			void operator()(Renderer& r) override {
@@ -71,6 +74,8 @@ namespace render {
 				for (auto& action : this->actions) {
 					action(static_cast<This&>(*this));
 				}
+
+				this->renderer = nullptr;
 			}
 
 		private:

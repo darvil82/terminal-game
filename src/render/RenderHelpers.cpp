@@ -19,37 +19,34 @@ namespace render {
 		}
 
 		DrawRenderHelper::This&& DrawRenderHelper::set_character(UTF8Char chr) {
-			this->add_action([=] (This& self) {
+			return this->schedule([=] (This& self) {
 				self.character = chr;
 			});
-			return static_cast<This&&>(*this);
 		}
 
 		DrawRenderHelper::This&& DrawRenderHelper::start() {
-			this->add_action([] (This& self) {
+			return this->schedule([] (This& self) {
 				self.is_drawing = true;
+				self.push_changes();
 			});
-			return this->put();
 		}
 
 		DrawRenderHelper::This&& DrawRenderHelper::put() {
-			this->add_action([] (This& self) {
+			return this->schedule([] (This& self) {
 				self.push_changes();
 			});
-			return static_cast<This&&>(*this);
 		}
 
 		DrawRenderHelper::This&& DrawRenderHelper::stop() {
-			this->add_action([] (This& self) {
+			return this->schedule([] (This& self) {
 				self.is_drawing = false;
 			});
-			return static_cast<This&&>(*this);
 		}
 
 		void DrawRenderHelper::move_position(bool is_x, int16_t offset) {
 			if (offset == 0) return;
 
-			this->add_action([captured_offset = offset, is_x] (This& self) {
+			this->schedule([captured_offset = offset, is_x] (This& self) {
 				utils::SPoint::AxisType& axis = is_x ? self.position.x : self.position.y;
 				int16_t offset = captured_offset * self.thickness;
 
@@ -80,19 +77,19 @@ namespace render {
 			if (new_thickness < 1)
 				throw std::invalid_argument("thickness cannot be less than 1");
 
-			this->add_action([=] (This& self) {
+			return this->schedule([=] (This& self) {
 				self.thickness = new_thickness;
-			});
 
-			return static_cast<This&&>(*this);
+				if (self.is_drawing)
+					self.push_changes();
+			});
 		}
 
 
 		TextRenderHelper::This&& TextRenderHelper::set_alignment(Alignment new_alignment) {
-			this->add_action([=] (This& self) {
+			return this->schedule([=] (This& self) {
 				self.alignment = new_alignment;
 			});
-			return static_cast<This&&>(*this);
 		}
 
 		size_t TextRenderHelper::get_line_x_offset(const std::string& text) const {
@@ -104,7 +101,7 @@ namespace render {
 		}
 
 		TextRenderHelper::This&& TextRenderHelper::put(const std::string& text) {
-			this->add_action([=] (This& self) {
+			return this->schedule([=] (This& self) {
 				self.position.x -= self.get_line_x_offset(text);
 
 				for (auto& chr : text) {
@@ -113,20 +110,15 @@ namespace render {
 					self.position.x++;
 				}
 			});
-
-			return static_cast<This&&>(*this);
 		}
 
 		TextRenderHelper::This&& TextRenderHelper::put_line(const std::string& text) {
-			this->put(text); // first append action to push_changes text
-
 			// then jump to next line
-			this->add_action([] (This& self) {
+			return this->schedule([&text] (This& self) {
+				self.put(text); // first put text
 				self.position.x = self.initial_pos.x; // reset x position
 				self.position.y++; // jump to next line
 			});
-
-			return static_cast<This&&>(*this);
 		}
 	}
 }

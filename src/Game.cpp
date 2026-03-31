@@ -49,7 +49,7 @@ void Game::end() {
 
 void Game::main_loop() {
 	timestamp last_tick_time = chrono::steady_clock::now();
-	const uint8_t max_tps = 20;
+	const uint8_t max_tps = 12;
 
 	while (this->running) {
 		const timestamp current_tick_time = chrono::steady_clock::now();
@@ -86,7 +86,7 @@ void Game::tick(float delta) {
 		this->current_scene->attach_entity(ENTITY_CREATE(entities::Cube, cube));
 	}
 
-	if (INPUT_IS_PRESSED(K)) {
+	if (INPUT_IS_PRESSED(SHIFT + K)) {
 		const auto num_ents = this->current_scene->get_entity_count();
 		if (num_ents != 0)
 			this->current_scene->get_entities()[num_ents - 1]->kill();

@@ -8,7 +8,7 @@
 namespace entities {
 
 	class Cube : public BaseHealthEntity {
-	DEFINE_ENTITY_CLASS(cube)
+		DEFINE_ENTITY_CLASS(cube)
 
 		std::string player_name;
 		utils::Color color = utils::default_colors::WHITE;
