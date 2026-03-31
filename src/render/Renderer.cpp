@@ -5,8 +5,9 @@
 
 #include "Renderer.hpp"
 #include "../utils/Terminal.hpp"
-#include "Pixel.hpp"
 #include "../utils/Typedefs.hpp"
+#include "../utils/Threads.hpp"
+#include "Pixel.hpp"
 
 
 namespace render {
@@ -171,9 +172,7 @@ namespace render {
 		if (size == 0) return 0;
 
 		output_stream << str;
-		this->push_stream();
-
-		return size;
+		return this->push_stream();
 	}
 
 	void Renderer::render(std::function<void(Renderer&)> func) {
@@ -194,12 +193,6 @@ namespace render {
 			func(*this);
 			this->changed_pixels = this->push_buffer(this->force_render_next_frame);
 
-			// limit the framerate exponentially based on how many characters were printed
-			if (this->enabled_optimization && this->changed_pixels > 0)
-				this->set_current_fps(
-					this->max_fps * std::pow(FRAME_RATE_FACTOR, this->changed_pixels / CHARS_PRINTED_THRESHOLD)
-				);
-
 			// cap framerate to current max fps. make sure we don't wait the first frame
 			if (frame_time < 1.0f / this->current_fps) {
 				std::this_thread::sleep_for(chrono::duration<float>(1.0f / this->current_fps - frame_time));
@@ -209,9 +202,10 @@ namespace render {
 		}
 	}
 
-	void Renderer::push_stream() {
-		std::cout << output_stream.str() << std::flush;
-		output_stream.str("");
+	size_t Renderer::push_stream() {
+		auto str = this->output_stream.str();
+		this->output_stream.str("");
+		return write(STDOUT_FILENO, str.c_str(), str.length());
 	}
 
 	void Renderer::set_background_pixel(const Pixel& pixel) {

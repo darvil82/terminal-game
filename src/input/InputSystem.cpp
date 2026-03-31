@@ -4,10 +4,13 @@
 #include <iostream>
 #include <fstream>
 #include "InputSystem.hpp"
+#include "../utils/Threads.hpp"
 
 
 namespace input {
 	InputSystem::InputSystem() {
+		std::ios_base::sync_with_stdio(false);
+
 		// set terminal to non-canonical mode and disable echo
 		tcgetattr(0, &this->old_terminal_config);
 		auto terminal_flags = this->old_terminal_config; // copy old terminal config
@@ -16,7 +19,6 @@ namespace input {
 		terminal_flags.c_lflag &= ~ECHO; // disable echo
 
 		tcsetattr(STDIN_FILENO, TCSANOW, &terminal_flags);
-
 
 		// set stdin to non-blocking
 		this->old_stdin_flags = fcntl(STDIN_FILENO, F_GETFL, 0);
@@ -41,9 +43,8 @@ namespace input {
 	void InputSystem::read_input() {
 		while (this->is_reading) {
 			key_buff_t buff = {0}; // clear current_buffer
-			if (read(0, &buff, buff.size()) > 0) {
+			if (read(0, &buff, buff.size()) > 0)
 				this->pressed_key_buff = buff; // only if we read something
-			}
 			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 		}
 	}

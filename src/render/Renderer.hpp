@@ -32,7 +32,6 @@ namespace render {
 		bool force_render_next_frame = true; // usually just used for first frame
 		bool is_rendering = false;
 		bool use_alternate_buffer = false;
-		bool enabled_optimization = false; // terminal emulators struggle with lots data per frame
 
 		utils::Point<buff_size_t> last_pixel_position = {0, 0};
 		Pixel last_pixel;
@@ -46,7 +45,7 @@ namespace render {
 		const Pixel& get_pixel_from_buffer(const utils::SPoint& pos, Pixel* buff) const;
 		void free_buff();
 		bool is_in_bounds(const utils::SPoint& pos) const;
-		void push_stream();
+		size_t push_stream();
 		void clear_buffer();
 		uint16_t push_buffer(bool force_render = false);
 		void render(std::function<void(Renderer&)> func);

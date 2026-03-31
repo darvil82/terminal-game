@@ -123,8 +123,10 @@ namespace utils {
 	std::string Terminal::prepare(bool alternate_buffer) {
 		std::stringstream buff;
 
-		buff << Terminal::ESCAPE << Terminal::CURSOR_HIDE
-			<< (alternate_buffer ? (Terminal::ESCAPE + Terminal::BUFFER_NEW) : Terminal::clear(true));
+		buff << Terminal::ESCAPE << Terminal::CURSOR_HIDE;
+
+		if (alternate_buffer) buff << Terminal::ESCAPE << Terminal::BUFFER_NEW;
+		else buff << Terminal::clear(true);
 
 		return buff.str();
 	}
@@ -132,8 +134,10 @@ namespace utils {
 	std::string Terminal::restore(bool alternate_buffer) {
 		std::stringstream buff;
 
-		buff << Terminal::ESCAPE << Terminal::CURSOR_SHOW
-			<< (alternate_buffer ? (Terminal::ESCAPE + Terminal::BUFFER_OLD) : Terminal::clear(true));
+		buff << Terminal::ESCAPE << Terminal::CURSOR_SHOW;
+
+		if (alternate_buffer) buff << Terminal::ESCAPE << Terminal::BUFFER_OLD;
+		else buff << Terminal::clear(true);
 
 		return buff.str();
 	}
