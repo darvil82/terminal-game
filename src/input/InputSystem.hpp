@@ -1,7 +1,5 @@
 #pragma once
 
-#include <unistd.h>
-#include <termios.h>
 #include <thread>
 #include "../Game.hpp"
 #include "Keyboard.hpp"
@@ -16,9 +14,6 @@ namespace input {
 
 	class InputSystem {
 		friend Game;
-
-		termios old_terminal_config;
-		uint32_t old_stdin_flags;
 
 		std::thread input_thread;
 		bool is_reading = true;

@@ -51,6 +51,7 @@ namespace utils {
 		static utils::UPoint get_terminal_size();
 		static bool is_a_terminal();
 		static bool is_a_tty();
+		static void set_canonical_mode(bool enabled);
 		static std::string cursor_set_pos(utils::UPoint pos);
 		static std::string cursor_set_pos_relative(utils::SPoint offset);
 		static std::string cursor_move_x(int16_t x);

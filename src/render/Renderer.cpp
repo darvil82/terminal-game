@@ -1,6 +1,6 @@
 #include <stdexcept>
 #include <sstream>
-#include <iostream>
+#include <unistd.h>
 #include <cmath>
 
 #include "Renderer.hpp"

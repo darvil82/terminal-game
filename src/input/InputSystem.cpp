@@ -1,39 +1,23 @@
 #include <unistd.h>
-#include <termios.h>
 #include <fcntl.h>
 #include <iostream>
 #include <fstream>
 #include "InputSystem.hpp"
+
+#include "../utils/Terminal.hpp"
 #include "../utils/Threads.hpp"
 
 
 namespace input {
 	InputSystem::InputSystem() {
-		std::ios_base::sync_with_stdio(false);
-
-		// set terminal to non-canonical mode and disable echo
-		tcgetattr(0, &this->old_terminal_config);
-		auto terminal_flags = this->old_terminal_config; // copy old terminal config
-
-		terminal_flags.c_lflag &= ~ICANON; // disable canonical mode
-		terminal_flags.c_lflag &= ~ECHO; // disable echo
-
-		tcsetattr(STDIN_FILENO, TCSANOW, &terminal_flags);
-
-		// set stdin to non-blocking
-		this->old_stdin_flags = fcntl(STDIN_FILENO, F_GETFL, 0);
-		fcntl(STDIN_FILENO, F_SETFL, this->old_stdin_flags | O_NONBLOCK);
+		utils::Terminal::set_canonical_mode(true);
 
 		// start input thread
 		this->input_thread = std::thread(&InputSystem::read_input, this);
 	}
 
 	InputSystem::~InputSystem() {
-		// restore old terminal config
-		tcsetattr(STDIN_FILENO, TCSANOW, &this->old_terminal_config);
-
-		// restore old stdin flags
-		fcntl(STDIN_FILENO, F_SETFL, this->old_stdin_flags);
+		utils::Terminal::set_canonical_mode(false);
 
 		// stop input thread
 		this->is_reading = false;

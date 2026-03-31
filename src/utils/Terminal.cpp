@@ -1,4 +1,10 @@
+#ifdef _WIN32
+#include <windows.h>
+#include <conio.h>
+#else
 #include <sys/ioctl.h>
+#endif
+
 #include <unistd.h>
 #include <sstream>
 #include <iostream>
@@ -10,10 +16,18 @@
 namespace utils {
 
 	utils::UPoint Terminal::get_terminal_size() {
+#ifdef _WIN32
+		CONSOLE_SCREEN_BUFFER_INFO info;
+		GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
+		return {
+			static_cast<uint32_t>(info.srWindow.Right - info.srWindow.Left + 1),
+			static_cast<uint32_t>(info.srWindow.Bottom - info.srWindow.Top + 1)
+		};
+#else
 		winsize w;
 		ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-
 		return {w.ws_col, w.ws_row};
+#endif
 	}
 
 	bool Terminal::is_a_terminal() {
@@ -21,17 +35,54 @@ namespace utils {
 	}
 
 	bool Terminal::is_a_tty() {
+#ifndef _WIN32
 		if (!Terminal::is_a_terminal()) return false;
 
 		// check if terminal name ends with "ttyN" where N is a number
 		if (const char* terminal_name = ttyname(STDOUT_FILENO)) {
 			return std::filesystem::path { terminal_name }
-				.filename()
-				.string()
-				.starts_with("tty");
+			.filename()
+			.string()
+			.starts_with("tty");
 		}
 
+#endif
 		return false;
+	}
+
+	void Terminal::set_canonical_mode(bool enabled) {
+#ifdef _WIN32
+		DWORD mode;
+		auto handle = GetStdHandle(STD_INPUT_HANDLE);
+		GetConsoleMode(handle, &mode);
+
+		const auto flags = ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT;
+
+		// Disable line input (canonical) and echo
+		if (enabled) mode &= ~flags;
+		else mode |= flags;
+
+		SetConsoleMode(handle, mode);
+#else
+		static termios old_terminal_config;
+		static uint32_t old_stdin_flags;
+
+		if (enabled) {
+			tcgetattr(STDIN_FILENO, &old_terminal_config);
+			auto new_terminal_config = old_terminal_config; // copy old terminal config
+			new_terminal_config.c_lflag &= ~ICANON; // disable canonical mode
+			new_terminal_config.c_lflag &= ~ECHO; // disable echo
+
+			tcsetattr(STDIN_FILENO, TCSANOW, &new_terminal_config);
+
+			old_stdin_flags = fcntl(STDIN_FILENO, F_GETFL, 0);
+			fcntl(STDIN_FILENO, F_SETFL, old_stdin_flags | O_NONBLOCK); // set stdin to non-blocking
+		} else {
+			// restore old configs
+			tcsetattr(STDIN_FILENO, TCSANOW, &old_terminal_config);
+			fcntl(STDIN_FILENO, F_SETFL, old_stdin_flags);
+		}
+#endif
 	}
 
 	std::string Terminal::cursor_set_pos(utils::UPoint pos) {
