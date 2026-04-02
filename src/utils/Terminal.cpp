@@ -38,12 +38,11 @@ namespace utils {
 #ifndef _WIN32
 		if (!Terminal::is_a_terminal()) return false;
 
-		// check if terminal name ends with "ttyN" where N is a number
 		if (const char* terminal_name = ttyname(STDOUT_FILENO)) {
 			return std::filesystem::path { terminal_name }
-			.filename()
-			.string()
-			.starts_with("tty");
+				.filename()
+				.string()
+				.starts_with("tty");
 		}
 
 #endif
@@ -178,6 +177,10 @@ namespace utils {
 
 		if (alternate_buffer) buff << Terminal::ESCAPE << Terminal::BUFFER_NEW;
 		else buff << Terminal::clear(true);
+
+#ifdef _WIN32
+		SetConsoleOutputCP(CP_UTF8); // make cmd output utf8 characters
+#endif
 
 		return buff.str();
 	}
