@@ -17,7 +17,8 @@ namespace input {
 		utils::Terminal::set_canonical_mode(true);
 
 		// start input thread
-		this->input_thread = std::thread(&InputSystem::read_input, this);
+		this->input_thread = utils::Thread(&InputSystem::read_input, this);
+		this->input_thread.set_name("InputSystem");
 	}
 
 	InputSystem::~InputSystem() {

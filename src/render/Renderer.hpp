@@ -12,6 +12,7 @@
 #include "../utils/Point.hpp"
 #include "Pixel.hpp"
 #include "../utils/Concepts.hpp"
+#include "../utils/Threads.hpp"
 #include "IRenderHelper.hpp"
 
 
@@ -20,7 +21,7 @@ namespace render {
 		using buff_size_t = uint16_t;
 
 		std::stringstream output_stream;
-		std::thread render_thread;
+		utils::Thread render_thread;
 
 		buff_size_t buffer_width, buffer_height;
 		Pixel background_pixel = { default_characters::SPACE, utils::default_colors::WHITE, utils::default_colors::BLACK };

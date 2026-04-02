@@ -230,7 +230,8 @@ namespace render {
 
 	void Renderer::start_render_loop(std::function<void(Renderer&)> func) {
 		this->is_rendering = true;
-		this->render_thread = std::thread(&Renderer::render, this, func);
+		this->render_thread = utils::Thread(&Renderer::render, this, func);
+		this->render_thread.set_name("Renderer");
 	}
 
 	void Renderer::stop_render_loop() {

@@ -1,9 +1,10 @@
 #pragma once
 
 #include <thread>
-#include "../Game.hpp"
 #include "Keyboard.hpp"
 #include "InputTypes.hpp"
+#include "../Game.hpp"
+#include "../utils/Threads.hpp"
 
 #define INPUT_IS_PRESSED(key) input::InputSystem::instance().is_key_pressed(INPUT_KEY(key))
 
@@ -15,7 +16,7 @@ namespace input {
 	class InputSystem {
 		friend Game;
 
-		std::thread input_thread;
+		utils::Thread input_thread;
 		bool is_reading = true;
 
 		key_buff_t pressed_key_buff;
