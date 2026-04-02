@@ -1,3 +1,7 @@
+#ifdef _WIN32
+#include <conio.h>
+#endif
+
 #include <unistd.h>
 #include <fcntl.h>
 #include <iostream>
@@ -27,7 +31,13 @@ namespace input {
 	void InputSystem::read_input() {
 		while (this->is_reading) {
 			key_buff_t buff = {0}; // clear current_buffer
-			if (read(0, &buff, buff.size()) > 0)
+
+			if (
+#ifdef _WIN32
+				kbhit() && // check on windows first if anything was pressed to prevent lockups
+#endif
+				read(0, &buff, buff.size()) > 0
+			)
 				this->pressed_key_buff = buff; // only if we read something
 			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 		}
