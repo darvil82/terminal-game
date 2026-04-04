@@ -3,9 +3,9 @@
 #include "utils/Terminal.hpp"
 #include "utils/Cleanup.hpp"
 #include "utils/Typedefs.hpp"
-#include "entities/definition/EntityDB.hpp"
 #include "entities/Cube.hpp"
-#include "entities/bases/BaseEntity.hpp"
+#include "entities/BaseEntity.hpp"
+#include "entities/filter/Filters.hpp"
 #include "input/InputSystem.hpp"
 
 
@@ -76,15 +76,15 @@ void Game::tick(float delta) {
 
 	if (INPUT_IS_PRESSED(SPACE)) {
 		for (auto& cube: this->current_scene->get_entities_filtered<entities::Cube>(
-			entities::ent_is_classname("cube"))
+			entities::filter::ent_is_classname("cube"))
 		) {
 			cube->jump();
 		}
 	}
 
-	if (INPUT_IS_PRESSED(C)) {
-		this->current_scene->attach_entity(ENTITY_CREATE(entities::Cube, cube));
-	}
+	// if (INPUT_IS_PRESSED(C)) {
+	// 	this->current_scene->attach_entity(ENTITY_CREATE(entities::Cube, cube));
+	// }
 
 	if (INPUT_IS_PRESSED(SHIFT + K)) {
 		const auto num_ents = this->current_scene->get_entity_count();

@@ -29,10 +29,6 @@ namespace entities {
 		delete this;
 	}
 
-	Predicate<const BaseEntity&> ent_is_classname(const std::string& classname) {
-		return [classname](const BaseEntity& ent) -> bool {
-			return ent.get_classname() == classname;
-		};
-	}
+
 
 }

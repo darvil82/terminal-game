@@ -1,7 +1,7 @@
 #pragma once
 
 #include <functional>
-#include "entities/bases/BaseEntity.hpp"
+#include "entities/BaseEntity.hpp"
 #include "utils/Typedefs.hpp"
 
 namespace entities {
