@@ -3,6 +3,8 @@
 #include <conio.h>
 #else
 #include <sys/ioctl.h>
+#include <termios.h>
+#include <fcntl.h>
 #endif
 
 #include <unistd.h>
